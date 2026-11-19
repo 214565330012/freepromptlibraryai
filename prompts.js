@@ -6,7 +6,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a photorealistic golden-hour portrait using the reference photo. Preserve the person's exact facial identity, hairstyle and expression. Use warm rim light, natural skin texture and a softly blurred background.",
-    "prompt_hi": "रेफरेंस फोटो का उपयोग करके सुनहरी शाम की रोशनी में एक वास्तविक और सिनेमैटिक पोर्ट्रेट बनाएं। व्यक्ति का असली चेहरा, हेयरस्टाइल और भाव बिल्कुल वैसा ही रखें। गर्म रिम लाइट, प्राकृतिक त्वचा की बनावट और हल्का धुंधला बैकग्राउंड रखें।",
+    "prompt_hi": "रेफरेंस फोटो में व्यक्ति का असली चेहरा, हेयरस्टाइल और भाव बिल्कुल सुरक्षित रखते हुए सुनहरी शाम की रोशनी में फोटो-रियलिस्टिक पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -17,7 +17,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Traditional",
     "prompt_en": "Create an elegant traditional saree portrait from the reference photo. Preserve exact facial identity and natural skin texture. Use soft window light and detailed fabric texture.",
-    "prompt_hi": "रेफरेंस फोटो से एक सुंदर पारंपरिक साड़ी पोर्ट्रेट बनाएं। चेहरे की असली पहचान और त्वचा की प्राकृतिक बनावट बिल्कुल न बदलें। मुलायम खिड़की की रोशनी और कपड़े की बारीक बनावट दिखाएं।",
+    "prompt_hi": "रेफरेंस फोटो में महिला की असली पहचान और चेहरे की बनावट सुरक्षित रखते हुए पारंपरिक भारतीय साड़ी में सुंदर पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -28,7 +28,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Couple",
     "prompt_en": "Create a realistic romantic couple portrait using both reference photos. Preserve both exact identities. Use a tasteful outdoor sunset setting and natural expressions.",
-    "prompt_hi": "दोनों रेफरेंस फोटो का उपयोग करके एक वास्तविक और रोमांटिक कपल पोर्ट्रेट बनाएं। दोनों लोगों के असली चेहरे और पहचान सुरक्षित रखें। सूर्यास्त के समय सुंदर आउटडोर लोकेशन और स्वाभाविक भाव रखें।",
+    "prompt_hi": "दोनों रेफरेंस फोटो में दिए गए लोगों के असली चेहरे सुरक्षित रखते हुए सूर्यास्त के समय रोमांटिक कपल पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -39,7 +39,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Wedding",
     "prompt_en": "Create a luxury wedding editorial portrait of the couple. Preserve exact identities, clothing details and natural expressions. Use elegant venue lighting.",
-    "prompt_hi": "कपल का शानदार वेडिंग एडिटोरियल पोर्ट्रेट बनाएं। दोनों की असली पहचान, कपड़ों की बारीकियां और स्वाभाविक भाव बिल्कुल वैसे ही रखें। सुंदर वेन्यू लाइटिंग का उपयोग करें।",
+    "prompt_hi": "कपल के असली चेहरे और कपड़ों की बारीकियां सुरक्षित रखते हुए शानदार वेडिंग एडिटोरियल पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -50,7 +50,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a polished professional headshot from the reference photo. Preserve exact identity and facial proportions. Use a neutral studio background and soft lighting.",
-    "prompt_hi": "रेफरेंस फोटो से एक प्रोफेशनल हेडशॉट बनाएं। चेहरे की असली पहचान और अनुपात न बदलें। न्यूट्रल स्टूडियो बैकग्राउंड और मुलायम रोशनी रखें।",
+    "prompt_hi": "रेफरेंस फोटो का असली चेहरा और चेहरे का अनुपात बदले बिना साफ बैकग्राउंड में प्रोफेशनल हेडशॉट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -61,7 +61,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "3D Art",
     "prompt_en": "Transform the reference subject into a premium 3D collectible figure. Preserve recognizable facial features, hairstyle and outfit colors. Show it in a realistic display box.",
-    "prompt_hi": "रेफरेंस फोटो के व्यक्ति को प्रीमियम 3D कलेक्टिबल फिगर में बदलें। पहचानने योग्य चेहरे, हेयरस्टाइल और कपड़ों के रंग सुरक्षित रखें। फिगर को वास्तविक डिस्प्ले बॉक्स में दिखाएं।",
+    "prompt_hi": "रेफरेंस व्यक्ति की पहचान योग्य चेहरे की विशेषताएं सुरक्षित रखते हुए प्रीमियम 3D कलेक्टिबल फिगर बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -72,7 +72,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Birthday",
     "prompt_en": "Create a joyful birthday portrait using the reference person's exact identity. Add tasteful balloons, warm party lights and realistic event photography.",
-    "prompt_hi": "रेफरेंस व्यक्ति की असली पहचान बनाए रखते हुए एक खुशनुमा बर्थडे पोर्ट्रेट बनाएं। सुंदर गुब्बारे, गर्म पार्टी लाइट्स और वास्तविक इवेंट फोटोग्राफी का लुक दें।",
+    "prompt_hi": "व्यक्ति का असली चेहरा सुरक्षित रखते हुए गुब्बारों और गर्म पार्टी लाइट के साथ जन्मदिन का पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -83,7 +83,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Festival",
     "prompt_en": "Create a festive portrait of the reference person holding a glowing diya. Preserve exact identity and expression. Use warm golden light and subtle decorations.",
-    "prompt_hi": "रेफरेंस व्यक्ति का असली चेहरा और भाव सुरक्षित रखते हुए हाथ में जलता हुआ दीया दिखाएं। गर्म सुनहरी रोशनी और हल्की उत्सवी सजावट रखें।",
+    "prompt_hi": "रेफरेंस व्यक्ति का चेहरा सुरक्षित रखते हुए हाथ में जलता हुआ दीया और गर्म त्योहार की रोशनी दिखाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -94,7 +94,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Cinematic",
     "prompt_en": "Create a cinematic monsoon portrait from the reference photo. Preserve identity. Add gentle rain droplets, reflections and soft diffused light.",
-    "prompt_hi": "रेफरेंस फोटो से सिनेमैटिक मानसून पोर्ट्रेट बनाएं। व्यक्ति की पहचान सुरक्षित रखें। बारिश की हल्की बूंदें, प्रतिबिंब और मुलायम फैली हुई रोशनी जोड़ें।",
+    "prompt_hi": "रेफरेंस व्यक्ति की पहचान सुरक्षित रखते हुए बारिश की बूंदों और सिनेमैटिक माहौल के साथ पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -105,7 +105,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a tasteful 35mm film portrait. Preserve exact identity. Add subtle grain, gentle contrast and authentic analog colors.",
-    "prompt_hi": "एक सुंदर 35mm विंटेज फिल्म पोर्ट्रेट बनाएं। चेहरे की असली पहचान सुरक्षित रखें। हल्का फिल्म ग्रेन, संतुलित कंट्रास्ट और प्राकृतिक एनालॉग रंग जोड़ें।",
+    "prompt_hi": "असली चेहरा सुरक्षित रखते हुए हल्के फिल्म ग्रेन और विंटेज 35mm कैमरा लुक में पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -116,7 +116,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Couple",
     "prompt_en": "Create a romantic pre-wedding photograph of the couple. Preserve both identities. Use a scenic outdoor location and candid interaction.",
-    "prompt_hi": "कपल की दोनों रेफरेंस फोटो से रोमांटिक प्री-वेडिंग तस्वीर बनाएं। दोनों की पहचान सुरक्षित रखें। सुंदर आउटडोर लोकेशन और स्वाभाविक बातचीत जैसा पोज़ रखें।",
+    "prompt_hi": "दोनों लोगों के असली चेहरे सुरक्षित रखते हुए सुंदर आउटडोर लोकेशन में प्री-वेडिंग फोटो बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -127,7 +127,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Family",
     "prompt_en": "Create a warm father-and-child portrait using the reference photos. Preserve both identities and natural expressions. Use soft daylight.",
-    "prompt_hi": "रेफरेंस फोटो से पिता और बच्चे का भावपूर्ण पोर्ट्रेट बनाएं। दोनों के असली चेहरे और स्वाभाविक भाव सुरक्षित रखें। मुलायम दिन की रोशनी का उपयोग करें।",
+    "prompt_hi": "पिता और बच्चे की असली पहचान सुरक्षित रखते हुए प्राकृतिक रोशनी में प्यारा फैमिली पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -138,7 +138,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Family",
     "prompt_en": "Create a tender mother-and-child portrait. Preserve exact facial identities. Use gentle window light and realistic skin texture.",
-    "prompt_hi": "रेफरेंस फोटो से मां और बच्चे का स्नेहभरा पोर्ट्रेट बनाएं। दोनों की असली पहचान सुरक्षित रखें। खिड़की से आती मुलायम रोशनी और त्वचा की वास्तविक बनावट दिखाएं।",
+    "prompt_hi": "माता और बच्चे के असली चेहरे सुरक्षित रखते हुए मुलायम खिड़की की रोशनी में पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -149,7 +149,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Fashion",
     "prompt_en": "Create a high-end studio fashion portrait. Preserve exact facial identity and body proportions. Use a clean backdrop and softbox lighting.",
-    "prompt_hi": "एक प्रीमियम स्टूडियो फैशन पोर्ट्रेट बनाएं। चेहरे की असली पहचान और शरीर के अनुपात बिल्कुल न बदलें। साफ बैकड्रॉप और सॉफ्टबॉक्स लाइटिंग रखें।",
+    "prompt_hi": "चेहरा और शरीर का प्राकृतिक अनुपात सुरक्षित रखते हुए साफ स्टूडियो बैकग्राउंड में फैशन पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -160,7 +160,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Fashion",
     "prompt_en": "Create an urban streetwear editorial portrait. Preserve identity, hairstyle and proportions. Use a modern city backdrop.",
-    "prompt_hi": "एक अर्बन स्ट्रीटवियर एडिटोरियल पोर्ट्रेट बनाएं। असली चेहरा, हेयरस्टाइल और शरीर के अनुपात सुरक्षित रखें। आधुनिक शहर का बैकग्राउंड रखें।",
+    "prompt_hi": "असली चेहरा और हेयरस्टाइल सुरक्षित रखते हुए आधुनिक शहर की पृष्ठभूमि में स्ट्रीटवियर पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -171,7 +171,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Traditional",
     "prompt_en": "Create a regal traditional portrait. Preserve exact identity and facial structure. Use heritage architecture and tasteful traditional clothing.",
-    "prompt_hi": "एक शाही पारंपरिक पोर्ट्रेट बनाएं। व्यक्ति की असली पहचान और चेहरे की बनावट सुरक्षित रखें। विरासत वाली वास्तुकला और सलीकेदार पारंपरिक कपड़े दिखाएं।",
+    "prompt_hi": "व्यक्ति की असली पहचान सुरक्षित रखते हुए पारंपरिक कपड़ों और विरासत शैली की इमारत के साथ रॉयल पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -182,7 +182,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a clean minimal portrait. Preserve exact identity. Use a soft-white background, natural skin texture and balanced studio light.",
-    "prompt_hi": "एक साफ और मिनिमल पोर्ट्रेट बनाएं। असली चेहरा बिल्कुल न बदलें। हल्का सफेद बैकग्राउंड, प्राकृतिक त्वचा की बनावट और संतुलित स्टूडियो लाइट रखें।",
+    "prompt_hi": "असली चेहरा सुरक्षित रखते हुए सफेद बैकग्राउंड और प्राकृतिक त्वचा टेक्सचर के साथ साफ पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -193,7 +193,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a dramatic black-and-white portrait. Preserve identity and facial details. Use sculpted side lighting and fine-art contrast.",
-    "prompt_hi": "एक प्रभावशाली ब्लैक एंड व्हाइट पोर्ट्रेट बनाएं। असली पहचान और चेहरे की बारीकियां सुरक्षित रखें। साइड लाइटिंग और आर्ट फोटोग्राफी जैसा कंट्रास्ट दें।",
+    "prompt_hi": "चेहरे की पहचान और बारीकियां सुरक्षित रखते हुए नाटकीय ब्लैक-एंड-व्हाइट पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -204,7 +204,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Travel",
     "prompt_en": "Create a travel-magazine portrait using the person's exact identity. Place them in a scenic destination with natural daylight.",
-    "prompt_hi": "व्यक्ति की असली पहचान के साथ ट्रैवल मैगज़ीन स्टाइल पोर्ट्रेट बनाएं। उन्हें सुंदर यात्रा स्थल पर दिखाएं और प्राकृतिक दिन की रोशनी रखें।",
+    "prompt_hi": "व्यक्ति की असली पहचान सुरक्षित रखते हुए सुंदर यात्रा स्थल पर ट्रैवल मैगज़ीन शैली का पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -215,7 +215,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Sports",
     "prompt_en": "Create a dynamic sports portrait. Preserve identity and body proportions. Use an authentic sports environment and crisp lighting.",
-    "prompt_hi": "एक गतिशील स्पोर्ट्स पोर्ट्रेट बनाएं। चेहरे की पहचान और शरीर के अनुपात सुरक्षित रखें। वास्तविक खेल का माहौल और साफ रोशनी दिखाएं।",
+    "prompt_hi": "चेहरा और शरीर का अनुपात सुरक्षित रखते हुए खेल के माहौल में डायनेमिक स्पोर्ट्स पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -226,7 +226,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Logo",
     "prompt_en": "Create an 8-second cinematic logo reveal. Start with a dark atmospheric background, add subtle particles and light streaks, reveal the supplied logo unchanged, then hold.",
-    "prompt_hi": "8 सेकंड का सिनेमैटिक लोगो रिवील बनाएं। शुरुआत गहरे माहौल वाले बैकग्राउंड से करें, हल्के पार्टिकल्स और रोशनी की लकीरें जोड़ें, दिए गए लोगो को बिना बदले दिखाएं और अंत में कुछ पल स्थिर रखें।",
+    "prompt_hi": "8 सेकंड का सिनेमैटिक लोगो रिवील बनाएं। दिए गए लोगो का डिज़ाइन बदले बिना रोशनी और हल्के पार्टिकल्स से उसे दिखाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -237,7 +237,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Photo to Video",
     "prompt_en": "Animate the supplied photo into a subtle 5-second living portrait. Preserve identity and composition. Add natural blinking and a slight camera push-in.",
-    "prompt_hi": "दी गई फोटो को 5 सेकंड के हल्के एनिमेटेड पोर्ट्रेट में बदलें। चेहरा और मूल कंपोज़िशन सुरक्षित रखें। केवल स्वाभाविक पलक झपकना और हल्का कैमरा पुश-इन जोड़ें।",
+    "prompt_hi": "दी गई फोटो को 5 सेकंड के हल्के मूविंग पोर्ट्रेट में बदलें। चेहरा और मूल फ्रेम सुरक्षित रखें, केवल प्राकृतिक पलक झपकना जोड़ें।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -248,7 +248,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Couple",
     "prompt_en": "Create a 10-second cinematic video of the couple walking together at sunset. Preserve both identities and clothing. Use natural movement and smooth tracking.",
-    "prompt_hi": "कपल को सूर्यास्त के समय साथ चलते हुए दिखाने वाला 10 सेकंड का सिनेमैटिक वीडियो बनाएं। दोनों के असली चेहरे और कपड़े सुरक्षित रखें। स्वाभाविक मूवमेंट और स्मूद ट्रैकिंग कैमरा इस्तेमाल करें।",
+    "prompt_hi": "कपल के असली चेहरे और कपड़े सुरक्षित रखते हुए सूर्यास्त में साथ चलते हुए 10 सेकंड का वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -259,7 +259,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Wedding",
     "prompt_en": "Create a 10-second elegant wedding entrance video. Preserve people and outfits from references. Show graceful slow motion and steady cinematic camera movement.",
-    "prompt_hi": "10 सेकंड का सुंदर वेडिंग एंट्री वीडियो बनाएं। रेफरेंस में मौजूद लोगों की पहचान और कपड़े सुरक्षित रखें। धीमी और graceful एंट्री तथा स्थिर सिनेमैटिक कैमरा मूवमेंट दिखाएं।",
+    "prompt_hi": "लोगों की असली पहचान और कपड़े सुरक्षित रखते हुए 10 सेकंड की सुंदर स्लो-मोशन वेडिंग एंट्री बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -270,7 +270,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Festival",
     "prompt_en": "Create an 8-second festive greeting video with elegant fireworks, warm decorative lights and clear space for a greeting message.",
-    "prompt_hi": "8 सेकंड का उत्सवी शुभकामना वीडियो बनाएं। सुंदर आतिशबाजी, गर्म सजावटी रोशनी और शुभकामना संदेश के लिए साफ जगह रखें।",
+    "prompt_hi": "रात के आकाश में सुंदर आतिशबाज़ी और त्योहार की रोशनी के साथ 8 सेकंड का शुभकामना वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -281,7 +281,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Cinematic",
     "prompt_en": "Create a 10-second aerial city reveal at sunrise. Slowly rise above rooftops to reveal the skyline with realistic haze and smooth drone movement.",
-    "prompt_hi": "सूर्योदय के समय शहर का 10 सेकंड का एरियल रिवील बनाएं। छतों के ऊपर से धीरे-धीरे ऊपर उठते हुए शहर की स्काईलाइन दिखाएं। वास्तविक धुंध और स्मूद ड्रोन मूवमेंट रखें।",
+    "prompt_hi": "सूर्योदय के समय शहर की छतों से ऊपर उठकर स्काईलाइन दिखाने वाला 10 सेकंड का ड्रोन वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -292,7 +292,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Nature",
     "prompt_en": "Create an 8-second cinematic waterfall video surrounded by lush forest. Use realistic water, drifting mist and a slow camera push-in.",
-    "prompt_hi": "हरे-भरे जंगल के बीच झरने का 8 सेकंड का सिनेमैटिक वीडियो बनाएं। पानी की वास्तविक गति, हल्की धुंध और धीरे आगे बढ़ता कैमरा दिखाएं।",
+    "prompt_hi": "हरे जंगल के बीच झरने का 8 सेकंड का सिनेमैटिक वीडियो बनाएं, पानी और धुंध वास्तविक दिखें।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -303,7 +303,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Product",
     "prompt_en": "Create an 8-second premium product showcase. Rotate the supplied product slowly on a clean studio surface. Preserve shape, labels and colors.",
-    "prompt_hi": "8 सेकंड का प्रीमियम प्रोडक्ट शोकेस बनाएं। दिए गए प्रोडक्ट को साफ स्टूडियो सतह पर धीरे-धीरे घुमाएं। उसका आकार, लेबल और रंग बिल्कुल न बदलें।",
+    "prompt_hi": "दिए गए प्रोडक्ट का आकार, लेबल और रंग सुरक्षित रखते हुए 8 सेकंड का स्टूडियो शोकेस वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -314,7 +314,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "3D Animation",
     "prompt_en": "Create a 10-second playful 3D cartoon character introduction. Keep the supplied character design consistent and show a friendly entrance.",
-    "prompt_hi": "10 सेकंड का मज़ेदार 3D कार्टून कैरेक्टर इंट्रो बनाएं। दिए गए कैरेक्टर का डिज़ाइन एक जैसा रखें और उसकी दोस्ताना एंट्री दिखाएं।",
+    "prompt_hi": "दिए गए कैरेक्टर का डिज़ाइन समान रखते हुए 10 सेकंड का मज़ेदार 3D कार्टून इंट्रो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -325,7 +325,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Cinematic",
     "prompt_en": "Create a 10-second cinematic drone flyover above mountain peaks at sunrise. Use realistic clouds and smooth forward motion.",
-    "prompt_hi": "सूर्योदय के समय पहाड़ों की चोटियों के ऊपर 10 सेकंड का सिनेमैटिक ड्रोन फ्लायओवर बनाएं। वास्तविक बादल और स्मूद आगे बढ़ती कैमरा मूवमेंट रखें।",
+    "prompt_hi": "सूर्योदय में पहाड़ों के ऊपर बादलों के बीच से गुजरता 10 सेकंड का स्मूद ड्रोन वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -336,7 +336,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Dance",
     "prompt_en": "Create a 10-second vertical dance video featuring the supplied character. Preserve appearance and outfit. Use full-body framing and natural rhythmic movement.",
-    "prompt_hi": "दिए गए कैरेक्टर के साथ 10 सेकंड का वर्टिकल डांस वीडियो बनाएं। उसका लुक और कपड़े सुरक्षित रखें। पूरे शरीर का फ्रेम और स्वाभाविक तालबद्ध मूवमेंट दिखाएं।",
+    "prompt_hi": "दिए गए कैरेक्टर का लुक और कपड़े सुरक्षित रखते हुए 9:16 में 10 सेकंड का डांस वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -347,7 +347,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Social Media",
     "prompt_en": "Create a 10-second vertical street interview scene with an interviewer and guest, natural gestures and lively public background.",
-    "prompt_hi": "इंटरव्यू लेने वाले और मेहमान के साथ 10 सेकंड का वर्टिकल स्ट्रीट इंटरव्यू सीन बनाएं। स्वाभाविक हावभाव और जीवंत सार्वजनिक बैकग्राउंड रखें।",
+    "prompt_hi": "इंटरव्यू लेने वाले और मेहमान के साथ 9:16 में 10 सेकंड का स्वाभाविक स्ट्रीट इंटरव्यू वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -358,7 +358,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "YouTube",
     "prompt_en": "Create a 7-second energetic YouTube channel intro using the supplied name and logo. Keep text readable and finish with a clean brand lockup.",
-    "prompt_hi": "दिए गए चैनल नाम और लोगो से 7 सेकंड का ऊर्जावान YouTube इंट्रो बनाएं। टेक्स्ट साफ और पढ़ने योग्य रखें और अंत में ब्रांड को स्पष्ट दिखाएं।",
+    "prompt_hi": "दिए गए चैनल नाम और लोगो के साथ 7 सेकंड का एनर्जेटिक यूट्यूब इंट्रो बनाएं। टेक्स्ट साफ रखें।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -369,7 +369,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Cinematic",
     "prompt_en": "Create an 8-second cinematic rainy city street at night with wet pavement reflections, passing headlights and realistic raindrops.",
-    "prompt_hi": "रात में बारिश वाली शहर की सड़क का 8 सेकंड का सिनेमैटिक वीडियो बनाएं। गीली सड़क के प्रतिबिंब, गुजरती गाड़ियों की हेडलाइट और वास्तविक बारिश की बूंदें दिखाएं।",
+    "prompt_hi": "रात में बारिश वाली शहर की सड़क, गीली सड़क पर रोशनी के प्रतिबिंब और गुजरती कारों का 8 सेकंड का वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -380,7 +380,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Birthday",
     "prompt_en": "Create an 8-second birthday cake reveal. Start close on candles, then pull back to show the decorated cake and party lights.",
-    "prompt_hi": "8 सेकंड का बर्थडे केक रिवील बनाएं। शुरुआत मोमबत्तियों के क्लोज़-अप से करें, फिर कैमरा पीछे ले जाकर सजा हुआ केक और पार्टी लाइट्स दिखाएं।",
+    "prompt_hi": "मोमबत्तियों के क्लोज़-अप से शुरू करके सजे हुए केक को दिखाने वाला 8 सेकंड का बर्थडे वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -391,7 +391,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Nature",
     "prompt_en": "Create an 8-second realistic slow-motion ocean wave at golden hour with detailed foam and warm reflections.",
-    "prompt_hi": "सुनहरी शाम में समुद्र की लहरों का 8 सेकंड का वास्तविक स्लो-मोशन वीडियो बनाएं। झाग की बारीकियां और गर्म रोशनी के प्रतिबिंब दिखाएं।",
+    "prompt_hi": "सुनहरी शाम में समुद्र की लहरों और झाग का वास्तविक 8 सेकंड का स्लो-मोशन वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -402,7 +402,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Fashion",
     "prompt_en": "Create a 10-second vertical fashion walk reel using the reference person's identity and outfit. Use full-body framing and smooth tracking.",
-    "prompt_hi": "रेफरेंस व्यक्ति की असली पहचान और कपड़े सुरक्षित रखते हुए 10 सेकंड की वर्टिकल फैशन वॉक रील बनाएं। पूरे शरीर का फ्रेम और स्मूद ट्रैकिंग रखें।",
+    "prompt_hi": "रेफरेंस व्यक्ति का चेहरा और कपड़े सुरक्षित रखते हुए 9:16 में 10 सेकंड की फैशन वॉक रील बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -413,7 +413,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Family",
     "prompt_en": "Animate the supplied family photo into a subtle 6-second memory clip. Preserve every person's identity and position.",
-    "prompt_hi": "दी गई पारिवारिक फोटो को 6 सेकंड की हल्की यादगार एनिमेशन में बदलें। सभी लोगों के चेहरे और उनकी जगह बिल्कुल सुरक्षित रखें।",
+    "prompt_hi": "फैमिली फोटो में सभी लोगों की पहचान और जगह सुरक्षित रखते हुए 6 सेकंड का हल्का एनिमेशन बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -424,7 +424,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Festival",
     "prompt_en": "Create a respectful 10-second aerial sunrise video of an Indian temple exterior with smooth drone rise and warm morning light.",
-    "prompt_hi": "भारतीय मंदिर के बाहरी दृश्य का 10 सेकंड का सम्मानजनक एरियल सनराइज़ वीडियो बनाएं। ड्रोन धीरे ऊपर उठे और सुबह की गर्म रोशनी दिखे।",
+    "prompt_hi": "भारतीय मंदिर के बाहरी हिस्से का सुबह की रोशनी में सम्मानजनक 10 सेकंड का एरियल वीडियो बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -435,7 +435,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Background",
     "prompt_en": "Create an 8-second seamless abstract neon motion background with flowing gradients and glowing lines. Do not include text or logos.",
-    "prompt_hi": "बहते रंगों और चमकती रेखाओं वाला 8 सेकंड का seamless abstract neon motion background बनाएं। इसमें कोई टेक्स्ट या लोगो न जोड़ें।",
+    "prompt_hi": "बिना टेक्स्ट और लोगो के 8 सेकंड का स्मूद नियॉन मोशन बैकग्राउंड बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -446,7 +446,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Traditional",
     "prompt_en": "Create a tasteful Gujarati traditional portrait. Preserve the person's exact identity and natural expression. Use authentic textile details and festive setting.",
-    "prompt_hi": "एक सुंदर गुजराती पारंपरिक पोर्ट्रेट बनाएं। व्यक्ति का असली चेहरा और स्वाभाविक भाव सुरक्षित रखें। असली टेक्सटाइल डिटेल और उत्सवी माहौल रखें।",
+    "prompt_hi": "व्यक्ति का असली चेहरा सुरक्षित रखते हुए पारंपरिक गुजराती कपड़ों में सुंदर पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -457,7 +457,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Festival",
     "prompt_en": "Create a vibrant Navratri garba portrait. Preserve identity and outfit details. Add colorful festive lights and a garba venue background.",
-    "prompt_hi": "एक रंगीन नवरात्रि गरबा पोर्ट्रेट बनाएं। असली चेहरा और कपड़ों की बारीकियां सुरक्षित रखें। रंगीन उत्सवी रोशनी और गरबा स्थल का बैकग्राउंड जोड़ें।",
+    "prompt_hi": "असली चेहरा और कपड़े सुरक्षित रखते हुए रंगीन रोशनी वाले नवरात्रि गरबा माहौल में पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -468,7 +468,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Festival",
     "prompt_en": "Create a warm Diwali family portrait. Preserve all identities. Add diyas and subtle festive decor with realistic warm lighting.",
-    "prompt_hi": "एक गर्मजोशी भरा दिवाली फैमिली पोर्ट्रेट बनाएं। सभी लोगों की असली पहचान सुरक्षित रखें। दीये और हल्की सजावट के साथ प्राकृतिक गर्म रोशनी दिखाएं।",
+    "prompt_hi": "परिवार के सभी असली चेहरे सुरक्षित रखते हुए दीयों और गर्म रोशनी के साथ दिवाली पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -479,7 +479,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Fashion",
     "prompt_en": "Create a monochrome fashion editorial portrait. Preserve identity and proportions. Use sculptural lighting and premium magazine styling.",
-    "prompt_hi": "एक मोनोक्रोम फैशन एडिटोरियल पोर्ट्रेट बनाएं। चेहरा और शरीर के अनुपात सुरक्षित रखें। आकर्षक लाइटिंग और प्रीमियम मैगज़ीन स्टाइल दें।",
+    "prompt_hi": "चेहरे और शरीर का अनुपात सुरक्षित रखते हुए मोनोक्रोम फैशन एडिटोरियल पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -490,7 +490,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Couple",
     "prompt_en": "Create a romantic golden-hour couple silhouette. Preserve recognizable profiles and proportions. Use a glowing sunset horizon.",
-    "prompt_hi": "सूर्यास्त के समय रोमांटिक कपल सिल्हूट बनाएं। दोनों की पहचान और शरीर के अनुपात सुरक्षित रखें। चमकती सूर्यास्त की क्षितिज रेखा दिखाएं।",
+    "prompt_hi": "कपल की पहचान सुरक्षित रखते हुए सूर्यास्त के सामने रोमांटिक सिलुएट फोटो बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -501,7 +501,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "Photo Editing",
     "prompt_en": "Apply a polished cinematic color grade to the reference photo while preserving identity, composition and natural skin tones.",
-    "prompt_hi": "रेफरेंस फोटो पर सिनेमैटिक कलर ग्रेड लागू करें। चेहरे की पहचान, कंपोज़िशन और त्वचा के प्राकृतिक रंग बिल्कुल सुरक्षित रखें।",
+    "prompt_hi": "फोटो का चेहरा और मूल कंपोज़िशन सुरक्षित रखते हुए सिनेमैटिक कलर ग्रेडिंग करें।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -512,7 +512,7 @@ window.PROMPTS = [
     "type": "Photo",
     "category": "YouTube",
     "prompt_en": "Create a high-impact YouTube thumbnail portrait using the person's exact identity. Leave clear negative space for title text.",
-    "prompt_hi": "व्यक्ति की असली पहचान के साथ प्रभावशाली YouTube थंबनेल पोर्ट्रेट बनाएं। शीर्षक लिखने के लिए साफ खाली जगह छोड़ें।",
+    "prompt_hi": "व्यक्ति का असली चेहरा सुरक्षित रखते हुए यूट्यूब थंबनेल के लिए शीर्षक की खाली जगह वाला पोर्ट्रेट बनाएं।",
     "aspect_ratio": "4:5",
     "duration": ""
   },
@@ -523,7 +523,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Photo to Video",
     "prompt_en": "Create a 6-second subtle camera push-in animation from the still image. Preserve all objects and original composition.",
-    "prompt_hi": "स्थिर फोटो से 6 सेकंड का हल्का कैमरा पुश-इन एनिमेशन बनाएं। सभी वस्तुएं और मूल कंपोज़िशन सुरक्षित रखें।",
+    "prompt_hi": "स्टिल इमेज की वस्तुएं और फ्रेम सुरक्षित रखते हुए 6 सेकंड का हल्का कैमरा पुश-इन बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -534,7 +534,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Automotive",
     "prompt_en": "Create a 10-second vertical cinematic luxury car reel with a smooth low-angle tracking shot and realistic reflections.",
-    "prompt_hi": "10 सेकंड की वर्टिकल सिनेमैटिक लग्ज़री कार रील बनाएं। लो-एंगल ट्रैकिंग शॉट और कार की बॉडी पर वास्तविक प्रतिबिंब दिखाएं।",
+    "prompt_hi": "10 सेकंड की वर्टिकल लग्ज़री कार रील बनाएं, कार का आकार और रंग सुरक्षित रखें।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -545,7 +545,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Product",
     "prompt_en": "Create an 8-second product unboxing video showing hands opening the package and revealing the product. Keep branding accurate.",
-    "prompt_hi": "8 सेकंड का प्रोडक्ट अनबॉक्सिंग वीडियो बनाएं। हाथों से पैकेज खुलता हुआ और अंदर का प्रोडक्ट दिखाएं। ब्रांडिंग और प्रोडक्ट का आकार सही रखें।",
+    "prompt_hi": "पैकेज खोलकर प्रोडक्ट दिखाने वाला 8 सेकंड का अनबॉक्सिंग वीडियो बनाएं; ब्रांडिंग न बदलें।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -556,7 +556,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Travel",
     "prompt_en": "Create a 10-second vertical travel reel revealing a landmark with a smooth move from foreground detail to a wide scenic view.",
-    "prompt_hi": "किसी प्रसिद्ध स्थल को दिखाने वाली 10 सेकंड की वर्टिकल ट्रैवल रील बनाएं। शुरुआत नज़दीकी डिटेल से करें और फिर स्मूद तरीके से पूरा दृश्य दिखाएं।",
+    "prompt_hi": "10 सेकंड की वर्टिकल ट्रैवल रील बनाएं, जिसमें नज़दीकी दृश्य से प्रसिद्ध स्थान का चौड़ा दृश्य दिखे।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   },
@@ -567,7 +567,7 @@ window.PROMPTS = [
     "type": "Video",
     "category": "Nature",
     "prompt_en": "Create an 8-second timelapse showing rain clouds clearing and warm sunlight appearing over a green landscape. Keep camera locked.",
-    "prompt_hi": "हरे-भरे प्राकृतिक दृश्य में 8 सेकंड का टाइमलैप्स बनाएं, जिसमें बारिश के बादल हटें और गर्म धूप निकल आए। कैमरा स्थिर रखें और बदलाव सहज हों।",
+    "prompt_hi": "हरे मैदान पर बादल हटकर धूप आने का 8 सेकंड का स्मूद टाइमलैप्स बनाएं।",
     "aspect_ratio": "9:16",
     "duration": "8–10 seconds"
   }

@@ -1,17 +1,18 @@
-# FreePromptLibraryAI — matching the uploaded reference video
+# FreePromptLibraryAI — reference-matched homepage
 
-This version uses the visual structure shown in the uploaded screen recording:
-- Compact header
-- Separate white search bar directly below header, with a neutral border and no colored fill
-- Pale blue-grey page background
-- Centered single-column white article/content panel (no right sidebar)
-- Repeated prompt entries in the same vertical format: numbered title, description, fixed-size sample image area, blue View Prompt button and action buttons (Copy, WhatsApp, ChatGPT, Gemini)
-- FAQ accordion panel
-- Three-column related prompt cards
-- Dark multi-column footer
+This revision follows the latest reference screenshot:
+- Compact white header with brand on the left and navigation on the right
+- Full-width purple/indigo gradient hero under the header
+- Centered heading and description in the hero
+- White search field and separate soft-pink Search button
+- Pale blue/lavender page background
+- Centered three-column prompt-card grid
+- Large fixed-ratio thumbnail area, title, description and purple Get Prompts action on each card
+- Further photo, video and category sections below, plus footer
+- Premium Purple & White brand palette and responsive mobile layout
 
-The selected Purple & White brand palette is retained for the logo, accents and selected controls. The search box remains plain white.
+This is an original implementation based on the user's reference image. It does not reuse PromptBhai's logos, code, images or exact copy.
 
-The design is an original implementation based on the visible layout and proportions of the user's recording, not copied source code, images or text from PromptBhai.
-
-The prompt sample areas are still design placeholders; original sample images will be added later to Cloudflare R2. Admin, database, full image upload, automatic trend research and dedicated SEO prompt detail pages remain future implementation steps.
+Important:
+- Card artwork areas currently use designed gradient art panels, not real photographic sample images. The layout and sizing are ready; real prompt sample images can be uploaded to R2 later.
+- Admin authentication, database, R2 upload workflow, trend research scheduler, separate prompt detail URLs and policy page contents remain to be built.
