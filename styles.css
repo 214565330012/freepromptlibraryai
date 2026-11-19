@@ -107,32 +107,19 @@ footer{margin-top:25px;background:#17172c;color:#e9e8f2;padding:32px max(5%,calc
 }
 
 
-
-.hero-headings::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: linear-gradient(
-    120deg,
-    transparent 20%,
-    rgba(255,255,255,.22) 48%,
-    transparent 72%
-  );
-}
-
-.hero-headings h1,
-.hero-headings h2 {
-  position: relative;
-  z-index: 1;
-}
-
+/* Mobile: Keep both main titles on one line */
 @media (max-width: 760px) {
   .hero-headings {
     width: 100%;
-    padding: 11px 9px;
-    border-radius: 18px;
-    margin-bottom: 5px;
+    padding: 0;
+    margin: 0 auto 5px;
   }
 
+  .hero-headings h1,
+  .hero-headings h2 {
+    white-space: nowrap;
+    font-size: clamp(12px, 4vw, 19px);
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+  }
+}
