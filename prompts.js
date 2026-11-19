@@ -2,7 +2,7 @@ window.PROMPTS = [
   {
     "id": 1,
     "title": "Golden Hour Portrait",
-    "title_hi": "સોનેરી સાંજનો પોર્ટ્રેટ",
+    "title_hi": "सुनहरी शाम का पोर्ट्रेट",
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a photorealistic golden-hour portrait using the reference photo. Preserve the person's exact facial identity, hairstyle and expression. Use warm rim light, natural skin texture and a softly blurred background.",
@@ -13,7 +13,7 @@ window.PROMPTS = [
   {
     "id": 2,
     "title": "Traditional Saree Portrait",
-    "title_hi": "પરંપરાગત સાડી પોર્ટ્રેટ",
+    "title_hi": "पारंपरिक साड़ी पोर्ट्रेट",
     "type": "Photo",
     "category": "Traditional",
     "prompt_en": "Create an elegant traditional saree portrait from the reference photo. Preserve exact facial identity and natural skin texture. Use soft window light and detailed fabric texture.",
@@ -24,7 +24,7 @@ window.PROMPTS = [
   {
     "id": 3,
     "title": "Romantic Couple Portrait",
-    "title_hi": "રોમેન્ટિક કપલ પોર્ટ્રેટ",
+    "title_hi": "रोमांटिक कपल पोर्ट्रेट",
     "type": "Photo",
     "category": "Couple",
     "prompt_en": "Create a realistic romantic couple portrait using both reference photos. Preserve both exact identities. Use a tasteful outdoor sunset setting and natural expressions.",
@@ -35,7 +35,7 @@ window.PROMPTS = [
   {
     "id": 4,
     "title": "Wedding Editorial Portrait",
-    "title_hi": "વેડિંગ એડિટોરિયલ",
+    "title_hi": "वेडिंग एडिटोरियल पोर्ट्रेट",
     "type": "Photo",
     "category": "Wedding",
     "prompt_en": "Create a luxury wedding editorial portrait of the couple. Preserve exact identities, clothing details and natural expressions. Use elegant venue lighting.",
@@ -46,7 +46,7 @@ window.PROMPTS = [
   {
     "id": 5,
     "title": "Professional Headshot",
-    "title_hi": "પ્રોફેશનલ હેડશોટ",
+    "title_hi": "प्रोफेशनल हेडशॉट",
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a polished professional headshot from the reference photo. Preserve exact identity and facial proportions. Use a neutral studio background and soft lighting.",
@@ -57,7 +57,7 @@ window.PROMPTS = [
   {
     "id": 6,
     "title": "3D Collectible Figure",
-    "title_hi": "3D કલેક્ટિબલ ફિગર",
+    "title_hi": "3D कलेक्टिबल फिगर",
     "type": "Photo",
     "category": "3D Art",
     "prompt_en": "Transform the reference subject into a premium 3D collectible figure. Preserve recognizable facial features, hairstyle and outfit colors. Show it in a realistic display box.",
@@ -68,7 +68,7 @@ window.PROMPTS = [
   {
     "id": 7,
     "title": "Birthday Portrait",
-    "title_hi": "જન્મદિવસ પોર્ટ્રેટ",
+    "title_hi": "जन्मदिन का पोर्ट्रेट",
     "type": "Photo",
     "category": "Birthday",
     "prompt_en": "Create a joyful birthday portrait using the reference person's exact identity. Add tasteful balloons, warm party lights and realistic event photography.",
@@ -79,7 +79,7 @@ window.PROMPTS = [
   {
     "id": 8,
     "title": "Diwali Diya Portrait",
-    "title_hi": "દિવાળી દીવો પોર્ટ્રેટ",
+    "title_hi": "दिवाली दीया पोर्ट्रेट",
     "type": "Photo",
     "category": "Festival",
     "prompt_en": "Create a festive portrait of the reference person holding a glowing diya. Preserve exact identity and expression. Use warm golden light and subtle decorations.",
@@ -90,7 +90,7 @@ window.PROMPTS = [
   {
     "id": 9,
     "title": "Monsoon Portrait",
-    "title_hi": "ચોમાસાનો પોર્ટ્રેટ",
+    "title_hi": "मानसून पोर्ट्रेट",
     "type": "Photo",
     "category": "Cinematic",
     "prompt_en": "Create a cinematic monsoon portrait from the reference photo. Preserve identity. Add gentle rain droplets, reflections and soft diffused light.",
@@ -101,7 +101,7 @@ window.PROMPTS = [
   {
     "id": 10,
     "title": "Vintage Film Portrait",
-    "title_hi": "વિન્ટેજ ફિલ્મ પોર્ટ્રેટ",
+    "title_hi": "विंटेज फिल्म पोर्ट्रेट",
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a tasteful 35mm film portrait. Preserve exact identity. Add subtle grain, gentle contrast and authentic analog colors.",
@@ -112,7 +112,7 @@ window.PROMPTS = [
   {
     "id": 11,
     "title": "Pre-Wedding Couple",
-    "title_hi": "પ્રી-વેડિંગ કપલ",
+    "title_hi": "प्री-वेडिंग कपल फोटो",
     "type": "Photo",
     "category": "Couple",
     "prompt_en": "Create a romantic pre-wedding photograph of the couple. Preserve both identities. Use a scenic outdoor location and candid interaction.",
@@ -123,7 +123,7 @@ window.PROMPTS = [
   {
     "id": 12,
     "title": "Father and Child",
-    "title_hi": "પિતા અને બાળક",
+    "title_hi": "पिता और बच्चे का पोर्ट्रेट",
     "type": "Photo",
     "category": "Family",
     "prompt_en": "Create a warm father-and-child portrait using the reference photos. Preserve both identities and natural expressions. Use soft daylight.",
@@ -134,7 +134,7 @@ window.PROMPTS = [
   {
     "id": 13,
     "title": "Mother and Child",
-    "title_hi": "માતા અને બાળક",
+    "title_hi": "माँ और बच्चे का पोर्ट्रेट",
     "type": "Photo",
     "category": "Family",
     "prompt_en": "Create a tender mother-and-child portrait. Preserve exact facial identities. Use gentle window light and realistic skin texture.",
@@ -145,7 +145,7 @@ window.PROMPTS = [
   {
     "id": 14,
     "title": "Studio Fashion Portrait",
-    "title_hi": "સ્ટુડિયો ફેશન પોર્ટ્રેટ",
+    "title_hi": "स्टूडियो फैशन पोर्ट्रेट",
     "type": "Photo",
     "category": "Fashion",
     "prompt_en": "Create a high-end studio fashion portrait. Preserve exact facial identity and body proportions. Use a clean backdrop and softbox lighting.",
@@ -156,7 +156,7 @@ window.PROMPTS = [
   {
     "id": 15,
     "title": "Urban Streetwear",
-    "title_hi": "અર્બન સ્ટ્રીટવેર",
+    "title_hi": "अर्बन स्ट्रीटवियर पोर्ट्रेट",
     "type": "Photo",
     "category": "Fashion",
     "prompt_en": "Create an urban streetwear editorial portrait. Preserve identity, hairstyle and proportions. Use a modern city backdrop.",
@@ -167,7 +167,7 @@ window.PROMPTS = [
   {
     "id": 16,
     "title": "Royal Traditional Portrait",
-    "title_hi": "રોયલ પરંપરાગત પોર્ટ્રેટ",
+    "title_hi": "रॉयल पारंपरिक पोर्ट्रेट",
     "type": "Photo",
     "category": "Traditional",
     "prompt_en": "Create a regal traditional portrait. Preserve exact identity and facial structure. Use heritage architecture and tasteful traditional clothing.",
@@ -178,7 +178,7 @@ window.PROMPTS = [
   {
     "id": 17,
     "title": "Minimal White Portrait",
-    "title_hi": "સફેદ બેકગ્રાઉન્ડ પોર્ટ્રેટ",
+    "title_hi": "मिनिमल व्हाइट पोर्ट्रेट",
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a clean minimal portrait. Preserve exact identity. Use a soft-white background, natural skin texture and balanced studio light.",
@@ -189,7 +189,7 @@ window.PROMPTS = [
   {
     "id": 18,
     "title": "Black and White Portrait",
-    "title_hi": "બ્લેક એન્ડ વ્હાઇટ પોર્ટ્રેટ",
+    "title_hi": "ब्लैक एंड व्हाइट पोर्ट्रेट",
     "type": "Photo",
     "category": "Portrait",
     "prompt_en": "Create a dramatic black-and-white portrait. Preserve identity and facial details. Use sculpted side lighting and fine-art contrast.",
@@ -200,7 +200,7 @@ window.PROMPTS = [
   {
     "id": 19,
     "title": "Travel Magazine Portrait",
-    "title_hi": "ટ્રાવેલ મેગેઝિન પોર્ટ્રેટ",
+    "title_hi": "ट्रैवल मैगज़ीन पोर्ट्रेट",
     "type": "Photo",
     "category": "Travel",
     "prompt_en": "Create a travel-magazine portrait using the person's exact identity. Place them in a scenic destination with natural daylight.",
@@ -211,7 +211,7 @@ window.PROMPTS = [
   {
     "id": 20,
     "title": "Sports Action Portrait",
-    "title_hi": "સ્પોર્ટ્સ એક્શન પોર્ટ્રેટ",
+    "title_hi": "स्पोर्ट्स एक्शन पोर्ट्रेट",
     "type": "Photo",
     "category": "Sports",
     "prompt_en": "Create a dynamic sports portrait. Preserve identity and body proportions. Use an authentic sports environment and crisp lighting.",
@@ -222,7 +222,7 @@ window.PROMPTS = [
   {
     "id": 21,
     "title": "Cinematic Logo Reveal",
-    "title_hi": "સિનેમેટિક લોગો રિવીલ",
+    "title_hi": "सिनेमैटिक लोगो रिवील",
     "type": "Video",
     "category": "Logo",
     "prompt_en": "Create an 8-second cinematic logo reveal. Start with a dark atmospheric background, add subtle particles and light streaks, reveal the supplied logo unchanged, then hold.",
@@ -233,7 +233,7 @@ window.PROMPTS = [
   {
     "id": 22,
     "title": "Photo to Motion",
-    "title_hi": "ફોટોમાંથી હલનચલન",
+    "title_hi": "फोटो से मोशन वीडियो",
     "type": "Video",
     "category": "Photo to Video",
     "prompt_en": "Animate the supplied photo into a subtle 5-second living portrait. Preserve identity and composition. Add natural blinking and a slight camera push-in.",
@@ -244,7 +244,7 @@ window.PROMPTS = [
   {
     "id": 23,
     "title": "Couple Sunset Walk",
-    "title_hi": "સૂર્યાસ્તમાં કપલ વોક",
+    "title_hi": "सनसेट में चलता कपल",
     "type": "Video",
     "category": "Couple",
     "prompt_en": "Create a 10-second cinematic video of the couple walking together at sunset. Preserve both identities and clothing. Use natural movement and smooth tracking.",
@@ -255,7 +255,7 @@ window.PROMPTS = [
   {
     "id": 24,
     "title": "Wedding Slow Motion Entry",
-    "title_hi": "વેડિંગ સ્લો મોશન એન્ટ્રી",
+    "title_hi": "वेडिंग स्लो मोशन एंट्री",
     "type": "Video",
     "category": "Wedding",
     "prompt_en": "Create a 10-second elegant wedding entrance video. Preserve people and outfits from references. Show graceful slow motion and steady cinematic camera movement.",
@@ -266,7 +266,7 @@ window.PROMPTS = [
   {
     "id": 25,
     "title": "Festival Fireworks Greeting",
-    "title_hi": "ફેસ્ટિવલ ફાયરવર્ક્સ",
+    "title_hi": "फेस्टिवल आतिशबाज़ी शुभकामना",
     "type": "Video",
     "category": "Festival",
     "prompt_en": "Create an 8-second festive greeting video with elegant fireworks, warm decorative lights and clear space for a greeting message.",
@@ -277,7 +277,7 @@ window.PROMPTS = [
   {
     "id": 26,
     "title": "Drone City Reveal",
-    "title_hi": "ડ્રોન સિટી રિવીલ",
+    "title_hi": "ड्रोन सिटी रिवील",
     "type": "Video",
     "category": "Cinematic",
     "prompt_en": "Create a 10-second aerial city reveal at sunrise. Slowly rise above rooftops to reveal the skyline with realistic haze and smooth drone movement.",
@@ -288,7 +288,7 @@ window.PROMPTS = [
   {
     "id": 27,
     "title": "Waterfall Cinematic",
-    "title_hi": "ધોધ સિનેમેટિક",
+    "title_hi": "झरने का सिनेमैटिक वीडियो",
     "type": "Video",
     "category": "Nature",
     "prompt_en": "Create an 8-second cinematic waterfall video surrounded by lush forest. Use realistic water, drifting mist and a slow camera push-in.",
@@ -299,7 +299,7 @@ window.PROMPTS = [
   {
     "id": 28,
     "title": "Product Showcase",
-    "title_hi": "પ્રોડક્ટ શોકેસ",
+    "title_hi": "प्रोडक्ट शोकेस वीडियो",
     "type": "Video",
     "category": "Product",
     "prompt_en": "Create an 8-second premium product showcase. Rotate the supplied product slowly on a clean studio surface. Preserve shape, labels and colors.",
@@ -310,7 +310,7 @@ window.PROMPTS = [
   {
     "id": 29,
     "title": "3D Cartoon Intro",
-    "title_hi": "3D કાર્ટૂન ઇન્ટ્રો",
+    "title_hi": "3D कार्टून कैरेक्टर इंट्रो",
     "type": "Video",
     "category": "3D Animation",
     "prompt_en": "Create a 10-second playful 3D cartoon character introduction. Keep the supplied character design consistent and show a friendly entrance.",
@@ -321,7 +321,7 @@ window.PROMPTS = [
   {
     "id": 30,
     "title": "Mountain Drone Flyover",
-    "title_hi": "પર્વત ડ્રોન ફ્લાયઓવર",
+    "title_hi": "पहाड़ों के ऊपर ड्रोन फ्लायओवर",
     "type": "Video",
     "category": "Cinematic",
     "prompt_en": "Create a 10-second cinematic drone flyover above mountain peaks at sunrise. Use realistic clouds and smooth forward motion.",
@@ -332,7 +332,7 @@ window.PROMPTS = [
   {
     "id": 31,
     "title": "Dance Reel",
-    "title_hi": "ડાન્સ રીલ",
+    "title_hi": "डांस रील वीडियो",
     "type": "Video",
     "category": "Dance",
     "prompt_en": "Create a 10-second vertical dance video featuring the supplied character. Preserve appearance and outfit. Use full-body framing and natural rhythmic movement.",
@@ -343,7 +343,7 @@ window.PROMPTS = [
   {
     "id": 32,
     "title": "Street Interview",
-    "title_hi": "સ્ટ્રીટ ઇન્ટરવ્યૂ",
+    "title_hi": "स्ट्रीट इंटरव्यू वीडियो",
     "type": "Video",
     "category": "Social Media",
     "prompt_en": "Create a 10-second vertical street interview scene with an interviewer and guest, natural gestures and lively public background.",
@@ -354,7 +354,7 @@ window.PROMPTS = [
   {
     "id": 33,
     "title": "YouTube Intro",
-    "title_hi": "યૂટ્યૂબ ઇન્ટ્રો",
+    "title_hi": "यूट्यूब चैनल इंट्रो",
     "type": "Video",
     "category": "YouTube",
     "prompt_en": "Create a 7-second energetic YouTube channel intro using the supplied name and logo. Keep text readable and finish with a clean brand lockup.",
@@ -365,7 +365,7 @@ window.PROMPTS = [
   {
     "id": 34,
     "title": "Rainy Street Video",
-    "title_hi": "વરસાદી રસ્તો",
+    "title_hi": "बारिश वाली सड़क का वीडियो",
     "type": "Video",
     "category": "Cinematic",
     "prompt_en": "Create an 8-second cinematic rainy city street at night with wet pavement reflections, passing headlights and realistic raindrops.",
@@ -376,7 +376,7 @@ window.PROMPTS = [
   {
     "id": 35,
     "title": "Birthday Cake Reveal",
-    "title_hi": "બર્થડે કેક રિવીલ",
+    "title_hi": "बर्थडे केक रिवील",
     "type": "Video",
     "category": "Birthday",
     "prompt_en": "Create an 8-second birthday cake reveal. Start close on candles, then pull back to show the decorated cake and party lights.",
@@ -387,7 +387,7 @@ window.PROMPTS = [
   {
     "id": 36,
     "title": "Ocean Wave Slow Motion",
-    "title_hi": "સમુદ્રના મોજાં",
+    "title_hi": "समुद्र की लहरों का स्लो मोशन",
     "type": "Video",
     "category": "Nature",
     "prompt_en": "Create an 8-second realistic slow-motion ocean wave at golden hour with detailed foam and warm reflections.",
@@ -398,7 +398,7 @@ window.PROMPTS = [
   {
     "id": 37,
     "title": "Fashion Walk Reel",
-    "title_hi": "ફેશન વોક રીલ",
+    "title_hi": "फैशन वॉक रील",
     "type": "Video",
     "category": "Fashion",
     "prompt_en": "Create a 10-second vertical fashion walk reel using the reference person's identity and outfit. Use full-body framing and smooth tracking.",
@@ -409,7 +409,7 @@ window.PROMPTS = [
   {
     "id": 38,
     "title": "Family Photo Animation",
-    "title_hi": "ફેમિલી ફોટો એનિમેશન",
+    "title_hi": "फैमिली फोटो एनिमेशन",
     "type": "Video",
     "category": "Family",
     "prompt_en": "Animate the supplied family photo into a subtle 6-second memory clip. Preserve every person's identity and position.",
@@ -420,7 +420,7 @@ window.PROMPTS = [
   {
     "id": 39,
     "title": "Temple Sunrise Aerial",
-    "title_hi": "મંદિર સૂર્યોદય એરિયલ",
+    "title_hi": "मंदिर का सूर्योदय एरियल वीडियो",
     "type": "Video",
     "category": "Festival",
     "prompt_en": "Create a respectful 10-second aerial sunrise video of an Indian temple exterior with smooth drone rise and warm morning light.",
@@ -431,7 +431,7 @@ window.PROMPTS = [
   {
     "id": 40,
     "title": "Neon Motion Background",
-    "title_hi": "નિયોન મોશન બેકગ્રાઉન્ડ",
+    "title_hi": "नियॉन मोशन बैकग्राउंड",
     "type": "Video",
     "category": "Background",
     "prompt_en": "Create an 8-second seamless abstract neon motion background with flowing gradients and glowing lines. Do not include text or logos.",
@@ -442,7 +442,7 @@ window.PROMPTS = [
   {
     "id": 41,
     "title": "Gujarati Traditional Look",
-    "title_hi": "ગુજરાતી પરંપરાગત લુક",
+    "title_hi": "गुजराती पारंपरिक लुक",
     "type": "Photo",
     "category": "Traditional",
     "prompt_en": "Create a tasteful Gujarati traditional portrait. Preserve the person's exact identity and natural expression. Use authentic textile details and festive setting.",
@@ -453,7 +453,7 @@ window.PROMPTS = [
   {
     "id": 42,
     "title": "Navratri Garba Portrait",
-    "title_hi": "નવરાત્રી ગરબા પોર્ટ્રેટ",
+    "title_hi": "नवरात्रि गरबा पोर्ट्रेट",
     "type": "Photo",
     "category": "Festival",
     "prompt_en": "Create a vibrant Navratri garba portrait. Preserve identity and outfit details. Add colorful festive lights and a garba venue background.",
@@ -464,7 +464,7 @@ window.PROMPTS = [
   {
     "id": 43,
     "title": "Diwali Family Portrait",
-    "title_hi": "દિવાળી ફેમિલી પોર્ટ્રેટ",
+    "title_hi": "दिवाली फैमिली पोर्ट्रेट",
     "type": "Photo",
     "category": "Festival",
     "prompt_en": "Create a warm Diwali family portrait. Preserve all identities. Add diyas and subtle festive decor with realistic warm lighting.",
@@ -475,7 +475,7 @@ window.PROMPTS = [
   {
     "id": 44,
     "title": "Monochrome Fashion",
-    "title_hi": "મોનોક્રોમ ફેશન",
+    "title_hi": "मोनोक्रोम फैशन पोर्ट्रेट",
     "type": "Photo",
     "category": "Fashion",
     "prompt_en": "Create a monochrome fashion editorial portrait. Preserve identity and proportions. Use sculptural lighting and premium magazine styling.",
@@ -486,7 +486,7 @@ window.PROMPTS = [
   {
     "id": 45,
     "title": "Golden Hour Couple Silhouette",
-    "title_hi": "કપલ સિલુએટ",
+    "title_hi": "गोल्डन आवर कपल सिलुएट",
     "type": "Photo",
     "category": "Couple",
     "prompt_en": "Create a romantic golden-hour couple silhouette. Preserve recognizable profiles and proportions. Use a glowing sunset horizon.",
@@ -497,7 +497,7 @@ window.PROMPTS = [
   {
     "id": 46,
     "title": "Cinematic Color Grade",
-    "title_hi": "સિનેમેટિક કલર ગ્રેડ",
+    "title_hi": "सिनेमैटिक कलर ग्रेड",
     "type": "Photo",
     "category": "Photo Editing",
     "prompt_en": "Apply a polished cinematic color grade to the reference photo while preserving identity, composition and natural skin tones.",
@@ -508,7 +508,7 @@ window.PROMPTS = [
   {
     "id": 47,
     "title": "YouTube Thumbnail Portrait",
-    "title_hi": "યૂટ્યૂબ થંબનેલ પોર્ટ્રેટ",
+    "title_hi": "यूट्यूब थंबनेल पोर्ट्रेट",
     "type": "Photo",
     "category": "YouTube",
     "prompt_en": "Create a high-impact YouTube thumbnail portrait using the person's exact identity. Leave clear negative space for title text.",
@@ -519,7 +519,7 @@ window.PROMPTS = [
   {
     "id": 48,
     "title": "Camera Push-In Animation",
-    "title_hi": "કેમેરા પુશ-ઇન એનિમેશન",
+    "title_hi": "कैमरा पुश-इन एनिमेशन",
     "type": "Video",
     "category": "Photo to Video",
     "prompt_en": "Create a 6-second subtle camera push-in animation from the still image. Preserve all objects and original composition.",
@@ -530,7 +530,7 @@ window.PROMPTS = [
   {
     "id": 49,
     "title": "Luxury Car Reel",
-    "title_hi": "લક્ઝરી કાર રીલ",
+    "title_hi": "लक्ज़री कार रील",
     "type": "Video",
     "category": "Automotive",
     "prompt_en": "Create a 10-second vertical cinematic luxury car reel with a smooth low-angle tracking shot and realistic reflections.",
@@ -541,7 +541,7 @@ window.PROMPTS = [
   {
     "id": 50,
     "title": "Product Unboxing",
-    "title_hi": "પ્રોડક્ટ અનબોક્સિંગ",
+    "title_hi": "प्रोडक्ट अनबॉक्सिंग वीडियो",
     "type": "Video",
     "category": "Product",
     "prompt_en": "Create an 8-second product unboxing video showing hands opening the package and revealing the product. Keep branding accurate.",
@@ -552,7 +552,7 @@ window.PROMPTS = [
   {
     "id": 51,
     "title": "Travel Landmark Reveal",
-    "title_hi": "ટ્રાવેલ લેન્ડમાર્ક",
+    "title_hi": "ट्रैवल लैंडमार्क रिवील",
     "type": "Video",
     "category": "Travel",
     "prompt_en": "Create a 10-second vertical travel reel revealing a landmark with a smooth move from foreground detail to a wide scenic view.",
@@ -563,7 +563,7 @@ window.PROMPTS = [
   {
     "id": 52,
     "title": "Rain to Sunshine Timelapse",
-    "title_hi": "વરસાદથી તડકો ટાઇમલેપ્સ",
+    "title_hi": "बारिश से धूप तक टाइमलैप्स",
     "type": "Video",
     "category": "Nature",
     "prompt_en": "Create an 8-second timelapse showing rain clouds clearing and warm sunlight appearing over a green landscape. Keep camera locked.",

@@ -2,87 +2,92 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Explore free AI photo and video prompts. Copy ready-to-use prompts for creative projects.">
+<meta name="description" content="Free AI photo and video prompts in English and Hindi. Browse, view and copy ready-to-use creative prompts.">
 <meta name="theme-color" content="#704cff">
-<title>FreePromptLibraryAI | Free AI Photo & Video Prompts</title>
+<title>FreePromptLibraryAI — Free AI Photo & Video Prompts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="topline">Free AI photo &amp; video prompts — discover, copy and create.</div>
-<header class="site-header">
- <a class="logo" href="#"><span class="logo-mark">✦</span><span>FreePrompt<span class="logo-accent">LibraryAI</span></span></a>
- <button class="menu-toggle" id="menu" aria-label="Open menu">☰</button>
- <nav class="main-nav" id="nav">
-  <a href="#">Home</a><a href="#new">New Prompts</a>
-  <div class="nav-drop"><a href="#photo">Photo Prompts⌄</a><div class="drop-menu"><a href="#photo">Portrait &amp; Selfie</a><a href="#couple">Couple Prompts</a><a href="#categories">Wedding &amp; Festival</a><a href="#categories">3D &amp; Cartoon</a></div></div>
-  <a href="#video">Video Prompts</a><a href="#categories">Categories</a><a href="#guides">How to Use</a>
- </nav>
- <a class="header-cta" href="#all">Explore Prompts <span>↗</span></a>
+<header class="small-header">
+  <a class="brand" href="#"><span class="brand-mark">P</span><span>FreePrompt<span class="brand-purple">LibraryAI</span><small>FREE PHOTO & VIDEO PROMPTS</small></span></a>
+  <nav id="mainNav"><a href="#">Home</a><a href="#prompts">Prompts</a><a href="#categories">Categories</a><a href="#faq">FAQ</a></nav>
+  <button id="menuButton" class="menu-button" aria-label="Open menu">☰</button>
 </header>
 
-<section class="hero">
- <div class="hero-glow glow-a"></div><div class="hero-glow glow-b"></div>
- <div class="hero-inner">
-  <div class="hero-badge"><span class="live-dot"></span> FREE AI PROMPT LIBRARY</div>
-  <h1>Free AI Photo Editing<br><span>&amp; Video Prompts</span></h1>
-  <p class="hero-copy">Discover creative prompts for Gemini, ChatGPT and AI video generators. Copy a prompt, add your photo and bring your ideas to life.</p>
-  <form class="search-wrap" onsubmit="event.preventDefault();document.querySelector('#all').scrollIntoView({behavior:'smooth'});">
-   <span class="search-icon">⌕</span><input id="search" type="search" placeholder="Search couple, portrait, wedding, cartoon, video..." aria-label="Search prompts"><button class="search-action" type="submit">Search <span>→</span></button>
+<div class="search-strip">
+  <form id="searchForm" class="search-form">
+    <span class="search-icon">⌕</span>
+    <input id="searchInput" type="search" placeholder="Search prompts by title, category or keyword..." aria-label="Search prompts">
+    <button type="submit">Search</button>
   </form>
-  <div class="popular-searches"><strong>Popular:</strong><a href="#photo">Photo Editing</a><a href="#couple">Couple</a><a href="#categories">Wedding</a><a href="#video">Video Prompts</a><a href="#categories">3D Cartoon</a></div>
-  <div class="hero-trust"><span>✦ 50+ starter prompts</span><i></i><span>English &amp; Hindi prompts</span><i></i><span>Free to copy</span></div>
- </div>
-</section>
+</div>
 
-<div class="quick-links"><a href="#new"><span>✦</span> Latest Prompts</a><a href="#photo"><span>▣</span> Photo Editing</a><a href="#couple"><span>♡</span> Couple Prompts</a><a href="#video"><span>▶</span> Video Prompts</a><a href="#categories"><span>▦</span> All Categories</a></div>
+<div class="page-intro">
+  <div class="intro-eyebrow">FREE AI PROMPT LIBRARY</div>
+  <h1>Free AI Photo Editing &amp; Video Prompts</h1>
+  <p>Explore creative prompts in English and Hindi. Choose a prompt, view the full text and copy it to your favourite creative app.</p>
+  <div class="intro-links"><a href="#photo">Photo Prompts</a><a href="#video">Video Prompts</a><a href="#categories">All Categories</a></div>
+</div>
 
-<main>
- <section id="new" class="content-section">
-  <div class="section-head"><div><span class="eyebrow">FRESH IDEAS</span><h2>New Prompts</h2><p>Explore recently added photo and video prompt ideas.</p></div><a class="view-all" href="#all">View all prompts →</a></div>
-  <div id="new-grid" class="feature-grid"></div>
- </section>
+<main class="page-layout">
+  <section class="content-column">
+    <div class="content-card">
+      <div class="section-heading"><div><span class="section-kicker">LATEST COLLECTION</span><h2>Free AI Photo &amp; Video Prompts</h2><p>Browse the latest prompt ideas below.</p></div><span class="count-badge">52 Prompts</span></div>
+      <div id="prompts" class="prompt-list"></div>
+      <div class="load-wrap"><button id="loadMore" class="load-more">Load More Prompts</button></div>
+    </div>
 
- <section id="photo" class="content-section">
-  <div class="section-head"><div><span class="eyebrow">CREATE YOUR LOOK</span><h2>AI Photo Editing Prompts</h2><p>Ready-to-copy ideas for portraits, fashion, family and more.</p></div><a class="view-all" href="#all">All photo prompts →</a></div>
-  <div id="photo-grid" class="prompt-grid"></div>
- </section>
+    <div class="content-card" id="categories">
+      <div class="section-heading"><div><span class="section-kicker">BROWSE COLLECTIONS</span><h2>Explore Prompt Categories</h2><p>Find prompt ideas by topic.</p></div></div>
+      <div id="categoryGrid" class="category-grid"></div>
+    </div>
 
- <section id="couple" class="content-section">
-  <div class="section-head"><div><span class="eyebrow">MADE FOR TWO</span><h2>AI Couple Photo Prompts</h2><p>Romantic, pre-wedding and creative couple portrait ideas.</p></div><a class="view-all" href="#all">Explore couple prompts →</a></div>
-  <div id="couple-grid" class="prompt-grid"></div>
- </section>
+    <div class="content-card" id="faq">
+      <div class="section-heading"><div><span class="section-kicker">HELP &amp; SUPPORT</span><h2>Frequently Asked Questions</h2><p>Common questions about using the prompt library.</p></div></div>
+      <div class="faq-list">
+        <details open><summary>What is FreePromptLibraryAI?</summary><p>FreePromptLibraryAI is a library of free AI photo editing and video prompt ideas. Browse a prompt, view its complete text and copy it for use in a supported creative app.</p></details>
+        <details><summary>Are the prompts free to copy?</summary><p>Yes. The prompt text shown in this starter library can be copied for your creative projects. Check the terms of the AI service you use.</p></details>
+        <details><summary>Can I use these prompts with my own photo?</summary><p>For photo-editing prompts, open a compatible image tool, upload your reference photo and paste the prompt. Follow the instructions shown by that tool.</p></details>
+        <details><summary>Are English and Hindi versions available?</summary><p>Supported prompts include English and Hindi text. Use the language selector in the prompt window to switch languages.</p></details>
+        <details><summary>Which apps can I use?</summary><p>Depending on the prompt, you can try compatible image or video prompts in Gemini, ChatGPT or another supported creative service.</p></details>
+        <details><summary>How often are new prompts added?</summary><p>New prompt collections are planned to be reviewed and published regularly as new creative trends emerge.</p></details>
+      </div>
+    </div>
 
- <section id="video" class="content-section tinted">
-  <div class="section-head"><div><span class="eyebrow">BRING IDEAS TO MOTION</span><h2>AI Video Prompts</h2><p>Prompts for cinematic clips, reels, animation and photo-to-video.</p></div><a class="view-all" href="#all">All video prompts →</a></div>
-  <div id="video-grid" class="prompt-grid"></div>
- </section>
+    <div class="content-card related-section">
+      <div class="section-heading"><div><span class="section-kicker">KEEP EXPLORING</span><h2>Explore More Free AI Prompts</h2><p>Discover more prompt collections.</p></div></div>
+      <div id="relatedGrid" class="related-grid"></div>
+    </div>
+  </section>
 
- <section id="categories" class="content-section">
-  <div class="section-head"><div><span class="eyebrow">BROWSE BY INTEREST</span><h2>Explore Prompt Categories</h2><p>Find a prompt style that matches your next creation.</p></div></div>
-  <div id="category-grid" class="category-grid"></div>
- </section>
 
- <section id="all" class="content-section">
-  <div class="section-head"><div><span class="eyebrow">PROMPT COLLECTION</span><h2>Explore All Prompts</h2><p>Search the starter library and copy any prompt in one click.</p></div></div>
-  <div class="filter-row"><div class="filters"><button data-type="All" class="active">All</button><button data-type="Photo">Photo</button><button data-type="Video">Video</button></div><span id="result-count" class="result-count"></span></div>
-  <div id="results" class="prompt-grid"></div><p id="empty" hidden>No prompts found. Try another search.</p>
- </section>
-
- <section id="guides" class="content-section guide-section">
-  <div class="section-head"><div><span class="eyebrow">SIMPLE &amp; QUICK</span><h2>How to Use an AI Prompt</h2><p>Start creating in a few simple steps.</p></div></div>
-  <div class="steps-grid"><article><b>01</b><h3>Choose a prompt</h3><p>Browse categories and pick the style you want to create.</p></article><article><b>02</b><h3>Copy the text</h3><p>Open a prompt and use the one-click copy button.</p></article><article><b>03</b><h3>Open your AI app</h3><p>Use Gemini, ChatGPT or your preferred image or video generator.</p></article><article><b>04</b><h3>Paste &amp; create</h3><p>Add your reference photo when needed, paste the prompt and generate.</p></article></div>
- </section>
-
- <section class="content-section why-section">
-  <div class="section-head"><div><span class="eyebrow">WHY USE OUR LIBRARY</span><h2>Made for Everyday Creators</h2><p>A simple place to discover and use creative prompt ideas.</p></div></div>
-  <div class="benefit-grid"><article><span>✦</span><h3>Easy to Copy</h3><p>Copy ready-to-use prompt text without complicated steps.</p></article><article><span>◈</span><h3>Photo &amp; Video</h3><p>Explore both image editing and video creation ideas.</p></article><article><span>⌕</span><h3>Quick Discovery</h3><p>Search and browse categories to find relevant prompts.</p></article><article><span>＋</span><h3>Fresh Collections</h3><p>New prompt collections can be added as trends change.</p></article></div>
- </section>
 </main>
 
-<footer class="site-footer"><div class="footer-main"><div><a class="logo footer-logo" href="#"><span class="logo-mark">✦</span><span>FreePrompt<span class="logo-accent">LibraryAI</span></span></a><p>Free AI photo and video prompt ideas for creators.</p></div><div><h3>Explore</h3><a href="#photo">Photo Prompts</a><a href="#couple">Couple Prompts</a><a href="#video">Video Prompts</a><a href="#categories">Categories</a></div><div><h3>Helpful Links</h3><a href="#guides">How to Use</a><a href="#all">All Prompts</a><a href="#new">Latest Prompts</a></div><div><h3>Information</h3><a href="about.html">About Us</a><a href="contact.html">Contact Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a><a href="disclaimer.html">Disclaimer</a></div></div><div class="footer-bottom">© <span id="year"></span> FreePromptLibraryAI. All rights reserved.</div></footer>
+<section class="bottom-cta"><h2>Find an idea for your next creation</h2><p>Browse, copy and start creating with FreePromptLibraryAI.</p><a href="#prompts">Explore Prompts</a></section>
 
-<div id="modal" class="modal" hidden><div class="shade"></div><article><button id="close" class="close">×</button><small id="meta"></small><h2 id="title"></h2><div class="language-tabs"><button data-lang="en" class="active">English</button><button data-lang="hi">Hindi</button></div><pre id="prompt"></pre><button id="copy" class="copy-button">Copy Prompt</button><p id="notice"></p></article></div>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-col footer-brand-col"><a class="brand footer-brand" href="#"><span class="brand-mark">P</span><span>FreePrompt<span class="brand-purple">LibraryAI</span><small>FREE PHOTO & VIDEO PROMPTS</small></span></a><p>Free AI photo editing and video prompt ideas for creators. Explore, copy and create.</p></div>
+    <div class="footer-col"><h3>Explore</h3><a href="#prompts">New Prompts</a><a href="#photo">Photo Prompts</a><a href="#video">Video Prompts</a><a href="#categories">Categories</a></div>
+    <div class="footer-col"><h3>Trending</h3><a href="#categories">Couple Prompts</a><a href="#categories">Wedding Prompts</a><a href="#categories">Festival Prompts</a><a href="#categories">3D Cartoon</a></div>
+    <div class="footer-col"><h3>Information</h3><a href="about.html">About Us</a><a href="contact.html">Contact Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a><a href="disclaimer.html">Disclaimer</a><a href="dmca.html">DMCA</a></div>
+    <div class="footer-col"><h3>Follow</h3><a href="#footer">YouTube</a><a href="#footer">Instagram</a><a href="#footer">Facebook</a><a href="#footer">Telegram</a></div>
+  </div>
+  <div id="footer" class="copyright">© <span id="year"></span> FreePromptLibraryAI. All rights reserved.</div>
+</footer>
+
+<div id="promptModal" class="modal" hidden>
+  <div class="modal-backdrop"></div>
+  <article class="modal-content">
+    <button id="closeModal" class="modal-close" aria-label="Close">×</button>
+    <div id="modalMeta" class="modal-meta"></div><h2 id="modalTitle"></h2>
+    <div class="language-tabs"><button data-lang="en" class="active">English</button><button data-lang="hi">Hindi</button></div>
+    <pre id="modalPrompt"></pre>
+    <div class="modal-share"><button id="modalCopy" class="copy-btn">Copy Prompt</button><button id="modalWhatsApp" class="whatsapp-btn">WhatsApp</button><button id="modalChatGPT" class="chatgpt-btn">ChatGPT</button><button id="modalGemini" class="gemini-btn">Gemini</button></div>
+    <p id="copyMessage" aria-live="polite"></p>
+  </article>
+</div>
 <script src="prompts.js"></script><script src="app.js"></script>
 </body></html>

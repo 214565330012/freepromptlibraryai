@@ -1,19 +1,17 @@
-# FreePromptLibraryAI — full homepage layout
+# FreePromptLibraryAI — matching the uploaded reference video
 
-This update creates an original PromptBhai-inspired prompt-library layout using the user's selected Premium Purple & White palette.
+This version uses the visual structure shown in the uploaded screen recording:
+- Compact header
+- Separate white search bar directly below header, with a neutral border and no colored fill
+- Pale blue-grey page background
+- Centered single-column white article/content panel (no right sidebar)
+- Repeated prompt entries in the same vertical format: numbered title, description, fixed-size sample image area, blue View Prompt button and action buttons (Copy, WhatsApp, ChatGPT, Gemini)
+- FAQ accordion panel
+- Three-column related prompt cards
+- Dark multi-column footer
 
-Included:
-- Responsive navigation with dropdown
-- Search hero and popular search links
-- Latest/new prompt cards
-- Photo, couple and video prompt sections
-- Category directory
-- Searchable all-prompts section and copy modal
-- How-to-use guide, benefits and footer
+The selected Purple & White brand palette is retained for the logo, accents and selected controls. The search box remains plain white.
 
-The page uses original wording and layout implementation; it does not copy PromptBhai's proprietary code, branding, images or prompt text.
+The design is an original implementation based on the visible layout and proportions of the user's recording, not copied source code, images or text from PromptBhai.
 
-Important:
-- Prompt sample artwork is currently illustrative placeholder artwork; real sample images can be uploaded to Cloudflare R2 in a later step.
-- Hindi prompt text is included in prompts.js and is displayed by the Hindi tab.
-- Admin panel, database, image uploads, automatic trend research, dedicated prompt detail pages and legal page content still need to be built.
+The prompt sample areas are still design placeholders; original sample images will be added later to Cloudflare R2. Admin, database, full image upload, automatic trend research and dedicated SEO prompt detail pages remain future implementation steps.
