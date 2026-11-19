@@ -123,3 +123,30 @@ footer{margin-top:25px;background:#17172c;color:#e9e8f2;padding:32px max(5%,calc
     letter-spacing: -0.5px;
   }
 }
+
+/* Keep original title font size and make each title one line */
+@media (max-width: 760px) {
+  .hero-headings h1 {
+    font-size: 21px;
+    white-space: nowrap;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+
+  .hero-headings h2 {
+    font-size: 20px;
+    white-space: nowrap;
+    line-height: 1.2;
+    letter-spacing: -0.3px;
+  }
+}
+
+@media (max-width: 390px) {
+  .hero-headings h1 {
+    font-size: 18px;
+  }
+
+  .hero-headings h2 {
+    font-size: 17px;
+  }
+}
