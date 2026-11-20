@@ -6,6 +6,25 @@ let currentPage = 1;
 let activeFilter = 'All';
 let appliedSearchTerm = '';
 let activeSpecialFilter = 'All';
+let PROMPT_DATA = window.PROMPTS || [];
+const supabaseClient = window.supabaseClient || null;
+
+function escapeText(value) {
+  return String(value ?? '').replace(/[&<>\"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;', "'":'&#39;'}[char]));
+}
+
+async function loadPromptsFromSupabase() {
+  if (!supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient.from('prompts').select('*').eq('status', 'published').order('created_at', { ascending: false }).order('id', { ascending: true });
+    if (error) throw error;
+    PROMPT_DATA = (data || []).map((row) => ({...row, id:Number(row.id)}));
+    window.PROMPTS = PROMPT_DATA;
+    render();
+  } catch (error) {
+    console.warn('Could not load published prompts from Supabase; showing bundled prompts.', error);
+  }
+}
 
 const palettes = {
   Photo:['#f4a6bc','#8b5cc4'],Portrait:['#d7a0ce','#6459c7'],Traditional:['#d8a15a','#b44c72'],
@@ -31,22 +50,24 @@ function renderCard(prompt, newTag = false) {
     : String(prompt.category || prompt.type).toUpperCase();
 
   const detailUrl = `prompt.html?id=${encodeURIComponent(prompt.id)}`;
-  return `<a class="prompt-card" href="${detailUrl}" aria-label="Open ${prompt.title} prompt">
+  return `<a class="prompt-card" href="${detailUrl}" aria-label="Open ${escapeText(prompt.title)} prompt">
     <div class="card-image" style="--a:${colors[0]};--b:${colors[1]}">
+      ${prompt.image_url ? `<img class="card-sample-image" src="${escapeText(prompt.image_url)}" alt="${escapeText(prompt.title)} sample" loading="lazy">` : ''}
       ${newTag ? '<span class="new-tag">NEW</span>' : ''}
-      <div class="card-art"><b>${headline}</b><span>${prompt.type === 'Video' ? 'VIDEO PROMPT' : 'AI PHOTO PROMPT'}</span></div>
+      <div class="card-art"><b>${escapeText(headline)}</b><span>${prompt.type === 'Video' ? 'VIDEO PROMPT' : 'AI PHOTO PROMPT'}</span></div>
     </div>
     <div class="card-body">
-      <h3>${prompt.title}</h3>
-      <p>${prompt.prompt_en.slice(0,175)}${prompt.prompt_en.length > 175 ? '…' : ''}</p>
+      <h3>${escapeText(prompt.title)}</h3>
+      <p>${escapeText((prompt.prompt_en || '').slice(0,175))}${(prompt.prompt_en || '').length > 175 ? '…' : ''}</p>
       <span class="get-prompt">Get Prompts →</span>
     </div>
   </a>`;
 }
 
 function matchesSpecialFilter(prompt) {
+  if (activeSpecialFilter === 'trending') return Boolean(prompt.is_trending);
   if (activeSpecialFilter === 'celebration') {
-    const text = `${prompt.title} ${prompt.title_hi || ''} ${prompt.category || ''} ${prompt.prompt_en || ''}`.toLowerCase();
+    const text = `${escapeText(prompt.title)} ${prompt.title_hi || ''} ${prompt.category || ''} ${prompt.prompt_en || ''}`.toLowerCase();
     return /(birthday|wedding|festival|engagement|mehendi|diwali|garba|celebration)/.test(text);
   }
   return true;
@@ -54,7 +75,7 @@ function matchesSpecialFilter(prompt) {
 
 function getFilteredPrompts() {
   const query = appliedSearchTerm.toLowerCase().trim();
-  return PROMPTS.filter((prompt) => {
+  return PROMPT_DATA.filter((prompt) => {
     const typeMatches = activeFilter === 'All' || prompt.type === activeFilter;
     const specialMatches = matchesSpecialFilter(prompt);
     const haystack = [prompt.title, prompt.title_hi, prompt.category, prompt.type, prompt.prompt_en, prompt.prompt_hi]
@@ -103,8 +124,8 @@ function render() {
   $('#noResults').hidden = filtered.length !== 0;
   renderPagination(totalPages);
 
-  $('#photoGrid').innerHTML = PROMPTS.filter((prompt) => prompt.type === 'Photo').slice(0,3).map((prompt) => renderCard(prompt)).join('');
-  $('#videoGrid').innerHTML = PROMPTS.filter((prompt) => prompt.type === 'Video').slice(0,3).map((prompt) => renderCard(prompt)).join('');
+  $('#photoGrid').innerHTML = PROMPT_DATA.filter((prompt) => prompt.type === 'Photo').slice(0,3).map((prompt) => renderCard(prompt)).join('');
+  $('#videoGrid').innerHTML = PROMPT_DATA.filter((prompt) => prompt.type === 'Video').slice(0,3).map((prompt) => renderCard(prompt)).join('');
 }
 
 // Search is intentionally applied only on form submission (Search button or Enter).
@@ -139,6 +160,7 @@ document.querySelectorAll('[data-trend-action]').forEach((card) => {
     activeSpecialFilter = 'All';
     activeFilter = 'All';
     if (action === 'video') activeFilter = 'Video';
+    if (action === 'all') activeSpecialFilter = 'trending';
     if (action === 'celebration') activeSpecialFilter = 'celebration';
     currentPage = 1;
     render();
@@ -166,3 +188,6 @@ document.querySelectorAll('[data-cat]').forEach((link) => {
 $('#mobileMenu').addEventListener('click', () => $('#nav').classList.toggle('open'));
 $('#year').textContent = new Date().getFullYear();
 render();
+
+// Load the CMS-managed collection after the local fallback has rendered.
+loadPromptsFromSupabase();
