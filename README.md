@@ -16,3 +16,10 @@ This is an original implementation based on the user's reference image. It does 
 Important:
 - Card artwork areas currently use designed gradient art panels, not real photographic sample images. The layout and sizing are ready; real prompt sample images can be uploaded to R2 later.
 - Admin authentication, database, R2 upload workflow, trend research scheduler, separate prompt detail URLs and policy page contents remain to be built.
+
+
+## Prompt detail pages (added)
+- Each Get Prompts button now opens `prompt.html?id=<prompt-id>` as a separate page.
+- The detail page includes English/Hindi prompt explanations, language switching, copy action, prompt details and related prompts.
+- The preview block is an illustrative category placeholder because this repository does not yet contain sample image files. Real prompt sample images can be uploaded after the Admin + Cloudflare R2 image workflow is built.
+- The homepage header CSS was left unchanged in this update.
