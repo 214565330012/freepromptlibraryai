@@ -23,3 +23,11 @@ Important:
 - The detail page includes English/Hindi prompt explanations, language switching, copy action, prompt details and related prompts.
 - The preview block is an illustrative category placeholder because this repository does not yet contain sample image files. Real prompt sample images can be uploaded after the Admin + Cloudflare R2 image workflow is built.
 - The homepage header CSS was left unchanged in this update.
+
+
+## Homepage updates in this package
+- Search results apply only after clicking Search or pressing Enter.
+- Added three Trending Prompt cards above New Prompts.
+- New Prompts shows 18 records per page with numbered pagination and Previous/Next controls.
+- Pagination adapts automatically as prompt records are added.
+- Trending illustrations are local SVG files in `assets/` (no third-party image hotlinks).

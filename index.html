@@ -34,11 +34,31 @@
 </section>
 
 <main>
+<section id="trending" class="trending-section" aria-labelledby="trendingTitle">
+  <h2 id="trendingTitle" class="trending-title"><span aria-hidden="true">🔥</span> Trending Prompt <span aria-hidden="true">🔥</span></h2>
+  <div class="trending-grid">
+    <a class="trending-card" href="#latest" data-trend-action="all">
+      <img src="assets/trending-all.svg" alt="Collection of popular AI photo and video prompt ideas" loading="lazy">
+      <div class="trending-card-title">All Trending Prompts</div>
+    </a>
+    <a class="trending-card" href="#latest" data-trend-action="video">
+      <img src="assets/trending-sapua.svg" alt="Sapua, a funny green cartoon snake video character" loading="lazy">
+      <div class="trending-card-title">Sapua Video Prompt</div>
+    </a>
+    <a class="trending-card" href="#latest" data-trend-action="celebration">
+      <img src="assets/trending-celebration.svg" alt="Birthday, wedding and festival celebration artwork" loading="lazy">
+      <div class="trending-card-title">All Celebration Prompt</div>
+      <div class="trending-card-subtitle">Birthday, Wedding, Festival, Engagement, Mehendi, All Prompts</div>
+    </a>
+  </div>
+</section>
+
 <section id="latest" class="latest-section">
   <h2>New Prompts on FreePromptLibraryAI</h2>
   <p class="section-subtitle">New copy-paste prompts added regularly – festivals, couples, selfies and viral trends.</p>
   <div class="cards-grid" id="latestGrid"></div>
-  <div class="load-wrap"><button id="loadMore">Load More Prompts</button></div>
+  <nav class="pagination" id="pagination" aria-label="New prompt pages"></nav>
+  <p class="no-results" id="noResults" hidden>No prompts matched your search. Try another word.</p>
 </section>
 
 <section id="photo" class="other-section">
