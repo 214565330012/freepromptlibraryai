@@ -30,7 +30,8 @@ function renderCard(prompt, newTag = false) {
     : prompt.type === 'Video' ? 'VIDEO'
     : String(prompt.category || prompt.type).toUpperCase();
 
-  return `<article class="prompt-card">
+  const detailUrl = `prompt.html?id=${encodeURIComponent(prompt.id)}`;
+  return `<a class="prompt-card" href="${detailUrl}" aria-label="Open ${prompt.title} prompt">
     <div class="card-image" style="--a:${colors[0]};--b:${colors[1]}">
       ${newTag ? '<span class="new-tag">NEW</span>' : ''}
       <div class="card-art"><b>${headline}</b><span>${prompt.type === 'Video' ? 'VIDEO PROMPT' : 'AI PHOTO PROMPT'}</span></div>
@@ -38,9 +39,9 @@ function renderCard(prompt, newTag = false) {
     <div class="card-body">
       <h3>${prompt.title}</h3>
       <p>${prompt.prompt_en.slice(0,175)}${prompt.prompt_en.length > 175 ? '…' : ''}</p>
-      <a class="get-prompt" href="prompt.html?id=${encodeURIComponent(prompt.id)}">Get Prompts →</a>
+      <span class="get-prompt">Get Prompts →</span>
     </div>
-  </article>`;
+  </a>`;
 }
 
 function matchesSpecialFilter(prompt) {

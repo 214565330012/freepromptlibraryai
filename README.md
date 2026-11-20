@@ -31,3 +31,5 @@ Important:
 - New Prompts shows 18 records per page with numbered pagination and Previous/Next controls.
 - Pagination adapts automatically as prompt records are added.
 - Trending illustrations are local SVG files in `assets/` (no third-party image hotlinks).
+
+- Entire prompt cards are clickable and open their prompt detail page; trending cards open their matching filtered collection.
