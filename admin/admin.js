@@ -1,12 +1,44 @@
 (() => {
   const $ = (s) => document.querySelector(s);
   const client = window.supabaseClient;
-  const loginView = $('#loginView'), dashboardView = $('#dashboardView');
+  const loginView = $('#loginView'), recoveryView = $('#recoveryView'), dashboardView = $('#dashboardView');
   let currentUser = null, allPrompts = [], currentImageUrl = '', sectionCounter = 0;
+  let recoveryEmail = '', otpVerificationInProgress = false, recoveryLinkInProgress = false, resendTimer = null;
   const showMessage = (el, text, error=false) => { el.textContent=text; el.classList.toggle('error',error); };
   const escapeHtml = (v) => String(v ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function showLogin(message='') { loginView.hidden=false; dashboardView.hidden=true; if(message) showMessage($('#loginMessage'),message,true); }
-  function showDashboard() { loginView.hidden=true; dashboardView.hidden=false; $('#signedInAs').textContent=currentUser?.email || ''; loadPrompts(); }
+  function showLogin(message='') {
+    loginView.hidden=false; recoveryView.hidden=true; dashboardView.hidden=true;
+    if(message) showMessage($('#loginMessage'),message,true);
+  }
+  function showRecovery() { loginView.hidden=true; recoveryView.hidden=false; dashboardView.hidden=true; }
+  function setRecoveryStep(step) {
+    $('#recoveryRequestForm').hidden = step !== 'request';
+    $('#recoveryOtpForm').hidden = step !== 'otp';
+    $('#recoveryPasswordForm').hidden = step !== 'password';
+  }
+  function resetRecovery() {
+    if(resendTimer) { clearInterval(resendTimer); resendTimer=null; }
+    $('#recoveryRequestForm').reset(); $('#recoveryOtpForm').reset(); $('#recoveryPasswordForm').reset();
+    $('#recoveryIntro').textContent='Enter your admin email. We will send a verification code to that address.';
+    $('#recoveryRequestMessage').textContent=''; $('#recoveryOtpMessage').textContent=''; $('#recoveryPasswordMessage').textContent='';
+    $('#resendOtpBtn').disabled=true; $('#resendOtpBtn').textContent='Resend code in 60s';
+    setRecoveryStep('request');
+  }
+  function startResendCooldown(seconds=60) {
+    const button=$('#resendOtpBtn');
+    if(resendTimer) clearInterval(resendTimer);
+    let remaining=seconds; button.disabled=true; button.textContent=`Resend code in ${remaining}s`;
+    resendTimer=setInterval(()=>{
+      remaining-=1;
+      if(remaining<=0){clearInterval(resendTimer);resendTimer=null;button.disabled=false;button.textContent='Resend verification code';}
+      else button.textContent=`Resend code in ${remaining}s`;
+    },1000);
+  }
+  function showPasswordStep(message='') {
+    showRecovery(); setRecoveryStep('password');
+    if(message) showMessage($('#recoveryPasswordMessage'),message,false);
+  }
+  function showDashboard() { loginView.hidden=true; recoveryView.hidden=true; dashboardView.hidden=false; $('#signedInAs').textContent=currentUser?.email || ''; loadPrompts(); }
   async function verifyAdmin(user) {
     const {data,error}=await client.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();
     if(error) throw new Error('Admin permission check failed. Run supabase/setup.sql and confirm your admin_users row exists. '+error.message);
@@ -18,6 +50,118 @@
     try { const {data,error}=await client.auth.signInWithPassword({email:$('#loginEmail').value.trim(),password:$('#loginPassword').value}); if(error) throw error; await verifyAdmin(data.user); showDashboard(); }
     catch(error){ await client.auth.signOut(); showMessage($('#loginMessage'),error.message || 'Unable to sign in.',true); }
     finally{btn.disabled=false;}
+  });
+  $('#forgotPasswordBtn').addEventListener('click',()=>{
+    resetRecovery();
+    const email=$('#loginEmail').value.trim();
+    if(email) $('#recoveryEmail').value=email;
+    showRecovery();
+  });
+  $('#backToLoginBtn').addEventListener('click',async()=>{
+    if(recoveryLinkInProgress || recoveryEmail) {
+      const {data}=await client.auth.getSession();
+      if(data.session) await client.auth.signOut();
+    }
+    resetRecovery();
+    if(recoveryEmail) $('#loginEmail').value=recoveryEmail;
+    showLogin();
+  });
+  async function requestRecoveryCode(email, messageElement, button) {
+    button.disabled=true;
+    showMessage(messageElement,'Sending a secure recovery email…');
+    try {
+      const {error}=await client.auth.resetPasswordForEmail(email,{
+        redirectTo: `${window.location.origin}/admin/`
+      });
+      if(error) throw error;
+      recoveryEmail=email;
+      $('#recoveryEmail').value=email;
+      $('#recoveryIntro').textContent=`Check ${email} for your recovery code. If the email contains a secure reset link instead, open it in this browser.`;
+      setRecoveryStep('otp');
+      showMessage($('#recoveryOtpMessage'),'Email request sent. Enter the recovery code from your email.');
+      startResendCooldown(60);
+    } catch(error) {
+      showMessage(messageElement,error.message || 'Could not send the recovery email. Check Supabase email settings.',true);
+    } finally {
+      if(button.id === 'resendOtpBtn') { if(!resendTimer) startResendCooldown(60); }
+      else button.disabled=false;
+    }
+  }
+  $('#recoveryRequestForm').addEventListener('submit',async(event)=>{
+    event.preventDefault();
+    const email=$('#recoveryEmail').value.trim().toLowerCase();
+    if(!email) return;
+    recoveryEmail=email;
+    await requestRecoveryCode(email,$('#recoveryRequestMessage'),$('#sendOtpBtn'));
+  });
+  $('#resendOtpBtn').addEventListener('click',async()=>{
+    if(!recoveryEmail) return;
+    await requestRecoveryCode(recoveryEmail,$('#recoveryOtpMessage'),$('#resendOtpBtn'));
+  });
+  $('#recoveryOtpForm').addEventListener('submit',async(event)=>{
+    event.preventDefault();
+    const button=$('#verifyOtpBtn');
+    const token=$('#recoveryOtp').value.trim();
+    if(!/^\d{6,8}$/.test(token)) { showMessage($('#recoveryOtpMessage'),'Enter the 6–8 digit code from your email.',true); return; }
+    button.disabled=true; otpVerificationInProgress=true;
+    showMessage($('#recoveryOtpMessage'),'Verifying your email code…');
+    try {
+      const {data,error}=await client.auth.verifyOtp({email:recoveryEmail,token,type:'recovery'});
+      if(error) throw error;
+      const user=data.user || data.session?.user;
+      if(!user) throw new Error('Email verification did not return a user. Please request a new code.');
+      await verifyAdmin(user);
+      showPasswordStep('Email verified. You can now choose a new password.');
+    } catch(error) {
+      await client.auth.signOut();
+      showMessage($('#recoveryOtpMessage'),error.message || 'The code could not be verified. Request a new code and try again.',true);
+    } finally { otpVerificationInProgress=false; button.disabled=false; }
+  });
+  $('#recoveryPasswordForm').addEventListener('submit',async(event)=>{
+    event.preventDefault();
+    const button=$('#saveNewPasswordBtn');
+    const password=$('#recoveryNewPassword').value;
+    const confirmPassword=$('#recoveryConfirmPassword').value;
+    if(password.length<8) { showMessage($('#recoveryPasswordMessage'),'Use a password with at least 8 characters.',true); return; }
+    if(password!==confirmPassword) { showMessage($('#recoveryPasswordMessage'),'The passwords do not match.',true); return; }
+    button.disabled=true; showMessage($('#recoveryPasswordMessage'),'Updating your password…');
+    try {
+      const {data:sessionData,error:sessionError}=await client.auth.getSession();
+      if(sessionError) throw sessionError;
+      const user=sessionData.session?.user;
+      if(!user) throw new Error('Your recovery session has expired. Please request a new code.');
+      await verifyAdmin(user);
+      const {error}=await client.auth.updateUser({password});
+      if(error) throw error;
+      await client.auth.signOut();
+      currentUser=null;
+      $('#loginEmail').value=recoveryEmail || user.email || '';
+      resetRecovery();
+      showLogin();
+      showMessage($('#loginMessage'),'Password changed successfully. Sign in with your new password.');
+      $('#loginMessage').classList.remove('error');
+    } catch(error) {
+      showMessage($('#recoveryPasswordMessage'),error.message || 'Could not update the password. Please try again.',true);
+    } finally { button.disabled=false; }
+  });
+  // Supabase's standard recovery email may contain a secure link rather than an OTP.
+  // When that link is opened, Supabase establishes a recovery session and emits PASSWORD_RECOVERY.
+  client.auth.onAuthStateChange((event,session)=>{
+    if(event!=='PASSWORD_RECOVERY' || !session?.user || otpVerificationInProgress || recoveryLinkInProgress) return;
+    recoveryLinkInProgress=true;
+    setTimeout(async()=>{
+      try {
+        await verifyAdmin(session.user);
+        recoveryEmail=session.user.email || '';
+        $('#recoveryEmail').value=recoveryEmail;
+        $('#recoveryIntro').textContent='Your secure reset link has verified your email.';
+        showPasswordStep('Your email reset link is verified. Choose a new password.');
+      } catch(error) {
+        await client.auth.signOut();
+        resetRecovery();
+        showLogin(error.message || 'This account is not authorized to reset the admin password.');
+      } finally { recoveryLinkInProgress=false; }
+    },0);
   });
   $('#signOutBtn').addEventListener('click',async()=>{await client.auth.signOut();currentUser=null;showLogin('You have signed out.');});
   async function loadPrompts(){
