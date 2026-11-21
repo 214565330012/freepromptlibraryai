@@ -1,98 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Free Gemini photo editing prompts and free Google Flow video prompts in English and Hindi.">
-<meta name="theme-color" content="#6959cb">
-<title>Free Gemini Photo Editing Prompts | Free Google Flow Video Prompts</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free AI Photo & Video Prompts Library | FreePromptLibraryAI</title>
+  <meta name="description" content="Discover verified, high-quality AI photo editing and video prompts for Google Gemini, ChatGPT, Midjourney, and Flow AI. 100% free with step-by-step guidance.">
+  <meta name="keywords" content="AI prompts, Gemini photo prompts, Midjourney prompts, Flow AI video prompts, photo editing prompts, ChatGPT prompts">
+  <meta name="theme-color" content="#0f0d1e">
+  <link rel="canonical" href="https://freepromptlibraryai.pages.dev/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Free AI Photo & Video Prompts Library | FreePromptLibraryAI">
+  <meta property="og:description" content="Curated AI prompts for Google Gemini, Midjourney, and Flow AI with one-click copy and creator guides.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://freepromptlibraryai.pages.dev/">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Official Supabase JS SDK CDN (Guarantees window.supabase is loaded) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="prompts.js"></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
 
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-headings">
-      <h1>Free Gemini Photo Editing Prompts</h1>
-      <h2>Free Google Flow Video Prompts</h2>
+  <!-- Top Navigation -->
+  <nav class="navbar" aria-label="Main Navigation">
+    <div class="nav-container">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">FP</span>
+        <span>FreePrompt<span class="brand-accent">LibraryAI</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a class="nav-link active" href="index.html">Library</a></li>
+        <li><a class="nav-link" href="#explore">Categories</a></li>
+        <li><a class="nav-link" href="about.html">About</a></li>
+        <li><a class="nav-link" href="contact.html">Contact</a></li>
+        <li><a class="nav-btn" href="admin/">Admin Studio</a></li>
+      </ul>
     </div>
-    <p class="hero-subtitle">New AI Trending Photo &amp; Video Prompts Every Day — Copy And Paste For Gemini, ChatGPT, Flow AI And Other AI Tools To Generate Photos And Videos.</p>
-    <form class="search-wrap" id="searchForm">
-      <input id="searchInput" type="search" placeholder="Search Couple, Saree, Cartoon, Festival Prompts..." aria-label="Search prompts">
-      <button type="submit">Search</button>
-    </form>
-    <nav class="hero-nav" id="nav" aria-label="Main Navigation">
-      <a href="#latest">New Prompts</a>
-      <a href="#photo">Photo Prompts</a>
-      <a href="#video">Video Prompts</a>
-      <a href="#categories">Categories</a>
-      <a href="#footer">AI Story Prompt</a>
-    </nav>
-    <button id="mobileMenu" class="mobile-menu-hidden" type="button" aria-hidden="true" tabindex="-1">Menu</button>
-  </div>
-</section>
+  </nav>
 
-<main>
-<section id="trending" class="trending-section" aria-labelledby="trendingTitle">
-  <h2 id="trendingTitle" class="trending-title"><span aria-hidden="true">🔥</span> Trending Prompt <span aria-hidden="true">🔥</span></h2>
-  <div class="trending-grid">
-    <a class="trending-card" href="#latest" data-trend-action="all">
-      <img src="assets/trending-all.svg" alt="Collection of popular AI photo and video prompt ideas" loading="lazy">
-      <div class="trending-card-title">All Trending Prompts</div>
-    </a>
-    <a class="trending-card" href="#latest" data-trend-action="video">
-      <img src="assets/trending-sapua.svg" alt="Sapua, a funny green cartoon snake video character" loading="lazy">
-      <div class="trending-card-title">Sapua Video Prompt</div>
-    </a>
-    <a class="trending-card" href="#latest" data-trend-action="celebration">
-      <img src="assets/trending-celebration.svg" alt="Birthday, wedding and festival celebration artwork" loading="lazy">
-      <div class="trending-card-title">All Celebration Prompt</div>
-      <div class="trending-card-subtitle">Birthday, Wedding, Festival, Engagement, Mehendi, All Prompts</div>
-    </a>
-  </div>
-</section>
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-pill">⚡ 100% Free Verified Prompts</div>
+    <h1>Free AI Photo & Video Prompts</h1>
+    <p>Hand-tested, precision prompts designed for Google Gemini, Midjourney, ChatGPT, and Flow AI. Copy with one click and create photorealistic images and cinematic videos.</p>
 
-<section id="latest" class="latest-section">
-  <h2>New Prompts on FreePromptLibraryAI</h2>
-  <p class="section-subtitle">New copy-paste prompts added regularly – festivals, couples, selfies and viral trends.</p>
-  <div class="cards-grid" id="latestGrid"></div>
-  <nav class="pagination" id="pagination" aria-label="New prompt pages"></nav>
-  <p class="no-results" id="noResults" hidden>No prompts matched your search. Try another word.</p>
-</section>
+    <!-- Search Form -->
+    <div class="search-container">
+      <form id="searchForm" class="search-box" role="search">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input 
+          type="search" 
+          id="searchInput" 
+          class="search-input" 
+          placeholder="Search Couple, Saree, Portrait, Festival, Cinematic prompts..." 
+          aria-label="Search prompt library"
+          autocomplete="off"
+        >
+        <button type="submit" class="search-btn">Search</button>
+      </form>
+    </div>
+  </header>
 
-<section id="photo" class="other-section">
-  <h2>Free AI Photo Editing Prompts</h2>
-  <p class="section-subtitle">Explore photo editing prompts for portraits, couples, weddings and more.</p>
-  <div class="cards-grid" id="photoGrid"></div>
-</section>
+  <!-- Filter Pills Bar -->
+  <section class="filter-container" id="explore" aria-label="Prompt Categories">
+    <div class="filter-pills">
+      <button class="filter-btn active" data-category="All" type="button">All Prompts</button>
+      <button class="filter-btn" data-category="Trending" type="button">🔥 Trending</button>
+      <button class="filter-btn" data-category="Photo" type="button">📸 Photo Prompts</button>
+      <button class="filter-btn" data-category="Video" type="button">🎬 Video Prompts</button>
+      <button class="filter-btn" data-category="Portrait" type="button">Portrait</button>
+      <button class="filter-btn" data-category="Traditional" type="button">Traditional</button>
+      <button class="filter-btn" data-category="Couple" type="button">Couple</button>
+      <button class="filter-btn" data-category="Wedding" type="button">Wedding</button>
+      <button class="filter-btn" data-category="Festival" type="button">Festival</button>
+      <button class="filter-btn" data-category="Cinematic" type="button">Cinematic</button>
+      <button class="filter-btn" data-category="3D Art" type="button">3D Art</button>
+      <button class="filter-btn" data-category="Nature" type="button">Nature</button>
+      <button class="filter-btn" data-category="Travel" type="button">Travel</button>
+    </div>
+  </section>
 
-<section id="video" class="other-section">
-  <h2>Free AI Video Prompts</h2>
-  <p class="section-subtitle">Copy video prompts for cinematic clips, reels and photo animation.</p>
-  <div class="cards-grid" id="videoGrid"></div>
-</section>
+  <!-- Main Prompts Grid Section -->
+  <main class="main-content">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Verified Prompts Directory</h2>
+        <p class="section-subtitle">Updated regularly with tested AI configurations</p>
+      </div>
+      <div id="promptCount" style="color: var(--text-dim); font-size: 0.9rem; font-weight: 600;">
+        Loading prompts...
+      </div>
+    </div>
 
-<section id="categories" class="other-section">
-  <h2>Browse Prompt Categories</h2>
-  <div class="category-list" id="categoryList"></div>
-</section>
+    <!-- Prompts Cards Grid -->
+    <div class="prompts-grid" id="promptsGrid">
+      <!-- Injected dynamically by app.js -->
+    </div>
+  </main>
 
-<section class="other-section how-section">
-  <h2>How to Use These Prompts</h2>
-  <div class="how-grid"><article><b>1</b><h3>Choose a Prompt</h3><p>Browse the latest photo or video prompt collection.</p></article><article><b>2</b><h3>Get the Prompt</h3><p>Open the prompt and choose English or Hindi.</p></article><article><b>3</b><h3>Copy and Create</h3><p>Paste it into Gemini, ChatGPT or your preferred creative app.</p></article></div>
-</section>
-</main>
+  <!-- Footer (AdSense Compliant) -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-col">
+        <div class="brand" style="margin-bottom: 0.85rem;">
+          <span class="brand-icon">FP</span>
+          <span>FreePrompt<span class="brand-accent">LibraryAI</span></span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.88rem; max-width: 320px; line-height: 1.6;">
+          FreePromptLibraryAI is a free community directory providing tested, high-precision prompts for Google Gemini, Midjourney, and Flow AI.
+        </p>
+      </div>
 
-<footer id="footer">
-  <div class="footer-grid">
-    <div><a class="footer-logo" href="#">FreePrompt<span>LibraryAI</span></a><p>Free AI photo editing and video prompts in English and Hindi.</p></div>
-    <div><h3>Explore</h3><a href="#latest">New Prompts</a><a href="#photo">Photo Prompts</a><a href="#video">Video Prompts</a><a href="#categories">Categories</a></div>
-    <div><h3>Information</h3><a href="about.html">About Us</a><a href="contact.html">Contact Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a></div>
-    <div><h3>Support</h3><a href="disclaimer.html">Disclaimer</a><a href="dmca.html">DMCA</a><a href="#footer">Contact</a></div>
-  </div>
-  <div class="copyright">© <span id="year"></span> FreePromptLibraryAI. All rights reserved. · <a href="/admin/" style="color:inherit">Admin</a></div>
-</footer>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">All Prompts</a></li>
+          <li><a href="#explore">Trending Prompts</a></li>
+          <li><a href="#explore">Photo Editing</a></li>
+          <li><a href="#explore">Video Creation</a></li>
+        </ul>
+      </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="prompts.js"></script><script src="app.js"></script>
-</body></html>
+      <div class="footer-col">
+        <h4>Information</h4>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="contact.html">Contact Us</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="terms.html">Terms & Conditions</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Trust & Legal</h4>
+        <ul>
+          <li><a href="disclaimer.html">AI Disclaimer</a></li>
+          <li><a href="privacy.html#cookies">Cookie Policy</a></li>
+          <li><a href="contact.html">Report Prompt</a></li>
+          <li><a href="admin/">Admin Studio</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 FreePromptLibraryAI. All rights reserved.</p>
+      <p>Designed for AI artists, creators, and editors worldwide.</p>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast"></div>
+
+</body>
+</html>
