@@ -143,7 +143,7 @@ const SITE_UI = {
     copyTitle:'Copy and Create', copyText:'Paste it into Gemini, ChatGPT or your preferred creative app.',
     footerExplore:'Explore', footerInfo:'Information', footerSupport:'Support',
     footerAbout:'About Us', footerContact:'Contact Us', footerPrivacy:'Privacy Policy',
-    footerTerms:'Terms & Conditions', footerDisclaimer:'Disclaimer', footerDmca:'DMCA',
+    footerTerms:'Terms & Conditions', footerDisclaimer:'Disclaimer', footerDmca:'DMCA', followUs:'Follow Us', complaint:'Complaint / Suggestion', emailUs:'Email us',
     footerCopyright:'All rights reserved.', navLatest:'New Prompts', navPhoto:'Photo Prompts',
     navVideo:'Video Prompts', navCategories:'Categories', navStory:'AI Story Prompt',
     trendingTitle:'🔥 Trending Prompt 🔥', trendingAll:'All Trending Prompts',
@@ -165,7 +165,7 @@ const SITE_UI = {
     copyTitle:'कॉपी करें और बनाएँ', copyText:'इसे Gemini, ChatGPT या अपने पसंदीदा क्रिएटिव ऐप में पेस्ट करें।',
     footerExplore:'देखें', footerInfo:'जानकारी', footerSupport:'सहायता',
     footerAbout:'हमारे बारे में', footerContact:'संपर्क करें', footerPrivacy:'गोपनीयता नीति',
-    footerTerms:'नियम और शर्तें', footerDisclaimer:'अस्वीकरण', footerDmca:'DMCA',
+    footerTerms:'नियम और शर्तें', footerDisclaimer:'अस्वीकरण', footerDmca:'DMCA', followUs:'हमें फ़ॉलो करें', complaint:'शिकायत / सुझाव', emailUs:'ईमेल करें',
     footerCopyright:'सर्वाधिकार सुरक्षित।', navLatest:'नए प्रॉम्प्ट', navPhoto:'फोटो प्रॉम्प्ट',
     navVideo:'वीडियो प्रॉम्प्ट', navCategories:'श्रेणियाँ', navStory:'AI स्टोरी प्रॉम्प्ट',
     trendingTitle:'🔥 ट्रेंडिंग प्रॉम्प्ट 🔥', trendingAll:'सभी ट्रेंडिंग प्रॉम्प्ट',
@@ -200,15 +200,15 @@ function applySiteLanguage(language) {
   setText('.trending-card:nth-child(2) .trending-card-title', text.trendingSapua);
   setText('.trending-card:nth-child(3) .trending-card-title', text.trendingCelebration);
   setText('.trending-card-subtitle', text.trendingSubtitle);
-  setText('.footer-grid > div:nth-child(2) h3', text.footerExplore);
-  setText('.footer-grid > div:nth-child(3) h3', text.footerInfo);
-  setText('.footer-grid > div:nth-child(4) h3', text.footerSupport);
-  setText('.footer-grid > div:nth-child(3) a:nth-of-type(1)', text.footerAbout);
-  setText('.footer-grid > div:nth-child(3) a:nth-of-type(2)', text.footerContact);
-  setText('.footer-grid > div:nth-child(3) a:nth-of-type(3)', text.footerPrivacy);
-  setText('.footer-grid > div:nth-child(3) a:nth-of-type(4)', text.footerTerms);
-  setText('.footer-grid > div:nth-child(4) a:nth-of-type(1)', text.footerDisclaimer);
-  setText('.footer-grid > div:nth-child(4) a:nth-of-type(2)', text.footerDmca);
+  setText('.footer-info-column h3', text.footerInfo);
+  setText('.footer-support-column h3', text.footerSupport);
+  setText('.footer-follow-column h3', text.followUs);
+  setText('#searchComplaintLink', text.complaint);
+  setText('#footerEmailLink', text.emailUs);
+  const infoLinks = $('#footerInfoLinks');
+  if (infoLinks) infoLinks.innerHTML = `<a href="page.html?slug=about">${escapeText(text.footerAbout)}</a><a href="page.html?slug=contact">${escapeText(text.footerContact)}</a><a href="page.html?slug=privacy">${escapeText(text.footerPrivacy)}</a><a href="page.html?slug=terms">${escapeText(text.footerTerms)}</a>`;
+  const supportLinks = $('#footerSupportLinks');
+  if (supportLinks) supportLinks.innerHTML = `<a href="page.html?slug=disclaimer">${escapeText(text.footerDisclaimer)}</a><a href="page.html?slug=dmca">${escapeText(text.footerDmca)}</a><a href="page.html?slug=contact#complaint">${escapeText(text.complaint)}</a><a href="page.html?slug=contact">${escapeText(text.footerContact)}</a>`;
   setText('.copyright a', currentSiteLanguage === 'hi' ? 'एडमिन' : 'Admin');
   const copyright = $('.copyright');
   if (copyright) {
@@ -231,6 +231,7 @@ function applySiteLanguage(language) {
     });
   }
   render();
+  if (window.FPL_SITE_SETTINGS) applyConfiguredSiteSettings(window.FPL_SITE_SETTINGS);
 }
 (function setupSiteControls() {
   const savedTheme = localStorage.getItem('fpl-theme') || 'light';
@@ -300,6 +301,86 @@ async function loadCustomHomepageSections(){
   }catch(error){console.debug('Custom homepage sections are not enabled yet.',error.message);}
 }
 
+// Public, database-managed homepage controls. Only visual text/appearance and public links are read here.
+let loadedSiteSettings = null;
+const SITE_SAFE_FONTS = new Set(['Poppins','DM Sans','Manrope','Arial']);
+function safeSiteUrl(value) {
+  const url = String(value || '').trim();
+  if (!url) return '#';
+  if (/^#[A-Za-z0-9_-]+$/.test(url)) return url;
+  if (/^(page\.html\?slug=[a-z0-9-]+(?:#[a-z0-9-]+)?|prompt\.html\?id=\d+)$/i.test(url)) return url;
+  if (/^https?:\/\//i.test(url)) return url;
+  return '#';
+}
+function safeColor(value, fallback) { return /^#[0-9a-f]{6}$/i.test(String(value || '')) ? value : fallback; }
+function applyConfiguredSiteSettings(settings = loadedSiteSettings) {
+  if (!settings || typeof settings !== 'object') return;
+  loadedSiteSettings = settings;
+  window.FPL_SITE_SETTINGS = settings;
+  const hero = settings.hero || {};
+  const search = settings.search || {};
+  const footer = settings.footer || {};
+  const font = SITE_SAFE_FONTS.has(hero.fontFamily) ? hero.fontFamily : 'Poppins';
+  const root = document.documentElement;
+  root.style.setProperty('--hero-font-family', `'${font}', Arial, sans-serif`);
+  const title1Size=Math.min(56,Math.max(14,Number(hero.title1Size)||32));
+  const title2Size=Math.min(52,Math.max(14,Number(hero.title2Size)||29));
+  root.style.setProperty('--hero-title1-size', `${title1Size}px`);
+  root.style.setProperty('--hero-title2-size', `${title2Size}px`);
+  root.style.setProperty('--hero-title1-mobile-size', `${Math.min(21,Math.max(12,Math.round(title1Size*0.66)))}px`);
+  root.style.setProperty('--hero-title2-mobile-size', `${Math.min(20,Math.max(12,Math.round(title2Size*0.69)))}px`);
+  if (hero.title1) $('.hero-headings h1').textContent = hero.title1;
+  if (hero.title2) $('.hero-headings h2').textContent = hero.title2;
+  if (hero.subtitle) $('.hero-subtitle').textContent = hero.subtitle;
+  const searchButton = $('#searchButton');
+  if (searchButton) {
+    if (search.buttonText) searchButton.textContent = search.buttonText;
+    const first = safeColor(search.buttonStart,'#6688ea'), second = safeColor(search.buttonEnd,'#874bb0');
+    searchButton.style.background = `linear-gradient(110deg,${first},${second})`;
+    searchButton.style.color = '#fff';
+    searchButton.classList.toggle('search-button-animated', search.hoverAnimation !== false);
+  }
+  const complaintLink = $('#searchComplaintLink');
+  if (complaintLink) { complaintLink.textContent = search.complaintText || siteText('complaint'); complaintLink.href = 'page.html?slug=contact#complaint'; }
+  const nav = $('#nav');
+  if (nav && Array.isArray(settings.navLinks) && settings.navLinks.length) {
+    nav.innerHTML = '';
+    settings.navLinks.filter(item => item && item.enabled !== false && item.label && item.url).forEach(item => {
+      const anchor = document.createElement('a'); anchor.textContent = item.label; anchor.href = safeSiteUrl(item.url);
+      if (/^https?:\/\//i.test(item.url)) { anchor.target = '_blank'; anchor.rel = 'noopener noreferrer'; }
+      nav.appendChild(anchor);
+    });
+  }
+  const footerFont = SITE_SAFE_FONTS.has(footer.fontFamily) ? footer.fontFamily : 'Poppins';
+  root.style.setProperty('--site-footer-bg', safeColor(footer.background,'#071a33'));
+  root.style.setProperty('--site-footer-color', safeColor(footer.textColor,'#f5f7ff'));
+  root.style.setProperty('--site-footer-font', `'${footerFont}', Arial, sans-serif`);
+  root.style.setProperty('--site-footer-font-size', `${Math.min(20,Math.max(10,Number(footer.fontSize)||13))}px`);
+  const email = String(settings.contactEmail || '').trim();
+  const emailLink = $('#footerEmailLink');
+  if (emailLink) { emailLink.href = 'page.html?slug=contact'; emailLink.textContent = email ? `Email: ${email}` : siteText('emailUs'); }
+  renderConfiguredSocials(Array.isArray(settings.socials) ? settings.socials : []);
+}
+function renderConfiguredSocials(socials) {
+  const visible = socials.filter(item => item && item.url && /^https?:\/\//i.test(item.url));
+  const socialSection = $('#socialSection');
+  const grid = $('#socialLinkGrid');
+  const footerGrid = $('#footerSocialLinks');
+  if (socialSection && grid) {
+    socialSection.hidden = !visible.length;
+    grid.innerHTML = visible.map(item => `<a class="social-link-card" href="${escapeText(item.url)}" target="_blank" rel="noopener noreferrer"><span class="social-link-icon">${escapeText((item.platform||'S').slice(0,1).toUpperCase())}</span><strong>${escapeText(item.platform||'Social')}</strong><span>Follow ↗</span></a>`).join('');
+  }
+  if (footerGrid) footerGrid.innerHTML = visible.length ? visible.map(item => `<a href="${escapeText(item.url)}" target="_blank" rel="noopener noreferrer">${escapeText(item.platform||'Social')} ↗</a>`).join('') : '<span class="footer-social-empty">Social links will appear here.</span>';
+}
+async function loadPublicSiteSettings() {
+  if (!supabaseClient) return;
+  try {
+    const {data,error} = await supabaseClient.from('site_settings').select('settings').eq('id',1).maybeSingle();
+    if (error) throw error;
+    if (data?.settings) applyConfiguredSiteSettings(data.settings);
+  } catch (error) { console.debug('Homepage controls are not enabled yet.', error.message); }
+}
+
 // Search is intentionally applied only on form submission (Search button or Enter).
 $('#searchForm').addEventListener('submit', (event) => {
   event.preventDefault();
@@ -362,6 +443,7 @@ $('#mobileMenu').addEventListener('click', () => $('#nav').classList.toggle('ope
 $('#year').textContent = new Date().getFullYear();
 render();
 loadCustomHomepageSections();
+loadPublicSiteSettings();
 
 // Load the CMS-managed collection after the local fallback has rendered.
 loadPromptsFromSupabase();

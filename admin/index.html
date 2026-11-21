@@ -69,6 +69,7 @@
         <button class="nav-item" type="button" data-view="categories"><span class="nav-icon">◇</span><span>Categories</span></button>
         <button class="nav-item" type="button" data-view="media"><span class="nav-icon">▧</span><span>Media library</span></button>
         <button class="nav-item" type="button" data-view="homepage"><span class="nav-icon">▦</span><span>Homepage builder</span></button>
+        <button class="nav-item" type="button" data-view="complaints"><span class="nav-icon">✉</span><span>Complaints</span><span class="nav-count" id="navComplaintCount">0</span></button>
         <button class="nav-item" type="button" data-view="analytics"><span class="nav-icon">⌁</span><span>Analytics</span></button>
       </nav>
       <div class="sidebar-bottom">
@@ -118,9 +119,72 @@
         </section>
 
         <section class="view-panel" data-panel="homepage">
-          <div class="page-heading"><div><div class="eyebrow">PUBLIC WEBSITE CONTENT</div><h1>Homepage builder</h1><p>Add card collections or information sections between existing homepage sections.</p></div><button class="btn btn-primary" id="addHomeSectionBtn" type="button">＋ Add homepage section</button></div>
-          <div class="builder-help content-card"><strong>Choose where your new bar should appear.</strong><span>Card sections can link each item to its prompt detail page. Information sections can contain an About, announcement or any text you write.</span></div>
-          <div id="homeSectionList" class="home-section-list"><div class="content-card loading-row">Loading homepage sections…</div></div>
+          <div class="page-heading"><div><div class="eyebrow">PUBLIC WEBSITE CONTENT</div><h1>Homepage builder</h1><p>Control the hero, search, navigation, information pages, footer, social links and custom homepage sections.</p></div></div>
+
+          <section class="content-card homepage-builder-card">
+            <div class="card-heading"><div><h2>Header and search controls</h2><p>Edit the two large homepage headings, subtitle, fonts and search button appearance.</p></div></div>
+            <form id="homepageSettingsForm" class="builder-settings-form">
+              <div class="builder-settings-subhead"><strong>Hero text and typography</strong><span>Default sizes preserve the current header appearance.</span></div>
+              <div class="form-grid">
+                <label class="full-span">Main heading<input id="homeHeroTitle1" maxlength="180" placeholder="Free Gemini Photo Editing Prompts"></label>
+                <label class="full-span">Second heading<input id="homeHeroTitle2" maxlength="180" placeholder="Free Google Flow Video Prompts"></label>
+                <label class="full-span">Subtitle<input id="homeHeroSubtitle" maxlength="350"></label>
+                <label>Heading font<select id="homeHeroFont"><option value="Poppins">Poppins</option><option value="DM Sans">DM Sans</option><option value="Manrope">Manrope</option><option value="Arial">Arial</option></select></label>
+                <label>Main heading size (px)<input id="homeHeroTitle1Size" type="number" min="14" max="56" value="32"></label>
+                <label>Second heading size (px)<input id="homeHeroTitle2Size" type="number" min="14" max="52" value="29"></label>
+              </div>
+              <div class="builder-settings-subhead"><strong>Search button and complaint shortcut</strong><span>Choose a gradient and hover animation.</span></div>
+              <div class="form-grid form-grid-small">
+                <label>Search button text<input id="homeSearchButtonText" maxlength="35" value="Search"></label>
+                <label>Complaint button text<input id="homeComplaintButtonText" maxlength="35" value="Complaint"></label>
+                <label>Button first colour<input id="homeSearchButtonStart" type="color" value="#6688ea"></label>
+                <label>Button second colour<input id="homeSearchButtonEnd" type="color" value="#874bb0"></label>
+                <label class="toggle-field"><span><b>Gradient hover animation</b><small>Animate the search button when visitors hover or tap.</small></span><input id="homeSearchHover" type="checkbox" checked></label>
+              </div>
+              <div class="builder-settings-subhead"><strong>Top navigation buttons</strong><span>Edit button labels and links, add new buttons, or remove buttons.</span></div>
+              <div id="homeNavLinkList" class="builder-nav-link-list"></div>
+              <button class="btn btn-outline btn-small" id="addHomeNavLinkBtn" type="button">＋ Add navigation button</button>
+              <div class="builder-settings-subhead"><strong>Footer appearance</strong><span>Adjust the dark footer size, colour and font style.</span></div>
+              <div class="form-grid form-grid-small">
+                <label>Footer background<input id="homeFooterBg" type="color" value="#071a33"></label>
+                <label>Footer text colour<input id="homeFooterText" type="color" value="#f5f7ff"></label>
+                <label>Footer font<select id="homeFooterFont"><option value="Poppins">Poppins</option><option value="DM Sans">DM Sans</option><option value="Manrope">Manrope</option><option value="Arial">Arial</option></select></label>
+                <label>Footer font size (px)<input id="homeFooterFontSize" type="number" min="10" max="20" value="13"></label>
+              </div>
+              <div class="builder-settings-subhead"><strong>Contact email and social media</strong><span>Enter full public URLs, for example https://wa.me/91… or https://instagram.com/…</span></div>
+              <div class="form-grid">
+                <label class="full-span">Contact email<input id="homeContactEmail" type="email" placeholder="your-email@example.com"></label>
+                <label>WhatsApp URL<input id="homeSocialWhatsapp" type="url" placeholder="https://wa.me/91…"></label>
+                <label>Instagram URL<input id="homeSocialInstagram" type="url" placeholder="https://instagram.com/…"></label>
+                <label>Facebook URL<input id="homeSocialFacebook" type="url" placeholder="https://facebook.com/…"></label>
+                <label>Threads URL<input id="homeSocialThreads" type="url" placeholder="https://www.threads.net/@…"></label>
+              </div>
+              <div class="builder-form-actions"><p id="homepageSettingsMessage" class="form-message" role="status" aria-live="polite"></p><button class="btn btn-primary" type="submit" id="saveHomepageSettingsBtn">Save homepage controls</button></div>
+            </form>
+          </section>
+
+          <section class="content-card homepage-builder-card">
+            <div class="card-heading"><div><h2>Information pages</h2><p>Edit About Us, Contact Us, Privacy Policy, Terms &amp; Conditions, Disclaimer and DMCA pages. Add any number of heading and description blocks.</p></div></div>
+            <form id="contentPageForm" class="builder-settings-form">
+              <div class="form-grid"><label>Choose page<select id="contentPageSlug"><option value="about">About Us</option><option value="contact">Contact Us</option><option value="privacy">Privacy Policy</option><option value="terms">Terms &amp; Conditions</option><option value="disclaimer">Disclaimer</option><option value="dmca">DMCA</option></select></label><label>Page title<input id="contentPageTitle" required maxlength="160"></label><label class="full-span">Short introduction<input id="contentPageIntro" maxlength="500" placeholder="Short description under the page heading"></label></div>
+              <div class="builder-subhead"><div><h3>Page content</h3><p>Each block has one heading and its description. Add them in the order you want.</p></div><button class="btn btn-outline btn-small" type="button" id="addContentPageSectionBtn">＋ Add heading and description</button></div>
+              <div id="contentPageSectionList" class="page-content-section-list"></div>
+              <div class="form-grid form-grid-small"><label>Page visibility<select id="contentPagePublished"><option value="true">Published</option><option value="false">Draft</option></select></label></div>
+              <div class="builder-form-actions"><p id="contentPageMessage" class="form-message" role="status" aria-live="polite"></p><button class="btn btn-primary" type="submit" id="saveContentPageBtn">Save information page</button></div>
+            </form>
+          </section>
+
+          <section class="content-card homepage-builder-card">
+            <div class="page-heading compact-heading"><div><div class="eyebrow">CUSTOM HOMEPAGE CONTENT</div><h2>Homepage sections</h2><p>Insert card bars or information sections after any existing homepage section.</p></div><button class="btn btn-primary" id="addHomeSectionBtn" type="button">＋ Add homepage section</button></div>
+            <div class="builder-help"><strong>Choose the position for each new section.</strong><span>Sections are displayed in the order you set. Card items can link to any published prompt page.</span></div>
+            <div id="homeSectionList" class="home-section-list"><div class="loading-row">Loading homepage sections…</div></div>
+          </section>
+        </section>
+
+        <section class="view-panel" data-panel="complaints">
+          <div class="page-heading"><div><div class="eyebrow">VISITOR MESSAGES</div><h1>Complaints &amp; suggestions</h1><p>Messages submitted from the homepage and Contact Us page.</p></div><button class="btn btn-secondary" type="button" id="refreshComplaintsBtn">↻ Refresh</button></div>
+          <div class="metric-grid complaints-metrics"><article class="metric-card"><div class="metric-label">TOTAL MESSAGES</div><strong id="complaintsTotal">—</strong></article><article class="metric-card"><div class="metric-label">NEW</div><strong id="complaintsNew">—</strong></article><article class="metric-card"><div class="metric-label">IN PROGRESS</div><strong id="complaintsProgress">—</strong></article><article class="metric-card"><div class="metric-label">RESOLVED</div><strong id="complaintsResolved">—</strong></article></div>
+          <section class="content-card complaints-list-card"><div id="complaintsList" class="complaints-list"><div class="loading-row">Loading complaints…</div></div></section>
         </section>
 
         <section class="view-panel" data-panel="analytics">

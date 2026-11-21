@@ -28,7 +28,8 @@
     <p class="hero-subtitle">New AI Trending Photo &amp; Video Prompts Every Day — Copy And Paste For Gemini, ChatGPT, Flow AI And Other Creative Tools.</p>
     <form class="search-wrap" id="searchForm">
       <input id="searchInput" type="search" placeholder="Search Couple, Saree, Cartoon, Festival Prompts..." aria-label="Search prompts">
-      <button type="submit">Search</button>
+      <button type="submit" id="searchButton">Search</button>
+      <a class="search-complaint-button" id="searchComplaintLink" href="page.html?slug=contact#complaint">Complaint</a>
     </form>
     <nav class="hero-nav" id="nav" aria-label="Main Navigation">
       <a href="#latest">New Prompts</a>
@@ -92,12 +93,18 @@
 </section>
 </main>
 
+<section class="social-section" id="socialSection" hidden aria-labelledby="socialSectionTitle">
+  <h2 id="socialSectionTitle">Follow Us on Social Media</h2>
+  <p class="section-subtitle" id="socialSectionSubtitle">Connect with FreePromptLibraryAI on your favourite platforms.</p>
+  <div class="social-link-grid" id="socialLinkGrid"></div>
+</section>
+
 <footer id="footer">
   <div class="footer-grid">
-    <div><a class="footer-logo" href="#">FreePrompt<span>LibraryAI</span></a><p>Free AI photo editing and video prompts.</p></div>
-    <div><h3>Explore</h3><a href="#latest">New Prompts</a><a href="#photo">Photo Prompts</a><a href="#video">Video Prompts</a><a href="#categories">Categories</a></div>
-    <div><h3>Information</h3><a href="about.html">About Us</a><a href="contact.html">Contact Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a></div>
-    <div><h3>Support</h3><a href="disclaimer.html">Disclaimer</a><a href="dmca.html">DMCA</a><a href="#footer">Contact</a></div>
+    <div class="footer-brand-column"><a class="footer-logo" href="index.html">FreePrompt<span>LibraryAI</span></a><p>Free AI photo editing and video prompts.</p></div>
+    <div class="footer-info-column"><h3>Information</h3><div id="footerInfoLinks"><a href="page.html?slug=about">About Us</a><a href="page.html?slug=contact">Contact Us</a><a href="page.html?slug=privacy">Privacy Policy</a><a href="page.html?slug=terms">Terms &amp; Conditions</a></div></div>
+    <div class="footer-support-column"><h3>Support</h3><div id="footerSupportLinks"><a href="page.html?slug=disclaimer">Disclaimer</a><a href="page.html?slug=dmca">DMCA</a><a href="page.html?slug=contact#complaint">Complaint / Suggestion</a><a href="page.html?slug=contact">Contact Us</a></div><a id="footerEmailLink" class="footer-email-link" href="page.html?slug=contact">Email us</a></div>
+    <div class="footer-follow-column"><h3>Follow Us</h3><div id="footerSocialLinks"><span class="footer-social-empty">Social links will appear here.</span></div></div>
   </div>
   <div class="copyright">© <span id="year"></span> FreePromptLibraryAI. All rights reserved. · <a href="/admin/" style="color:inherit">Admin</a></div>
 </footer>

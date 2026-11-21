@@ -9,7 +9,8 @@
     user: null, prompts: [], homeSections: [], page: 1, pageSize: PAGE_SIZE,
     view: 'overview', imageUrl: '', sectionCount: 0, variantCount: 0,
     relatedCount: 0, homeCardCount: 0, recoveryEmail: '', resendTimer: null,
-    otpVerificationInProgress: false, recoveryLinkInProgress: false, analytics: null, editingPrompt: null, contentBlockCount: 0
+    otpVerificationInProgress: false, recoveryLinkInProgress: false, analytics: null, editingPrompt: null, contentBlockCount: 0,
+    siteSettings: null, complaints: [], currentPageSlug: 'about'
   };
 
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
@@ -229,7 +230,7 @@
   });
 
   // Navigation.
-  const viewTitles = { overview: 'Dashboard', prompts: 'All prompts', categories: 'Categories', media: 'Media library', homepage: 'Homepage builder', analytics: 'Analytics' };
+  const viewTitles = { overview: 'Dashboard', prompts: 'All prompts', categories: 'Categories', media: 'Media library', homepage: 'Homepage builder', complaints: 'Complaints & suggestions', analytics: 'Analytics' };
   function switchView(view) {
     state.view = view;
     $$('.view-panel').forEach((panel) => panel.classList.toggle('active', panel.dataset.panel === view));
@@ -239,7 +240,8 @@
     if (view === 'prompts') renderPromptList();
     if (view === 'categories') renderCategories();
     if (view === 'media') renderMedia();
-    if (view === 'homepage') loadHomeSections();
+    if (view === 'homepage') { loadHomeSections(); loadHomepageSettings(); loadContentPage($('#contentPageSlug').value || 'about'); }
+    if (view === 'complaints') loadComplaints();
     if (view === 'analytics') loadAnalytics();
   }
   $$('.nav-item, [data-view]').forEach((button) => button.addEventListener('click', () => switchView(button.dataset.view)));
@@ -563,6 +565,125 @@
       await loadPrompts(); toast(`Prompt #${id} deleted.`);
     } catch (error) { toast(error.message || 'Could not delete prompt.', true); }
   }
+
+  // Homepage-wide settings, information pages and visitor complaint inbox.
+  const defaultHomepageSettings = {
+    hero: { title1:'Free Gemini Photo Editing Prompts', title2:'Free Google Flow Video Prompts', subtitle:'New AI Trending Photo & Video Prompts Every Day — Copy And Paste For Gemini, ChatGPT, Flow AI And Other Creative Tools.', fontFamily:'Poppins', title1Size:32, title2Size:29 },
+    search: { buttonText:'Search', complaintText:'Complaint', buttonStart:'#6688ea', buttonEnd:'#874bb0', hoverAnimation:true },
+    navLinks: [
+      {label:'New Prompts',url:'#latest',enabled:true},{label:'Photo Prompts',url:'#photo',enabled:true},
+      {label:'Video Prompts',url:'#video',enabled:true},{label:'Categories',url:'#categories',enabled:true},{label:'AI Story Prompt',url:'#footer',enabled:true}
+    ],
+    footer: {background:'#071a33',textColor:'#f5f7ff',fontFamily:'Poppins',fontSize:13},
+    contactEmail:'',
+    socials:[{platform:'WhatsApp',url:''},{platform:'Instagram',url:''},{platform:'Facebook',url:''},{platform:'Threads',url:''}]
+  };
+  const mergeSettings = (base, incoming) => ({...base, ...(incoming || {})});
+  function addHomeNavLink(data = {}) {
+    const row=document.createElement('div');row.className='builder-nav-link-row';
+    row.innerHTML=`<label>Button label<input class="home-nav-label" maxlength="60" value="${escapeHtml(data.label||'')}" placeholder="e.g. Birthday Prompts"></label><label>Button link<input class="home-nav-url" maxlength="300" value="${escapeHtml(data.url||'')}" placeholder="#latest or page.html?slug=about"></label><label class="builder-nav-enabled"><span>Visible</span><input class="home-nav-enabled" type="checkbox" ${data.enabled===false?'':'checked'}></label><button class="remove-builder-row" type="button" aria-label="Remove navigation button">Remove</button>`;
+    row.querySelector('.remove-builder-row').addEventListener('click',()=>row.remove());
+    $('#homeNavLinkList').appendChild(row);
+  }
+  async function loadHomepageSettings() {
+    setMessage($('#homepageSettingsMessage'),'Loading homepage settings…');
+    try {
+      const {data,error}=await client.from('site_settings').select('settings').eq('id',1).maybeSingle();
+      if(error)throw error;
+      const saved=data?.settings||{};
+      state.siteSettings={
+        ...defaultHomepageSettings,
+        ...saved,
+        hero:mergeSettings(defaultHomepageSettings.hero,saved.hero),
+        search:mergeSettings(defaultHomepageSettings.search,saved.search),
+        footer:mergeSettings(defaultHomepageSettings.footer,saved.footer),
+        navLinks:Array.isArray(saved.navLinks)?saved.navLinks:defaultHomepageSettings.navLinks,
+        socials:Array.isArray(saved.socials)?saved.socials:defaultHomepageSettings.socials
+      };
+      const {hero,search,footer}=state.siteSettings;
+      $('#homeHeroTitle1').value=hero.title1||'';$('#homeHeroTitle2').value=hero.title2||'';$('#homeHeroSubtitle').value=hero.subtitle||'';
+      $('#homeHeroFont').value=hero.fontFamily||'Poppins';$('#homeHeroTitle1Size').value=hero.title1Size||32;$('#homeHeroTitle2Size').value=hero.title2Size||29;
+      $('#homeSearchButtonText').value=search.buttonText||'Search';$('#homeComplaintButtonText').value=search.complaintText||'Complaint';
+      $('#homeSearchButtonStart').value=search.buttonStart||'#6688ea';$('#homeSearchButtonEnd').value=search.buttonEnd||'#874bb0';$('#homeSearchHover').checked=search.hoverAnimation!==false;
+      $('#homeFooterBg').value=footer.background||'#071a33';$('#homeFooterText').value=footer.textColor||'#f5f7ff';$('#homeFooterFont').value=footer.fontFamily||'Poppins';$('#homeFooterFontSize').value=footer.fontSize||13;
+      $('#homeContactEmail').value=state.siteSettings.contactEmail||'';
+      const socialMap=Object.fromEntries(state.siteSettings.socials.map(x=>[String(x.platform||'').toLowerCase(),x.url||'']));
+      $('#homeSocialWhatsapp').value=socialMap.whatsapp||'';$('#homeSocialInstagram').value=socialMap.instagram||'';$('#homeSocialFacebook').value=socialMap.facebook||'';$('#homeSocialThreads').value=socialMap.threads||'';
+      $('#homeNavLinkList').innerHTML='';state.siteSettings.navLinks.forEach(addHomeNavLink);
+      setMessage($('#homepageSettingsMessage'),'Homepage settings loaded.',false);
+    } catch(error) { setMessage($('#homepageSettingsMessage'),`${error.message||'Could not load homepage settings.'} Run homepage-control-complaints-migration.sql in Supabase first.`,true); }
+  }
+  $('#addHomeNavLinkBtn').addEventListener('click',()=>addHomeNavLink({label:'',url:'',enabled:true}));
+  $('#homepageSettingsForm').addEventListener('submit',async event=>{
+    event.preventDefault();const button=$('#saveHomepageSettingsBtn');button.disabled=true;setMessage($('#homepageSettingsMessage'),'Saving homepage settings…');
+    try{
+      const navLinks=$$('.builder-nav-link-row',$('#homeNavLinkList')).map(row=>({label:$('.home-nav-label',row).value.trim(),url:$('.home-nav-url',row).value.trim(),enabled:$('.home-nav-enabled',row).checked})).filter(item=>item.label&&item.url);
+      for(const item of navLinks){if(!/^#[A-Za-z0-9_-]+$/.test(item.url)&&!/^https?:\/\//i.test(item.url)&&! /^(page\.html\?slug=[a-z0-9-]+(?:#[a-z0-9-]+)?|prompt\.html\?id=\d+)$/i.test(item.url))throw new Error(`Invalid navigation URL: ${item.url}`);}
+      const current=state.siteSettings||defaultHomepageSettings;
+      const settings={
+        ...current,
+        hero:{title1:$('#homeHeroTitle1').value.trim(),title2:$('#homeHeroTitle2').value.trim(),subtitle:$('#homeHeroSubtitle').value.trim(),fontFamily:$('#homeHeroFont').value,title1Size:Number($('#homeHeroTitle1Size').value)||32,title2Size:Number($('#homeHeroTitle2Size').value)||29},
+        search:{buttonText:$('#homeSearchButtonText').value.trim()||'Search',complaintText:$('#homeComplaintButtonText').value.trim()||'Complaint',buttonStart:$('#homeSearchButtonStart').value,buttonEnd:$('#homeSearchButtonEnd').value,hoverAnimation:$('#homeSearchHover').checked},
+        navLinks,
+        footer:{background:$('#homeFooterBg').value,textColor:$('#homeFooterText').value,fontFamily:$('#homeFooterFont').value,fontSize:Number($('#homeFooterFontSize').value)||13},
+        contactEmail:$('#homeContactEmail').value.trim(),
+        socials:[{platform:'WhatsApp',url:$('#homeSocialWhatsapp').value.trim()},{platform:'Instagram',url:$('#homeSocialInstagram').value.trim()},{platform:'Facebook',url:$('#homeSocialFacebook').value.trim()},{platform:'Threads',url:$('#homeSocialThreads').value.trim()}]
+      };
+      for(const social of settings.socials){if(social.url&&!/^https?:\/\//i.test(social.url))throw new Error(`${social.platform} link must start with https:// or http://.`);}
+      const {error}=await client.from('site_settings').upsert({id:1,settings,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;
+      state.siteSettings=settings;setMessage($('#homepageSettingsMessage'),'Homepage controls saved successfully.');toast('Homepage controls saved.');
+    }catch(error){setMessage($('#homepageSettingsMessage'),error.message||'Could not save homepage controls.',true);}finally{button.disabled=false;}
+  });
+
+  function addContentPageSection(data={}){
+    const row=document.createElement('article');row.className='page-content-section-editor';
+    row.innerHTML=`<div class="dynamic-row-head"><strong>Heading and description</strong><button type="button" class="remove-dynamic">Remove</button></div><label>Heading<input class="page-section-heading" maxlength="180" required value="${escapeHtml(data.heading||'')}" placeholder="Section heading"></label><label>Description<textarea class="page-section-content" rows="5" maxlength="10000" placeholder="Write the section information here…">${escapeHtml(data.content||'')}</textarea></label>`;
+    row.querySelector('.remove-dynamic').addEventListener('click',()=>row.remove());$('#contentPageSectionList').appendChild(row);
+  }
+  async function loadContentPage(slug='about'){
+    state.currentPageSlug=slug;setMessage($('#contentPageMessage'),'Loading page…');$('#contentPageSectionList').innerHTML='';
+    try{
+      const {data,error}=await client.from('content_pages').select('*').eq('slug',slug).maybeSingle();if(error)throw error;
+      const defaults={about:'About Us',contact:'Contact Us',privacy:'Privacy Policy',terms:'Terms & Conditions',disclaimer:'Disclaimer',dmca:'DMCA'};
+      $('#contentPageTitle').value=data?.title||defaults[slug]||'Information';$('#contentPageIntro').value=data?.intro||'';$('#contentPagePublished').value=String(data?.is_published!==false);
+      (Array.isArray(data?.sections)?data.sections:[]).forEach(addContentPageSection);
+      setMessage($('#contentPageMessage'),data?'Page loaded.':'New page draft ready.');
+    }catch(error){setMessage($('#contentPageMessage'),`${error.message||'Could not load page.'} Run homepage-control-complaints-migration.sql in Supabase first.`,true);}
+  }
+  $('#contentPageSlug').addEventListener('change',()=>loadContentPage($('#contentPageSlug').value));
+  $('#addContentPageSectionBtn').addEventListener('click',()=>addContentPageSection());
+  $('#contentPageForm').addEventListener('submit',async event=>{
+    event.preventDefault();const button=$('#saveContentPageBtn');button.disabled=true;setMessage($('#contentPageMessage'),'Saving information page…');
+    try{
+      const sections=$$('.page-content-section-editor',$('#contentPageSectionList')).map(row=>({heading:$('.page-section-heading',row).value.trim(),content:$('.page-section-content',row).value.trim()}));
+      if(sections.some(x=>!x.heading))throw new Error('Every information block needs a heading.');
+      const payload={slug:$('#contentPageSlug').value,title:$('#contentPageTitle').value.trim(),intro:$('#contentPageIntro').value.trim(),sections,is_published:$('#contentPagePublished').value==='true',updated_at:new Date().toISOString()};
+      const {error}=await client.from('content_pages').upsert(payload,{onConflict:'slug'});if(error)throw error;
+      setMessage($('#contentPageMessage'),'Information page saved. It is now available on the website if published.');toast('Information page saved.');
+    }catch(error){setMessage($('#contentPageMessage'),error.message||'Could not save information page.',true);}finally{button.disabled=false;}
+  });
+
+  function renderComplaints(){
+    const rows=state.complaints;$('#complaintsTotal').textContent=rows.length;$('#complaintsNew').textContent=rows.filter(x=>x.status==='new').length;$('#complaintsProgress').textContent=rows.filter(x=>x.status==='in_progress').length;$('#complaintsResolved').textContent=rows.filter(x=>x.status==='resolved').length;$('#navComplaintCount').textContent=rows.filter(x=>x.status==='new').length;
+    const host=$('#complaintsList');
+    host.innerHTML=rows.length?rows.map(item=>`<article class="complaint-admin-card"><div class="complaint-admin-main"><div class="complaint-admin-top"><strong>${escapeHtml(item.subject)}</strong><span class="complaint-date">${new Date(item.created_at).toLocaleString()}</span></div><div class="complaint-admin-contact"><b>${escapeHtml(item.name)}</b><a href="mailto:${escapeHtml(item.email)}">${escapeHtml(item.email)}</a></div><p>${escapeHtml(item.message)}</p></div><div class="complaint-admin-actions"><select data-complaint-status="${item.id}" aria-label="Complaint status"><option value="new" ${item.status==='new'?'selected':''}>New</option><option value="in_progress" ${item.status==='in_progress'?'selected':''}>In progress</option><option value="resolved" ${item.status==='resolved'?'selected':''}>Resolved</option></select><button type="button" class="delete-btn" data-delete-complaint="${item.id}">Delete</button></div></article>`).join(''):'<div class="empty-state">No complaints or suggestions have been received yet.</div>';
+  }
+  async function loadComplaints(){
+    $('#complaintsList').innerHTML='<div class="loading-row">Loading complaints…</div>';
+    try{const {data,error}=await client.from('complaints').select('*').order('created_at',{ascending:false}).limit(300);if(error)throw error;state.complaints=data||[];renderComplaints();}
+    catch(error){$('#complaintsList').innerHTML=`<div class="empty-state">${escapeHtml(error.message||'Could not load complaints.')}<br><small>Run homepage-control-complaints-migration.sql in Supabase.</small></div>`;}
+  }
+  $('#refreshComplaintsBtn').addEventListener('click',loadComplaints);
+  $('#complaintsList').addEventListener('change',async event=>{
+    const select=event.target.closest('[data-complaint-status]');if(!select)return;select.disabled=true;
+    try{const {error}=await client.from('complaints').update({status:select.value}).eq('id',Number(select.dataset.complaintStatus));if(error)throw error;await loadComplaints();toast('Complaint status updated.');}
+    catch(error){toast(error.message||'Could not update complaint.',true);select.disabled=false;}
+  });
+  $('#complaintsList').addEventListener('click',async event=>{
+    const button=event.target.closest('[data-delete-complaint]');if(!button)return;if(!window.confirm('Delete this complaint?'))return;
+    try{const {error}=await client.from('complaints').delete().eq('id',Number(button.dataset.deleteComplaint));if(error)throw error;await loadComplaints();toast('Complaint deleted.');}
+    catch(error){toast(error.message||'Could not delete complaint.',true);}
+  });
 
   // Homepage section builder.
   function addHomeCard(data = {}) {

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Information and contact page for FreePromptLibraryAI.">
+  <meta name="theme-color" content="#6959cb">
+  <title>Information | FreePromptLibraryAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="page.css">
+</head>
+<body class="content-page-body">
+  <div class="site-controls" aria-label="Website display settings">
+    <div class="language-switch" role="group" aria-label="Choose website language">
+      <button type="button" class="language-option" data-language="en" aria-pressed="true">English</button>
+      <button type="button" class="language-option" data-language="hi" aria-pressed="false">हिन्दी</button>
+    </div>
+    <button type="button" id="themeToggle" class="site-control theme-control" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+  </div>
+  <header class="content-page-header"><a class="content-page-brand" href="index.html">FreePrompt<span>LibraryAI</span></a><a class="content-page-back" href="index.html">← Back to website</a></header>
+  <main class="content-page-main">
+    <div class="content-page-kicker">FREEPROMPTLIBRARYAI</div>
+    <h1 id="contentPageTitle">Information</h1>
+    <p class="content-page-intro" id="contentPageIntro"></p>
+    <div class="content-page-card">
+      <div id="contentPageSections" class="content-page-sections"><p>Loading page content…</p></div>
+      <div id="contactDetails" class="contact-details" hidden></div>
+      <form id="complaintForm" class="complaint-form" hidden>
+        <h2 id="complaintFormTitle">Complaint or suggestion</h2>
+        <p id="complaintFormIntro">Send us a message. Our team will review it in the admin panel.</p>
+        <div class="complaint-fields">
+          <label>Your name<input id="complaintName" maxlength="120" required autocomplete="name"></label>
+          <label>Email address<input id="complaintEmail" type="email" maxlength="254" required autocomplete="email"></label>
+          <label class="full-row">Subject<input id="complaintSubject" maxlength="180" required></label>
+          <label class="full-row">Message<textarea id="complaintMessage" rows="6" maxlength="5000" required></textarea></label>
+          <label class="complaint-honeypot" aria-hidden="true">Leave this empty<input id="complaintWebsite" tabindex="-1" autocomplete="off"></label>
+        </div>
+        <div class="complaint-submit-row"><p id="complaintStatus" role="status" aria-live="polite"></p><button class="complaint-submit" type="submit">Send message</button></div>
+      </form>
+    </div>
+  </main>
+  <footer class="content-page-footer"><a href="index.html">FreePromptLibraryAI</a><span>© <span id="pageYear"></span> All rights reserved.</span><a href="/admin/">Admin</a></footer>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="page.js"></script>
+</body>
+</html>

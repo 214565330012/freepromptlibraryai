@@ -106,3 +106,40 @@
 .content-block-editor input:focus,.content-block-editor select:focus,.content-block-editor textarea:focus{outline:0;border-color:#8aa8f2;box-shadow:0 0 0 3px #3977ed18}
 .content-block-editor .image-preview-line{font-size:9px;color:#7c79a0;overflow-wrap:anywhere}
 @media(max-width:640px){.section-type-chooser-actions{grid-template-columns:1fr}.content-block-editor .form-grid{grid-template-columns:1fr}.content-block-editor .full-span{grid-column:1}}
+
+/* Homepage builder controls, editable information pages and complaint inbox. */
+.homepage-builder-card{padding:20px;margin-bottom:18px}
+.homepage-builder-card>.card-heading{margin-bottom:14px}
+.homepage-builder-card>.card-heading h2{font-size:16px}
+.homepage-builder-card>.card-heading p{font-size:10px;line-height:1.6}
+.builder-settings-form{display:grid;gap:15px}
+.builder-settings-subhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-top:13px;border-top:1px solid #eeedf5}
+.builder-settings-subhead strong{color:#39354f;font-size:12px;font-weight:800}
+.builder-settings-subhead span{color:#9995a8;font-size:9px;line-height:1.5}
+.builder-settings-form label{display:grid;gap:6px;color:#625e75;font-size:10px;font-weight:700;min-width:0}
+.builder-settings-form input,.builder-settings-form select,.builder-settings-form textarea{width:100%;min-width:0;padding:10px 11px;border:1px solid #e3e2ed;border-radius:9px;background:#fff;color:#343149;font:11px "DM Sans",sans-serif}
+.builder-settings-form input[type=color]{height:40px;padding:4px;cursor:pointer}
+.builder-settings-form .toggle-field{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:10px 12px;border:1px solid #e8e5f1;border-radius:9px;background:#fbfaff}
+.builder-settings-form .toggle-field span{display:grid;gap:4px}.builder-settings-form .toggle-field small{color:#9691a5;font-size:9px;font-weight:500}
+.builder-settings-form .toggle-field input{width:18px;min-width:18px;height:18px}
+.builder-nav-link-list,.page-content-section-list{display:grid;gap:9px}
+.builder-nav-link-row{display:grid;grid-template-columns:minmax(140px,1fr) minmax(180px,1.4fr) 70px auto;gap:9px;align-items:end;padding:11px;border:1px solid #e8e6f0;border-radius:10px;background:#fbfaff}
+.builder-nav-enabled{display:flex!important;align-items:center;justify-content:center;gap:6px;height:38px}.builder-nav-enabled input{width:16px;height:16px}
+.remove-builder-row,.page-content-section-editor .remove-dynamic{padding:8px 10px;border:1px solid #f1dce2;border-radius:8px;background:#fff;color:#c04d63;font:700 9px "DM Sans",sans-serif;cursor:pointer}
+.builder-form-actions{display:flex;align-items:center;justify-content:flex-end;gap:14px;flex-wrap:wrap;padding-top:12px;border-top:1px solid #eeedf5}
+.builder-form-actions .form-message{margin:0;flex:1;min-width:140px}
+.page-content-section-editor{display:grid;gap:10px;padding:13px;border:1px solid #e8e6f0;border-radius:11px;background:#fbfaff}
+.page-content-section-editor label{display:grid;gap:6px;color:#605c73;font-size:10px;font-weight:700}
+.page-content-section-editor input,.page-content-section-editor textarea{width:100%;padding:10px 11px;border:1px solid #e1e5ef;border-radius:8px;background:#fff;color:#302d46;font:11px "DM Sans",sans-serif}
+.compact-heading{margin-bottom:12px}.compact-heading h2{margin:5px 0;color:#302d46;font:800 18px Manrope,sans-serif}
+.complaints-metrics{margin:0 0 18px}
+.complaints-list-card{padding:14px}
+.complaints-list{display:grid;gap:11px}
+.complaint-admin-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:15px;padding:15px;border:1px solid #e9e7f1;border-radius:12px;background:#fff}
+.complaint-admin-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.complaint-admin-top strong{color:#343049;font-size:12px}.complaint-date{color:#9b97aa;font-size:9px;white-space:nowrap}
+.complaint-admin-contact{display:flex;flex-wrap:wrap;gap:10px;margin-top:7px;color:#716d82;font-size:10px}.complaint-admin-contact a{color:#6754bf;text-decoration:none;font-weight:700}
+.complaint-admin-main>p{margin:10px 0 0;color:#5f5b70;font-size:11px;line-height:1.7;white-space:pre-line;overflow-wrap:anywhere}
+.complaint-admin-actions{display:flex;align-items:flex-start;gap:7px}.complaint-admin-actions select{max-width:130px;padding:8px;border:1px solid #e4e2ed;border-radius:8px;background:#fff;color:#4e4a64;font:10px "DM Sans",sans-serif}
+.complaint-admin-actions button{padding:8px 10px;border:1px solid #f1dce2;border-radius:8px;background:#fff;color:#c04d63;font:700 9px "DM Sans",sans-serif;cursor:pointer}
+@media(max-width:900px){.builder-nav-link-row{grid-template-columns:1fr 1fr}.builder-nav-enabled{justify-content:flex-start}.complaint-admin-card{grid-template-columns:1fr}.complaint-admin-actions{justify-content:flex-end}}
+@media(max-width:600px){.homepage-builder-card{padding:14px}.builder-settings-subhead{align-items:flex-start;flex-direction:column;gap:4px}.builder-nav-link-row{grid-template-columns:1fr}.builder-nav-enabled{height:auto;justify-content:flex-start}.builder-form-actions{align-items:stretch;flex-direction:column}.builder-form-actions .btn{width:100%}.complaint-admin-top{flex-direction:column;gap:5px}.complaint-admin-actions{justify-content:stretch}.complaint-admin-actions select,.complaint-admin-actions button{flex:1;max-width:none}}
