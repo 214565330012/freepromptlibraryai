@@ -1,652 +1,452 @@
-(() => {
+// FreePromptLibraryAI - Admin Studio Controller
+// Complete Supabase Authentication, RLS Verification, and Prompt Management (CRUD)
+
+(function () {
   'use strict';
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+
   const client = window.supabaseClient;
-  const PAGE_SIZE = 18;
 
   const state = {
     user: null,
     prompts: [],
-    page: 1,
-    pageSize: PAGE_SIZE,
-    view: 'overview',
-    imageUrl: '',
-    sectionCount: 0,
-    recoveryEmail: '',
-    resendTimer: null,
-    otpVerificationInProgress: false,
-    recoveryLinkInProgress: false
+    filterCategory: 'All',
+    filterStatus: 'All',
+    searchTerm: '',
+    isUploading: false
   };
 
-  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-  })[char]);
-
-  function setMessage(element, message = '', isError = false) {
-    if (!element) return;
-    element.textContent = message;
-    element.classList.toggle('error', isError);
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[char]));
   }
 
-  let toastTimer;
   function toast(message, isError = false) {
     const element = $('#toast');
     if (!element) return;
     element.textContent = message;
     element.classList.toggle('error', isError);
     element.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => element.classList.remove('show'), 3200);
+    clearTimeout(window.__toastTimer);
+    window.__toastTimer = setTimeout(() => element.classList.remove('show'), 3000);
   }
 
+  function setMessage(element, message = '', isError = false) {
+    if (!element) return;
+    element.textContent = message;
+    element.style.color = isError ? '#f87171' : '#34d399';
+  }
+
+  // View switchers
   function showLogin(message = '', isError = true) {
-    $('#loginView').hidden = false;
-    $('#recoveryView').hidden = true;
-    $('#dashboardView').hidden = true;
+    if ($('#loginView')) $('#loginView').hidden = false;
+    if ($('#recoveryView')) $('#recoveryView').hidden = true;
+    if ($('#dashboardView')) $('#dashboardView').hidden = true;
     if (message) setMessage($('#loginMessage'), message, isError);
   }
 
   function showRecovery() {
-    $('#loginView').hidden = true;
-    $('#recoveryView').hidden = false;
-    $('#dashboardView').hidden = true;
-  }
-
-  function setRecoveryStep(step) {
-    $('#recoveryRequestForm').hidden = step !== 'request';
-    $('#recoveryOtpForm').hidden = step !== 'otp';
-    $('#recoveryPasswordForm').hidden = step !== 'password';
-  }
-
-  function resetRecovery() {
-    if (state.resendTimer) {
-      clearInterval(state.resendTimer);
-      state.resendTimer = null;
-    }
-    $('#recoveryRequestForm').reset();
-    $('#recoveryOtpForm').reset();
-    $('#recoveryPasswordForm').reset();
-    $('#recoveryIntro').textContent = 'Enter your admin email. We will send a verification code or secure reset link.';
-    setMessage($('#recoveryRequestMessage'));
-    setMessage($('#recoveryOtpMessage'));
-    setMessage($('#recoveryPasswordMessage'));
-    $('#resendOtpBtn').disabled = true;
-    $('#resendOtpBtn').textContent = 'Resend code in 60s';
-    setRecoveryStep('request');
-  }
-
-  function startResendCooldown(seconds = 60) {
-    const button = $('#resendOtpBtn');
-    if (state.resendTimer) clearInterval(state.resendTimer);
-    let remaining = seconds;
-    button.disabled = true;
-    button.textContent = `Resend code in ${remaining}s`;
-    state.resendTimer = setInterval(() => {
-      remaining -= 1;
-      if (remaining <= 0) {
-        clearInterval(state.resendTimer);
-        state.resendTimer = null;
-        button.disabled = false;
-        button.textContent = 'Resend verification code';
-      } else {
-        button.textContent = `Resend code in ${remaining}s`;
-      }
-    }, 1000);
-  }
-
-  async function verifyAdmin(user) {
-    const { data, error } = await client.from('admin_users')
-      .select('user_id').eq('user_id', user.id).maybeSingle();
-    if (error) throw new Error(`Admin permission check failed: ${error.message}`);
-    if (!data) throw new Error('This account is not authorised for the Admin Panel.');
-    state.user = user;
+    if ($('#loginView')) $('#loginView').hidden = true;
+    if ($('#recoveryView')) $('#recoveryView').hidden = false;
+    if ($('#dashboardView')) $('#dashboardView').hidden = true;
   }
 
   function showDashboard() {
-    $('#loginView').hidden = true;
-    $('#recoveryView').hidden = true;
-    $('#dashboardView').hidden = false;
-    const email = state.user?.email || 'Administrator';
-    $('#profileEmail').textContent = email;
-    $('#profileInitials').textContent = email.slice(0, 1).toUpperCase();
-    $('#dashboardView').setAttribute('aria-label', `Signed in as ${email}`);
+    if ($('#loginView')) $('#loginView').hidden = true;
+    if ($('#recoveryView')) $('#recoveryView').hidden = true;
+    if ($('#dashboardView')) $('#dashboardView').hidden = false;
+    if (state.user && $('#adminEmailDisplay')) {
+      $('#adminEmailDisplay').textContent = state.user.email;
+    }
     loadPrompts();
   }
 
-  // -------- Login and account recovery --------
-  $('#loginForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const button = event.submitter || $('#loginForm button[type="submit"]');
-    button.disabled = true;
-    setMessage($('#loginMessage'), 'Signing in…');
-    try {
-      if (!client) throw new Error('Supabase could not be loaded. Refresh the page and try again.');
-      const { data, error } = await client.auth.signInWithPassword({
-        email: $('#loginEmail').value.trim(),
-        password: $('#loginPassword').value
-      });
-      if (error) throw error;
-      await verifyAdmin(data.user);
-      setMessage($('#loginMessage'));
-      showDashboard();
-    } catch (error) {
-      if (client) await client.auth.signOut();
-      setMessage($('#loginMessage'), error.message || 'Unable to sign in.', true);
-    } finally {
-      button.disabled = false;
-    }
-  });
+  // Admin Verification check against public.admin_users
+  async function verifyAdmin(user) {
+    if (!client || !user) throw new Error('Authentication required.');
+    const { data, error } = await client
+      .from('admin_users')
+      .select('user_id')
+      .eq('user_id', user.id)
+      .maybeSingle();
 
-  $('#forgotPasswordBtn').addEventListener('click', () => {
-    resetRecovery();
-    const email = $('#loginEmail').value.trim();
-    if (email) $('#recoveryEmail').value = email;
-    showRecovery();
-  });
-
-  $('#backToLoginBtn').addEventListener('click', async () => {
-    if (client) {
-      const { data } = await client.auth.getSession();
-      if (data.session) await client.auth.signOut();
+    if (error) throw error;
+    if (!data) {
+      throw new Error('This account does not have admin permissions.');
     }
-    const savedEmail = state.recoveryEmail || $('#recoveryEmail').value.trim();
-    resetRecovery();
-    if (savedEmail) $('#loginEmail').value = savedEmail;
-    showLogin();
-  });
-
-  async function requestRecovery(email, messageElement, button) {
-    button.disabled = true;
-    setMessage(messageElement, 'Sending a secure recovery email…');
-    try {
-      const { error } = await client.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/admin/`
-      });
-      if (error) throw error;
-      state.recoveryEmail = email;
-      $('#recoveryEmail').value = email;
-      $('#recoveryIntro').textContent = `Check ${email} for the recovery code or secure reset link.`;
-      setRecoveryStep('otp');
-      setMessage($('#recoveryOtpMessage'), 'Recovery email requested. Enter its code, or open the secure reset link.');
-      startResendCooldown(60);
-    } catch (error) {
-      setMessage(messageElement, error.message || 'Could not send the recovery email. Check Supabase email settings.', true);
-    } finally {
-      if (button.id === 'resendOtpBtn') {
-        if (!state.resendTimer) startResendCooldown(60);
-      } else {
-        button.disabled = false;
-      }
-    }
+    state.user = user;
+    return true;
   }
 
-  $('#recoveryRequestForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const email = $('#recoveryEmail').value.trim().toLowerCase();
-    if (!email) return;
-    state.recoveryEmail = email;
-    await requestRecovery(email, $('#recoveryRequestMessage'), $('#sendOtpBtn'));
-  });
-
-  $('#resendOtpBtn').addEventListener('click', async () => {
-    if (state.recoveryEmail) await requestRecovery(state.recoveryEmail, $('#recoveryOtpMessage'), $('#resendOtpBtn'));
-  });
-
-  $('#recoveryOtpForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const button = $('#verifyOtpBtn');
-    const token = $('#recoveryOtp').value.trim();
-    if (!/^\d{6,8}$/.test(token)) {
-      setMessage($('#recoveryOtpMessage'), 'Enter the 6–8 digit code from your email.', true);
-      return;
-    }
-    button.disabled = true;
-    state.otpVerificationInProgress = true;
-    setMessage($('#recoveryOtpMessage'), 'Verifying your email code…');
+  // Load all prompts from Supabase
+  async function loadPrompts() {
+    if (!client) return;
     try {
-      const { data, error } = await client.auth.verifyOtp({ email: state.recoveryEmail, token, type: 'recovery' });
+      const { data, error } = await client
+        .from('prompts')
+        .select('*')
+        .order('id', { ascending: false });
+
       if (error) throw error;
-      const user = data.user || data.session?.user;
-      if (!user) throw new Error('The email code did not return a user. Request a new code.');
-      await verifyAdmin(user);
-      showRecoveryPasswordStep('Email verified. Choose your new password.');
-    } catch (error) {
-      await client.auth.signOut();
-      setMessage($('#recoveryOtpMessage'), error.message || 'The code could not be verified.', true);
-    } finally {
-      state.otpVerificationInProgress = false;
-      button.disabled = false;
+      state.prompts = data || [];
+      updateMetrics();
+      renderPromptList();
+    } catch (err) {
+      toast(err.message || 'Error loading prompts from database.', true);
     }
-  });
-
-  function showRecoveryPasswordStep(message = '') {
-    showRecovery();
-    setRecoveryStep('password');
-    if (message) setMessage($('#recoveryPasswordMessage'), message);
   }
-
-  $('#recoveryPasswordForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const button = $('#saveNewPasswordBtn');
-    const password = $('#recoveryNewPassword').value;
-    const confirmPassword = $('#recoveryConfirmPassword').value;
-    if (password.length < 8) {
-      setMessage($('#recoveryPasswordMessage'), 'Use a password with at least 8 characters.', true);
-      return;
-    }
-    if (password !== confirmPassword) {
-      setMessage($('#recoveryPasswordMessage'), 'The passwords do not match.', true);
-      return;
-    }
-    button.disabled = true;
-    setMessage($('#recoveryPasswordMessage'), 'Updating your password…');
-    try {
-      const { data, error: sessionError } = await client.auth.getSession();
-      if (sessionError) throw sessionError;
-      const user = data.session?.user;
-      if (!user) throw new Error('Your recovery session expired. Request a new recovery email.');
-      await verifyAdmin(user);
-      const { error } = await client.auth.updateUser({ password });
-      if (error) throw error;
-      await client.auth.signOut();
-      state.user = null;
-      $('#loginEmail').value = state.recoveryEmail || user.email || '';
-      resetRecovery();
-      showLogin();
-      setMessage($('#loginMessage'), 'Password changed successfully. Sign in with your new password.');
-    } catch (error) {
-      setMessage($('#recoveryPasswordMessage'), error.message || 'Could not update the password.', true);
-    } finally {
-      button.disabled = false;
-    }
-  });
-
-  if (client) {
-    client.auth.onAuthStateChange((event, session) => {
-      if (event !== 'PASSWORD_RECOVERY' || !session?.user || state.otpVerificationInProgress || state.recoveryLinkInProgress) return;
-      state.recoveryLinkInProgress = true;
-      setTimeout(async () => {
-        try {
-          await verifyAdmin(session.user);
-          state.recoveryEmail = session.user.email || '';
-          $('#recoveryEmail').value = state.recoveryEmail;
-          $('#recoveryIntro').textContent = 'Your secure recovery link has verified your email.';
-          showRecoveryPasswordStep('Your email is verified. Choose a new password.');
-        } catch (error) {
-          await client.auth.signOut();
-          resetRecovery();
-          showLogin(error.message || 'This account is not authorised to reset the admin password.');
-        } finally {
-          state.recoveryLinkInProgress = false;
-        }
-      }, 0);
-    });
-  }
-
-  // -------- Navigation and shared data --------
-  function switchView(view) {
-    state.view = view;
-    $$('.view-panel').forEach((panel) => panel.classList.toggle('active', panel.dataset.panel === view));
-    $$('.nav-item').forEach((button) => button.classList.toggle('active', button.dataset.view === view));
-    const titles = { overview: 'Overview', prompts: 'All prompts', categories: 'Categories', media: 'Media library' };
-    $('#breadcrumbTitle').textContent = titles[view] || 'Overview';
-    $('#sidebar').classList.remove('open');
-    if (view === 'prompts') renderPromptList();
-    if (view === 'categories') renderCategories();
-    if (view === 'media') renderMedia();
-  }
-
-  $$('.nav-item, [data-view]').forEach((button) => {
-    button.addEventListener('click', () => switchView(button.dataset.view));
-  });
-  $('#mobileMenuButton').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
-  $('#signOutBtn').addEventListener('click', async () => {
-    await client.auth.signOut();
-    state.user = null;
-    showLogin('You have signed out.', false);
-  });
 
   function updateMetrics() {
-    const prompts = state.prompts;
-    const published = prompts.filter((prompt) => prompt.status === 'published').length;
-    const drafts = prompts.filter((prompt) => prompt.status === 'draft').length;
-    const trending = prompts.filter((prompt) => prompt.is_trending).length;
-    $('#totalCount').textContent = prompts.length;
-    $('#publishedCount').textContent = published;
-    $('#draftCount').textContent = drafts;
-    $('#trendingCount').textContent = trending;
-    $('#navPromptCount').textContent = prompts.length;
-
-    const photo = prompts.filter((prompt) => prompt.type === 'Photo').length;
-    const video = prompts.filter((prompt) => prompt.type === 'Video').length;
-    const max = Math.max(prompts.length, 1);
-    $('#typeBreakdown').innerHTML = `
-      <div class="breakdown-line"><span>Photo</span><div class="bar-track"><div class="bar-fill" style="width:${(photo / max) * 100}%"></div></div><b>${photo}</b></div>
-      <div class="breakdown-line"><span>Video</span><div class="bar-track"><div class="bar-fill video" style="width:${(video / max) * 100}%"></div></div><b>${video}</b></div>`;
+    const list = state.prompts;
+    if ($('#metricTotal')) $('#metricTotal').textContent = list.length;
+    if ($('#metricPhoto')) $('#metricPhoto').textContent = list.filter(p => p.type === 'Photo').length;
+    if ($('#metricVideo')) $('#metricVideo').textContent = list.filter(p => p.type === 'Video').length;
+    if ($('#metricTrending')) $('#metricTrending').textContent = list.filter(p => p.is_trending).length;
   }
 
-  function renderSequencePreview() {
-    // The public library begins with prompt IDs 1, 2, 3. Keep this same ascending sequence in Admin.
-    const preview = [...state.prompts].sort((a, b) => Number(a.id) - Number(b.id)).slice(0, 6);
-    $('#sequencePreview').innerHTML = preview.length ? preview.map((prompt) => `
-      <div class="sequence-item">
-        <span class="sequence-number">${escapeHtml(prompt.id)}</span>
-        <span class="sequence-title"><strong>${escapeHtml(prompt.title)}</strong><small>${escapeHtml(prompt.category || 'General')}</small></span>
-        <span class="type-pill ${prompt.type === 'Video' ? 'video' : ''}">${escapeHtml(prompt.type)}</span>
-        <button class="sequence-edit" type="button" data-edit-prompt="${escapeHtml(prompt.id)}">Edit</button>
-      </div>`).join('') : '<div class="empty-state">No prompts available yet.</div>';
-  }
-
-  async function loadPrompts() {
-    $('#sequencePreview').innerHTML = '<div class="loading-row">Loading your prompt sequence…</div>';
-    $('#promptRows').innerHTML = '<tr><td colspan="7" class="loading-row">Loading prompts…</td></tr>';
-    try {
-      const { data, error } = await client.from('prompts').select('*').order('id', { ascending: true });
-      if (error) throw error;
-      state.prompts = (data || []).sort((a, b) => Number(a.id) - Number(b.id));
-      updateMetrics();
-      renderSequencePreview();
-      populateCategoryFilters();
-      renderPromptList();
-      renderCategories();
-      renderMedia();
-    } catch (error) {
-      const message = escapeHtml(error.message || 'Unable to load prompts.');
-      $('#sequencePreview').innerHTML = `<div class="empty-state">${message}</div>`;
-      $('#promptRows').innerHTML = `<tr><td colspan="7" class="empty-state">${message}</td></tr>`;
-      toast(`Could not load prompts: ${error.message}`, true);
-    }
-  }
-
-  function filteredPrompts() {
-    const search = $('#promptSearch').value.trim().toLowerCase();
-    const type = $('#typeFilter').value;
-    const status = $('#statusFilter').value;
-    const category = $('#categoryFilter').value;
-    return state.prompts.filter((prompt) => {
-      if (type !== 'all' && prompt.type !== type) return false;
-      if (status !== 'all' && prompt.status !== status) return false;
-      if (category !== 'all' && prompt.category !== category) return false;
-      if (!search) return true;
-      const haystack = [prompt.id, prompt.title, prompt.title_hi, prompt.category, prompt.type, prompt.prompt_en, prompt.prompt_hi].join(' ').toLowerCase();
-      return haystack.includes(search);
-    }).sort((a, b) => Number(a.id) - Number(b.id));
-  }
-
-  function renderPagination(totalPages) {
-    const nav = $('#adminPagination');
-    if (totalPages <= 1) { nav.innerHTML = ''; return; }
-    let html = `<button type="button" data-page="${state.page - 1}" ${state.page === 1 ? 'disabled' : ''}>‹</button>`;
-    for (let page = 1; page <= totalPages; page += 1) {
-      html += `<button type="button" data-page="${page}" class="${page === state.page ? 'active' : ''}" ${page === state.page ? 'aria-current="page"' : ''}>${page}</button>`;
-    }
-    html += `<button type="button" data-page="${state.page + 1}" ${state.page === totalPages ? 'disabled' : ''}>›</button>`;
-    nav.innerHTML = html;
+  function getFilteredPrompts() {
+    return state.prompts.filter(item => {
+      if (state.filterCategory !== 'All' && item.category !== state.filterCategory) return false;
+      if (state.filterStatus !== 'All' && item.status !== state.filterStatus) return false;
+      if (state.searchTerm.trim() !== '') {
+        const query = state.searchTerm.toLowerCase();
+        const matchTitle = (item.title || '').toLowerCase().includes(query);
+        const matchPrompt = (item.prompt_en || '').toLowerCase().includes(query);
+        const matchCategory = (item.category || '').toLowerCase().includes(query);
+        if (!matchTitle && !matchPrompt && !matchCategory) return false;
+      }
+      return true;
+    });
   }
 
   function renderPromptList() {
-    if (!$('#promptRows')) return;
-    const filtered = filteredPrompts();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / state.pageSize));
-    state.page = Math.min(state.page, totalPages);
-    const start = (state.page - 1) * state.pageSize;
-    const pageItems = filtered.slice(start, start + state.pageSize);
-    $('#promptRows').innerHTML = pageItems.length ? pageItems.map((prompt) => `
-      <tr>
-        <td><span class="prompt-no">${escapeHtml(prompt.id)}</span></td>
-        <td><div class="prompt-name"><strong>${escapeHtml(prompt.title)}</strong><small>${escapeHtml(prompt.title_hi || prompt.prompt_en?.slice(0, 70) || '')}</small></div></td>
-        <td><span class="type-pill ${prompt.type === 'Video' ? 'video' : ''}">${escapeHtml(prompt.type)}</span></td>
-        <td>${escapeHtml(prompt.category || 'General')}</td>
-        <td><span class="status-pill ${escapeHtml(prompt.status)}">${escapeHtml(prompt.status)}</span></td>
-        <td>${prompt.is_trending ? '<span class="status-pill published">Featured</span>' : '<span class="muted-dash">—</span>'}</td>
-        <td><div class="row-actions"><button type="button" data-edit-prompt="${escapeHtml(prompt.id)}">Edit</button><button type="button" class="delete-btn" data-delete-prompt="${escapeHtml(prompt.id)}">Delete</button></div></td>
-      </tr>`).join('') : '<tr><td colspan="7" class="empty-state">No prompts match these filters.</td></tr>';
-    const shownStart = filtered.length ? start + 1 : 0;
-    const shownEnd = Math.min(start + state.pageSize, filtered.length);
-    $('#listSummary').textContent = `Showing ${shownStart}–${shownEnd} of ${filtered.length} prompts · ordered by prompt number`;
-    renderPagination(totalPages);
-  }
+    const tbody = $('#promptRows');
+    if (!tbody) return;
 
-  function populateCategoryFilters() {
-    const categories = [...new Set(state.prompts.map((prompt) => prompt.category).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-    const current = $('#categoryFilter').value;
-    $('#categoryFilter').innerHTML = '<option value="all">All categories</option>' + categories.map((category) => `<option value="${escapeHtml(category)}">${escapeHtml(category)}</option>`).join('');
-    if (categories.includes(current)) $('#categoryFilter').value = current;
-    $('#categorySuggestions').innerHTML = categories.map((category) => `<option value="${escapeHtml(category)}"></option>`).join('');
-  }
+    const filtered = getFilteredPrompts();
 
-  function renderCategories() {
-    const counts = new Map();
-    state.prompts.forEach((prompt) => {
-      const category = prompt.category || 'General';
-      counts.set(category, (counts.get(category) || 0) + 1);
-    });
-    const categories = [...counts.entries()].sort((a, b) => a[0].localeCompare(b[0]));
-    $('#categoryGrid').innerHTML = categories.length ? categories.map(([name, count]) => `
-      <button class="category-card" type="button" data-category="${escapeHtml(name)}">
-        <span><strong>${escapeHtml(name)}</strong><small>${count} ${count === 1 ? 'prompt' : 'prompts'} · Open prompt list</small></span>
-        <span class="category-count">${count}</span>
-      </button>`).join('') : '<div class="content-card empty-state">No categories yet.</div>';
-  }
-
-  function renderMedia() {
-    const images = state.prompts.filter((prompt) => prompt.image_url);
-    $('#mediaCount').textContent = `${images.length} ${images.length === 1 ? 'image' : 'images'}`;
-    $('#mediaGrid').innerHTML = images.length ? images.map((prompt) => `
-      <article class="media-card">
-        <div class="media-thumb"><img src="${escapeHtml(prompt.image_url)}" alt="${escapeHtml(prompt.title)}" loading="lazy"></div>
-        <div class="media-info"><strong>${escapeHtml(prompt.title)}</strong><small>Prompt #${escapeHtml(prompt.id)} · ${escapeHtml(prompt.type)}</small><button class="media-open" type="button" data-edit-prompt="${escapeHtml(prompt.id)}">Edit image ↗</button></div>
-      </article>`).join('') : '<div class="content-card empty-state">No sample images have been uploaded yet. Add an image while editing a prompt.</div>';
-  }
-
-  $('#promptSearch').addEventListener('input', () => { state.page = 1; renderPromptList(); });
-  ['#typeFilter', '#statusFilter', '#categoryFilter'].forEach((selector) => $(selector).addEventListener('change', () => { state.page = 1; renderPromptList(); }));
-  $('#adminPagination').addEventListener('click', (event) => {
-    const button = event.target.closest('[data-page]');
-    if (!button || button.disabled) return;
-    const page = Number(button.dataset.page);
-    if (!Number.isInteger(page) || page < 1) return;
-    state.page = page;
-    renderPromptList();
-  });
-
-  // -------- Prompt editor and content management --------
-  function openEditor(prompt = null) {
-    resetEditorForm();
-    $('#editorModal').hidden = false;
-    document.body.style.overflow = 'hidden';
-    $('#editorTitle').textContent = prompt ? 'Edit prompt' : 'Create a prompt';
-    $('#editorSequence').textContent = prompt ? `· PROMPT #${prompt.id}` : '· NEW ITEM';
-    if (prompt) {
-      $('#promptId').value = prompt.id;
-      $('#title').value = prompt.title || '';
-      $('#titleHi').value = prompt.title_hi || '';
-      $('#type').value = prompt.type || 'Photo';
-      $('#category').value = prompt.category || '';
-      $('#promptEn').value = prompt.prompt_en || '';
-      $('#promptHi').value = prompt.prompt_hi || '';
-      $('#aspectRatio').value = prompt.aspect_ratio || '';
-      $('#duration').value = prompt.duration || '';
-      $('#status').value = prompt.status || 'draft';
-      $('#isTrending').checked = !!prompt.is_trending;
-      state.imageUrl = prompt.image_url || '';
-      showCurrentImage(state.imageUrl);
-      (Array.isArray(prompt.extra_sections) ? prompt.extra_sections : []).forEach(addExtraSection);
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+            No prompts found matching your filters.
+          </td>
+        </tr>
+      `;
+      return;
     }
-    setTimeout(() => $('#title').focus(), 40);
+
+    tbody.innerHTML = filtered.map(item => `
+      <tr>
+        <td style="font-weight: 700; color: var(--text-dim);">${item.id}</td>
+        <td>
+          <strong style="color: #fff;">${escapeHtml(item.title)}</strong>
+        </td>
+        <td>
+          <span class="status-pill" style="background: rgba(255,255,255,0.06); color: #c4b5fd;">
+            ${escapeHtml(item.type)}
+          </span>
+        </td>
+        <td>${escapeHtml(item.category)}</td>
+        <td style="color: var(--text-muted); font-size: 0.85rem;">${escapeHtml(item.aspect_ratio || 'N/A')}</td>
+        <td>
+          <span class="status-pill status-${item.status === 'published' ? 'published' : 'draft'}">
+            ${escapeHtml(item.status)}
+          </span>
+        </td>
+        <td>${item.is_trending ? '🔥 Yes' : '—'}</td>
+        <td style="text-align: right;">
+          <button class="btn btn-secondary btn-sm" data-edit-prompt="${item.id}" type="button">Edit</button>
+          <button class="btn btn-danger btn-sm" data-delete-prompt="${item.id}" type="button" style="margin-left: 0.4rem;">Delete</button>
+        </td>
+      </tr>
+    `).join('');
   }
 
-  function resetEditorForm() {
-    $('#promptForm').reset();
-    $('#promptId').value = '';
-    state.imageUrl = '';
-    state.sectionCount = 0;
-    $('#extraSectionList').innerHTML = '';
-    $('#editorSequence').textContent = '';
-    $('#imageFile').value = '';
-    showCurrentImage('');
-    setMessage($('#saveMessage'));
+  // Prompt Editor Modal
+  function openEditor(prompt = null) {
+    const modal = $('#editorModal');
+    if (!modal) return;
+
+    if (prompt) {
+      $('#modalTitle').textContent = `Edit Prompt #${prompt.id}`;
+      $('#promptId').value = prompt.id;
+      $('#promptTitle').value = prompt.title || '';
+      $('#promptType').value = prompt.type || 'Photo';
+      $('#promptCategory').value = prompt.category || '';
+      $('#promptAspect').value = prompt.aspect_ratio || '4:5';
+      $('#promptDuration').value = prompt.duration || '';
+      $('#promptImageUrl').value = prompt.image_url || '';
+      $('#promptStatus').value = prompt.status || 'published';
+      $('#promptTrending').checked = Boolean(prompt.is_trending);
+      $('#promptEn').value = prompt.prompt_en || '';
+      $('#promptHi').value = prompt.prompt_hi || prompt.how_to_use_hi || '';
+    } else {
+      $('#modalTitle').textContent = 'Create New Prompt';
+      $('#promptForm').reset();
+      $('#promptId').value = '';
+      $('#promptAspect').value = '4:5';
+      $('#promptStatus').value = 'published';
+    }
+
+    modal.hidden = false;
   }
 
   function closeEditor() {
-    $('#editorModal').hidden = true;
-    document.body.style.overflow = '';
-    resetEditorForm();
+    const modal = $('#editorModal');
+    if (modal) modal.hidden = true;
   }
 
-  function showCurrentImage(url) {
-    const line = $('#currentImage');
-    if (!url) {
-      line.textContent = 'No sample image selected.';
-      return;
-    }
-    line.innerHTML = `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">Current sample image · Open preview ↗</a>`;
+  // Upload image to Supabase Storage bucket 'prompt-images'
+  async function uploadImageFile(file) {
+    if (!file || !client) return '';
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+    const filePath = `prompts/${fileName}`;
+
+    const { error: uploadError } = await client.storage
+      .from('prompt-images')
+      .upload(filePath, file);
+
+    if (uploadError) throw uploadError;
+
+    const { data } = client.storage
+      .from('prompt-images')
+      .getPublicUrl(filePath);
+
+    return data.publicUrl;
   }
 
-  function addExtraSection(data = {}) {
-    state.sectionCount += 1;
-    const wrap = document.createElement('div');
-    wrap.className = 'extra-editor';
-    wrap.innerHTML = `
-      <div class="extra-editor-top"><strong>Detail section ${state.sectionCount}</strong><button type="button" data-move="up" title="Move section up">↑</button><button type="button" data-move="down" title="Move section down">↓</button><button type="button" class="remove-section">Remove</button></div>
-      <label>Heading (English)<input class="heading-en" maxlength="150" value="${escapeHtml(data.heading_en || '')}" placeholder="Section heading"></label>
-      <label>Heading (Hindi)<input class="heading-hi" maxlength="150" value="${escapeHtml(data.heading_hi || '')}" placeholder="हिंदी शीर्षक"></label>
-      <label class="full-span">Content (English)<textarea class="content-en" rows="3">${escapeHtml(data.content_en || data.paragraph_en || '')}</textarea></label>
-      <label class="full-span">Content (Hindi)<textarea class="content-hi" rows="3">${escapeHtml(data.content_hi || data.paragraph_hi || '')}</textarea></label>
-      <label class="full-span">Optional image URL<input class="section-image" type="url" placeholder="https://…" value="${escapeHtml(data.image_url || '')}"></label>`;
-    wrap.querySelector('.remove-section').addEventListener('click', () => wrap.remove());
-    wrap.querySelectorAll('[data-move]').forEach((button) => button.addEventListener('click', () => {
-      const list = $('#extraSectionList');
-      if (button.dataset.move === 'up' && wrap.previousElementSibling) list.insertBefore(wrap, wrap.previousElementSibling);
-      if (button.dataset.move === 'down' && wrap.nextElementSibling) list.insertBefore(wrap.nextElementSibling, wrap);
-    }));
-    $('#extraSectionList').appendChild(wrap);
-  }
+  // Save Prompt (Create / Update)
+  async function handleSavePrompt(e) {
+    e.preventDefault();
+    if (!client) return;
 
-  function getExtraSections() {
-    return $$('.extra-editor', $('#extraSectionList')).map((wrap) => ({
-      heading_en: $('.heading-en', wrap).value.trim(),
-      heading_hi: $('.heading-hi', wrap).value.trim(),
-      content_en: $('.content-en', wrap).value.trim(),
-      content_hi: $('.content-hi', wrap).value.trim(),
-      image_url: $('.section-image', wrap).value.trim()
-    })).filter((section) => Object.values(section).some(Boolean));
-  }
+    const btn = $('#btnSavePrompt');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
 
-  async function uploadImage(file) {
-    if (!file) return state.imageUrl;
-    if (file.size > 5 * 1024 * 1024) throw new Error('Image must be 5 MB or smaller.');
-    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
-    if (!allowed.includes(file.type)) throw new Error('Use a JPG, PNG, WebP or AVIF image.');
-    const extension = (file.name.split('.').pop() || 'webp').toLowerCase().replace(/[^a-z0-9]/g, '') || 'webp';
-    const unique = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-    const path = `${Date.now()}-${unique}.${extension}`;
-    const { error } = await client.storage.from('prompt-images').upload(path, file, {
-      upsert: false, contentType: file.type, cacheControl: '31536000'
-    });
-    if (error) throw error;
-    return client.storage.from('prompt-images').getPublicUrl(path).data.publicUrl;
-  }
-
-  $('#promptForm').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const button = $('#saveBtn');
-    button.disabled = true;
-    setMessage($('#saveMessage'), 'Saving prompt…');
     try {
-      const imageUrl = await uploadImage($('#imageFile').files[0]);
+      let imageUrl = $('#promptImageUrl').value.trim();
+      const fileInput = $('#promptImageFile');
+
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        btn.textContent = 'Uploading image...';
+        imageUrl = await uploadImageFile(fileInput.files[0]);
+      }
+
+      const id = $('#promptId').value;
       const payload = {
-        title: $('#title').value.trim(),
-        title_hi: $('#titleHi').value.trim(),
-        type: $('#type').value,
-        category: $('#category').value.trim() || 'General',
+        title: $('#promptTitle').value.trim(),
+        type: $('#promptType').value,
+        category: $('#promptCategory').value.trim(),
+        aspect_ratio: $('#promptAspect').value.trim(),
+        duration: $('#promptDuration').value.trim(),
+        image_url: imageUrl,
+        status: $('#promptStatus').value,
+        is_trending: $('#promptTrending').checked,
         prompt_en: $('#promptEn').value.trim(),
         prompt_hi: $('#promptHi').value.trim(),
-        aspect_ratio: $('#aspectRatio').value.trim(),
-        duration: $('#duration').value.trim(),
-        image_url: imageUrl,
-        is_trending: $('#isTrending').checked,
-        status: $('#status').value,
-        extra_sections: getExtraSections(),
         updated_at: new Date().toISOString()
       };
-      const id = $('#promptId').value;
-      const result = id
-        ? await client.from('prompts').update(payload).eq('id', Number(id))
-        : await client.from('prompts').insert(payload);
-      if (result.error) throw result.error;
+
+      if (id) {
+        // Update
+        const { error } = await client
+          .from('prompts')
+          .update(payload)
+          .eq('id', Number(id));
+        if (error) throw error;
+        toast(`Prompt #${id} updated successfully!`);
+      } else {
+        // Insert
+        const { error } = await client
+          .from('prompts')
+          .insert([payload]);
+        if (error) throw error;
+        toast('New prompt published successfully!');
+      }
+
       closeEditor();
       await loadPrompts();
-      toast(id ? 'Prompt updated successfully.' : 'New prompt added to the end of the sequence.');
-    } catch (error) {
-      setMessage($('#saveMessage'), error.message || 'Could not save this prompt.', true);
+    } catch (err) {
+      toast(err.message || 'Failed to save prompt.', true);
     } finally {
-      button.disabled = false;
-    }
-  });
-
-  $('#addSectionBtn').addEventListener('click', () => addExtraSection());
-  $('#closeEditorBtn').addEventListener('click', closeEditor);
-  $('#cancelBtn').addEventListener('click', closeEditor);
-  $('#editorModal').addEventListener('click', (event) => { if (event.target === $('#editorModal')) closeEditor(); });
-  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !$('#editorModal').hidden) closeEditor(); });
-
-  async function deletePrompt(id) {
-    const prompt = state.prompts.find((item) => String(item.id) === String(id));
-    if (!prompt) return;
-    const approved = window.confirm(`Delete prompt #${prompt.id} — “${prompt.title}”? This cannot be undone.`);
-    if (!approved) return;
-    try {
-      const { error } = await client.from('prompts').delete().eq('id', Number(id));
-      if (error) throw error;
-      await loadPrompts();
-      toast(`Prompt #${id} deleted.`);
-    } catch (error) {
-      toast(error.message || 'Could not delete prompt.', true);
+      btn.disabled = false;
+      btn.textContent = 'Save & Publish';
     }
   }
 
-  document.addEventListener('click', (event) => {
-    const action = event.target.closest('[data-action]');
-    if (action?.dataset.action === 'new-prompt') openEditor();
-    if (action?.dataset.action === 'view-prompts') switchView('prompts');
-
-    const edit = event.target.closest('[data-edit-prompt]');
-    if (edit) {
-      const prompt = state.prompts.find((item) => String(item.id) === edit.dataset.editPrompt);
-      if (prompt) openEditor(prompt);
-    }
-    const remove = event.target.closest('[data-delete-prompt]');
-    if (remove) deletePrompt(remove.dataset.deletePrompt);
-    const category = event.target.closest('[data-category]');
-    if (category) {
-      switchView('prompts');
-      $('#categoryFilter').value = category.dataset.category;
-      state.page = 1;
-      renderPromptList();
-    }
-  });
-
-  // -------- Start-up --------
-  (async () => {
-    if (!client) {
-      showLogin('Supabase client did not load. Check the Supabase scripts and refresh.', true);
+  // Delete Prompt
+  async function deletePrompt(id) {
+    if (!confirm(`Are you sure you want to delete prompt #${id}? This action cannot be undone.`)) {
       return;
     }
+    if (!client) return;
+
+    try {
+      const { error } = await client
+        .from('prompts')
+        .delete()
+        .eq('id', Number(id));
+
+      if (error) throw error;
+      toast(`Prompt #${id} deleted.`);
+      await loadPrompts();
+    } catch (err) {
+      toast(err.message || 'Could not delete prompt.', true);
+    }
+  }
+
+  // Event Listeners setup
+  function setupEvents() {
+    // Login Form
+    const loginForm = $('#loginForm');
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setMessage($('#loginMessage'), 'Signing in...');
+        const email = $('#loginEmail').value.trim();
+        const password = $('#loginPassword').value;
+
+        try {
+          const { data, error } = await client.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          await verifyAdmin(data.user);
+          showDashboard();
+        } catch (err) {
+          setMessage($('#loginMessage'), err.message || 'Invalid login credentials.', true);
+        }
+      });
+    }
+
+    // Forgot password
+    if ($('#forgotPasswordBtn')) {
+      $('#forgotPasswordBtn').addEventListener('click', showRecovery);
+    }
+    if ($('#backToLoginBtn')) {
+      $('#backToLoginBtn').addEventListener('click', () => showLogin('', false));
+    }
+
+    // Password Recovery Form
+    const recoveryForm = $('#recoveryForm');
+    if (recoveryForm) {
+      recoveryForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        setMessage($('#recoveryMessage'), 'Sending reset link...');
+        const email = $('#recoveryEmail').value.trim();
+        try {
+          const { error } = await client.auth.resetPasswordForEmail(email);
+          if (error) throw error;
+          setMessage($('#recoveryMessage'), 'Reset email sent! Please check your inbox.', false);
+        } catch (err) {
+          setMessage($('#recoveryMessage'), err.message || 'Could not send reset email.', true);
+        }
+      });
+    }
+
+    // Logout
+    if ($('#btnLogout')) {
+      $('#btnLogout').addEventListener('click', async () => {
+        if (client) await client.auth.signOut();
+        state.user = null;
+        showLogin('You have been signed out.', false);
+      });
+    }
+
+    // New Prompt buttons
+    $$('[data-action="new-prompt"]').forEach(btn => {
+      btn.addEventListener('click', () => openEditor());
+    });
+
+    // Close Modal buttons
+    if ($('#btnCloseModal')) $('#btnCloseModal').addEventListener('click', closeEditor);
+    if ($('#btnCancelPrompt')) $('#btnCancelPrompt').addEventListener('click', closeEditor);
+
+    // Save Prompt
+    const promptForm = $('#promptForm');
+    if (promptForm) {
+      promptForm.addEventListener('submit', handleSavePrompt);
+    }
+
+    // Search and Category filters
+    const searchInput = $('#searchPromptInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        state.searchTerm = e.target.value;
+        renderPromptList();
+      });
+    }
+
+    const catFilter = $('#categoryFilter');
+    if (catFilter) {
+      catFilter.addEventListener('change', (e) => {
+        state.filterCategory = e.target.value;
+        renderPromptList();
+      });
+    }
+
+    const statusFilter = $('#statusFilter');
+    if (statusFilter) {
+      statusFilter.addEventListener('change', (e) => {
+        state.filterStatus = e.target.value;
+        renderPromptList();
+      });
+    }
+
+    // Table Actions (Edit / Delete) via event delegation
+    const tbody = $('#promptRows');
+    if (tbody) {
+      tbody.addEventListener('click', (e) => {
+        const editBtn = e.target.closest('[data-edit-prompt]');
+        if (editBtn) {
+          const id = editBtn.getAttribute('data-edit-prompt');
+          const prompt = state.prompts.find(p => String(p.id) === String(id));
+          if (prompt) openEditor(prompt);
+          return;
+        }
+
+        const deleteBtn = e.target.closest('[data-delete-prompt]');
+        if (deleteBtn) {
+          const id = deleteBtn.getAttribute('data-delete-prompt');
+          deletePrompt(id);
+        }
+      });
+    }
+  }
+
+  // Startup verification
+  async function init() {
+    setupEvents();
+
+    if (!client) {
+      showLogin('Supabase client did not initialize. Please verify network connection.', true);
+      return;
+    }
+
     try {
       const { data, error } = await client.auth.getSession();
       if (error) throw error;
-      if (data.session?.user) {
+
+      if (data.session && data.session.user) {
         await verifyAdmin(data.session.user);
         showDashboard();
       } else {
-        showLogin();
+        showLogin('', false);
       }
-    } catch (error) {
+    } catch (err) {
       await client.auth.signOut();
-      showLogin(error.message || 'Unable to verify your session.', true);
+      showLogin(err.message || 'Session expired. Please sign in.', true);
     }
-  })();
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+
 })();
