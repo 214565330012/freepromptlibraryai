@@ -1,1 +1,2 @@
 /admin /admin/ 301
+/supabase/* /404.html 404

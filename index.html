@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Free Gemini photo editing prompts and free Google Flow video prompts in English and Hindi.">
+<meta name="description" content="Free Gemini photo editing prompts and free Google Flow video prompts.">
 <meta name="theme-color" content="#6959cb">
 <title>Free Gemini Photo Editing Prompts | Free Google Flow Video Prompts</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10,6 +10,14 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="site-controls" aria-label="Website display settings">
+  <div class="language-switch" role="group" aria-label="Choose website language">
+    <button type="button" class="language-option" data-language="en" aria-pressed="true">English</button>
+    <button type="button" class="language-option" data-language="hi" aria-pressed="false">हिन्दी</button>
+  </div>
+  <button type="button" id="themeToggle" class="site-control theme-control" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+</div>
+
 
 <section class="hero">
   <div class="hero-inner">
@@ -17,7 +25,7 @@
       <h1>Free Gemini Photo Editing Prompts</h1>
       <h2>Free Google Flow Video Prompts</h2>
     </div>
-    <p class="hero-subtitle">New AI Trending Photo &amp; Video Prompts Every Day — Copy And Paste For Gemini, ChatGPT, Flow AI And Other AI Tools To Generate Photos And Videos.</p>
+    <p class="hero-subtitle">New AI Trending Photo &amp; Video Prompts Every Day — Copy And Paste For Gemini, ChatGPT, Flow AI And Other Creative Tools.</p>
     <form class="search-wrap" id="searchForm">
       <input id="searchInput" type="search" placeholder="Search Couple, Saree, Cartoon, Festival Prompts..." aria-label="Search prompts">
       <button type="submit">Search</button>
@@ -55,7 +63,7 @@
 
 <section id="latest" class="latest-section">
   <h2>New Prompts on FreePromptLibraryAI</h2>
-  <p class="section-subtitle">New copy-paste prompts added regularly – festivals, couples, selfies and viral trends.</p>
+  <p class="section-subtitle">New copy-paste prompts added regularly – celebrations, portraits, couples and creative trends.</p>
   <div class="cards-grid" id="latestGrid"></div>
   <nav class="pagination" id="pagination" aria-label="New prompt pages"></nav>
   <p class="no-results" id="noResults" hidden>No prompts matched your search. Try another word.</p>
@@ -80,13 +88,13 @@
 
 <section class="other-section how-section">
   <h2>How to Use These Prompts</h2>
-  <div class="how-grid"><article><b>1</b><h3>Choose a Prompt</h3><p>Browse the latest photo or video prompt collection.</p></article><article><b>2</b><h3>Get the Prompt</h3><p>Open the prompt and choose English or Hindi.</p></article><article><b>3</b><h3>Copy and Create</h3><p>Paste it into Gemini, ChatGPT or your preferred creative app.</p></article></div>
+  <div class="how-grid"><article><b>1</b><h3>Choose a Prompt</h3><p>Browse the latest photo or video prompt collection.</p></article><article><b>2</b><h3>Get the Prompt</h3><p>Open the prompt and review its available formats.</p></article><article><b>3</b><h3>Copy and Create</h3><p>Paste it into Gemini, ChatGPT or your preferred creative app.</p></article></div>
 </section>
 </main>
 
 <footer id="footer">
   <div class="footer-grid">
-    <div><a class="footer-logo" href="#">FreePrompt<span>LibraryAI</span></a><p>Free AI photo editing and video prompts in English and Hindi.</p></div>
+    <div><a class="footer-logo" href="#">FreePrompt<span>LibraryAI</span></a><p>Free AI photo editing and video prompts.</p></div>
     <div><h3>Explore</h3><a href="#latest">New Prompts</a><a href="#photo">Photo Prompts</a><a href="#video">Video Prompts</a><a href="#categories">Categories</a></div>
     <div><h3>Information</h3><a href="about.html">About Us</a><a href="contact.html">Contact Us</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms &amp; Conditions</a></div>
     <div><h3>Support</h3><a href="disclaimer.html">Disclaimer</a><a href="dmca.html">DMCA</a><a href="#footer">Contact</a></div>

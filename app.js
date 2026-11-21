@@ -16,11 +16,12 @@ function escapeText(value) {
 async function loadPromptsFromSupabase() {
   if (!supabaseClient) return;
   try {
-    const { data, error } = await supabaseClient.from('prompts').select('*').eq('status', 'published').order('created_at', { ascending: false }).order('id', { ascending: true });
+    const { data, error } = await supabaseClient.from('prompts').select('*').eq('status', 'published').order('id', { ascending: true });
     if (error) throw error;
     PROMPT_DATA = (data || []).map((row) => ({...row, id:Number(row.id)}));
     window.PROMPTS = PROMPT_DATA;
     render();
+    loadCustomHomepageSections();
   } catch (error) {
     console.warn('Could not load published prompts from Supabase; showing bundled prompts.', error);
   }
@@ -43,23 +44,18 @@ function palette(prompt) {
 
 function renderCard(prompt, newTag = false) {
   const colors = palette(prompt);
-  const headline = prompt.category === 'Couple' ? 'COUPLE'
-    : prompt.category === 'Wedding' ? 'WEDDING'
-    : prompt.category === 'Festival' ? 'FESTIVAL'
-    : prompt.type === 'Video' ? 'VIDEO'
-    : String(prompt.category || prompt.type).toUpperCase();
-
   const detailUrl = `prompt.html?id=${encodeURIComponent(prompt.id)}`;
-  return `<a class="prompt-card" href="${detailUrl}" aria-label="Open ${escapeText(prompt.title)} prompt">
+  const displayTitle = currentSiteLanguage === 'hi' && prompt.title_hi ? prompt.title_hi : prompt.title;
+  const displayPrompt = currentSiteLanguage === 'hi' && prompt.prompt_hi ? prompt.prompt_hi : (prompt.content_text || prompt.prompt_en || '');
+  return `<a class="prompt-card" href="${detailUrl}" aria-label="Open ${escapeText(displayTitle)} prompt">
     <div class="card-image" style="--a:${colors[0]};--b:${colors[1]}">
-      ${prompt.image_url ? `<img class="card-sample-image" src="${escapeText(prompt.image_url)}" alt="${escapeText(prompt.title)} sample" loading="lazy">` : ''}
-      ${newTag ? '<span class="new-tag">NEW</span>' : ''}
-      <div class="card-art"><b>${escapeText(headline)}</b><span>${prompt.type === 'Video' ? 'VIDEO PROMPT' : 'AI PHOTO PROMPT'}</span></div>
+      ${prompt.image_url ? `<img class="card-sample-image" src="${escapeText(prompt.image_url)}" alt="${escapeText(prompt.title)} sample" loading="lazy">` : '<span class="card-image-placeholder" aria-hidden="true">✦</span>'}
+      ${newTag ? `<span class="new-tag">${siteText('newBadge')}</span>` : ''}
     </div>
     <div class="card-body">
-      <h3>${escapeText(prompt.title)}</h3>
-      <p>${escapeText((prompt.prompt_en || '').slice(0,175))}${(prompt.prompt_en || '').length > 175 ? '…' : ''}</p>
-      <span class="get-prompt">Get Prompts →</span>
+      <h3>${escapeText(displayTitle)}</h3>
+      <p>${escapeText(displayPrompt.slice(0,175))}${displayPrompt.length > 175 ? '…' : ''}</p>
+      <span class="get-prompt">${siteText('getPrompt')} →</span>
     </div>
   </a>`;
 }
@@ -102,13 +98,13 @@ function renderPagination(totalPages) {
 
   let buttons = '';
   if (currentPage > 1) {
-    buttons += `<button type="button" class="page-nav" data-page="${currentPage - 1}" aria-label="Previous page">‹ Previous</button>`;
+    buttons += `<button type="button" class="page-nav" data-page="${currentPage - 1}" aria-label="${siteText('previous')}">‹ ${siteText('previous')}</button>`;
   }
   for (let page = startPage; page <= endPage; page += 1) {
     buttons += `<button type="button" class="page-number${page === currentPage ? ' active' : ''}" data-page="${page}"${page === currentPage ? ' aria-current="page"' : ''}>${page}</button>`;
   }
   if (currentPage < totalPages) {
-    buttons += `<button type="button" class="page-nav" data-page="${currentPage + 1}" aria-label="Next page">Next ›</button>`;
+    buttons += `<button type="button" class="page-nav" data-page="${currentPage + 1}" aria-label="${siteText('next')}">${siteText('next')} ›</button>`;
   }
   pagination.innerHTML = buttons;
 }
@@ -126,6 +122,182 @@ function render() {
 
   $('#photoGrid').innerHTML = PROMPT_DATA.filter((prompt) => prompt.type === 'Photo').slice(0,3).map((prompt) => renderCard(prompt)).join('');
   $('#videoGrid').innerHTML = PROMPT_DATA.filter((prompt) => prompt.type === 'Video').slice(0,3).map((prompt) => renderCard(prompt)).join('');
+}
+
+
+// Website language switch translates the interface. User-authored prompt text stays
+// exactly as entered in Admin; automatic translation of arbitrary content requires
+// a separate translation provider/API.
+const SITE_UI = {
+  en: {
+    getPrompt:'Get Prompt', newBadge:'NEW', previous:'Previous', next:'Next',
+    noResults:'No prompts matched your search. Try another word.',
+    subtitle:'New AI Trending Photo & Video Prompts Every Day — Copy And Paste For Gemini, ChatGPT, Flow AI And Other Creative Tools.',
+    search:'Search', latestTitle:'New Prompts on FreePromptLibraryAI',
+    latestSubtitle:'New copy-paste prompts added regularly – celebrations, portraits, couples and creative trends.',
+    photoTitle:'Free AI Photo Editing Prompts', photoSubtitle:'Explore photo editing prompts for portraits, couples, weddings and more.',
+    videoTitle:'Free AI Video Prompts', videoSubtitle:'Copy video prompts for cinematic clips, reels and photo animation.',
+    categoriesTitle:'Browse Prompt Categories', howTitle:'How to Use These Prompts',
+    chooseTitle:'Choose a Prompt', chooseText:'Browse the latest photo or video prompt collection.',
+    getTitle:'Get the Prompt', getText:'Open the prompt and review its available formats.',
+    copyTitle:'Copy and Create', copyText:'Paste it into Gemini, ChatGPT or your preferred creative app.',
+    footerExplore:'Explore', footerInfo:'Information', footerSupport:'Support',
+    footerAbout:'About Us', footerContact:'Contact Us', footerPrivacy:'Privacy Policy',
+    footerTerms:'Terms & Conditions', footerDisclaimer:'Disclaimer', footerDmca:'DMCA',
+    footerCopyright:'All rights reserved.', navLatest:'New Prompts', navPhoto:'Photo Prompts',
+    navVideo:'Video Prompts', navCategories:'Categories', navStory:'AI Story Prompt',
+    trendingTitle:'🔥 Trending Prompt 🔥', trendingAll:'All Trending Prompts',
+    trendingSapua:'Sapua Video Prompt', trendingCelebration:'All Celebration Prompt',
+    trendingSubtitle:'Birthday, Wedding, Festival, Engagement, Mehendi, All Prompts',
+    categoryNames:['Photo Editing','Gemini Photo','Couple','Wedding','Saree','Birthday','Festival','3D Cartoon','Video Generation','Photo to Video','Cinematic','YouTube Thumbnail','Family','Fashion','Travel','Nature','Product','Dance','Logo','Sports','Background']
+  },
+  hi: {
+    getPrompt:'प्रॉम्प्ट देखें', newBadge:'नया', previous:'पिछला', next:'अगला',
+    noResults:'आपकी खोज से कोई प्रॉम्प्ट नहीं मिला। कोई दूसरा शब्द आज़माएँ।',
+    subtitle:'हर दिन नए ट्रेंडिंग AI फोटो और वीडियो प्रॉम्प्ट — Gemini, ChatGPT और अन्य क्रिएटिव टूल्स के लिए।',
+    search:'खोजें', latestTitle:'FreePromptLibraryAI पर नए प्रॉम्प्ट',
+    latestSubtitle:'नए फोटो और वीडियो प्रॉम्प्ट नियमित रूप से जोड़े जाते हैं।',
+    photoTitle:'मुफ़्त AI फोटो एडिटिंग प्रॉम्प्ट', photoSubtitle:'पोर्ट्रेट, कपल, शादी और अन्य फोटो प्रॉम्प्ट देखें।',
+    videoTitle:'मुफ़्त AI वीडियो प्रॉम्प्ट', videoSubtitle:'सिनेमैटिक क्लिप, रील और फोटो एनिमेशन के लिए प्रॉम्प्ट कॉपी करें।',
+    categoriesTitle:'प्रॉम्प्ट श्रेणियाँ', howTitle:'इन प्रॉम्प्ट का उपयोग कैसे करें',
+    chooseTitle:'प्रॉम्प्ट चुनें', chooseText:'नए फोटो या वीडियो प्रॉम्प्ट देखें।',
+    getTitle:'प्रॉम्प्ट खोलें', getText:'प्रॉम्प्ट खोलें और उपलब्ध फ़ॉर्मेट देखें।',
+    copyTitle:'कॉपी करें और बनाएँ', copyText:'इसे Gemini, ChatGPT या अपने पसंदीदा क्रिएटिव ऐप में पेस्ट करें।',
+    footerExplore:'देखें', footerInfo:'जानकारी', footerSupport:'सहायता',
+    footerAbout:'हमारे बारे में', footerContact:'संपर्क करें', footerPrivacy:'गोपनीयता नीति',
+    footerTerms:'नियम और शर्तें', footerDisclaimer:'अस्वीकरण', footerDmca:'DMCA',
+    footerCopyright:'सर्वाधिकार सुरक्षित।', navLatest:'नए प्रॉम्प्ट', navPhoto:'फोटो प्रॉम्प्ट',
+    navVideo:'वीडियो प्रॉम्प्ट', navCategories:'श्रेणियाँ', navStory:'AI स्टोरी प्रॉम्प्ट',
+    trendingTitle:'🔥 ट्रेंडिंग प्रॉम्प्ट 🔥', trendingAll:'सभी ट्रेंडिंग प्रॉम्प्ट',
+    trendingSapua:'सपुआ वीडियो प्रॉम्प्ट', trendingCelebration:'सभी समारोह प्रॉम्प्ट',
+    trendingSubtitle:'जन्मदिन, शादी, त्योहार, सगाई, मेहंदी और सभी प्रॉम्प्ट',
+    categoryNames:['फोटो एडिटिंग','Gemini फोटो','कपल','शादी','साड़ी','जन्मदिन','त्योहार','3D कार्टून','वीडियो जनरेशन','फोटो से वीडियो','सिनेमैटिक','YouTube थंबनेल','परिवार','फैशन','यात्रा','प्रकृति','प्रोडक्ट','डांस','लोगो','खेल','बैकग्राउंड']
+  }
+};
+let currentSiteLanguage = 'en';
+function siteText(key) {
+  return SITE_UI[currentSiteLanguage]?.[key] ?? SITE_UI.en[key] ?? key;
+}
+function applySiteLanguage(language) {
+  currentSiteLanguage = language === 'hi' ? 'hi' : 'en';
+  const text = SITE_UI[currentSiteLanguage];
+  const setText = (selector, value) => { const element = $(selector); if (element && value != null) element.textContent = value; };
+  setText('.hero-headings h1', currentSiteLanguage === 'hi' ? 'मुफ़्त Gemini फोटो एडिटिंग प्रॉम्प्ट' : 'Free Gemini Photo Editing Prompts');
+  setText('.hero-headings h2', currentSiteLanguage === 'hi' ? 'मुफ़्त Google Flow वीडियो प्रॉम्प्ट' : 'Free Google Flow Video Prompts');
+  setText('.hero-subtitle', text.subtitle); setText('#searchForm button', text.search);
+  setText('#latest h2', text.latestTitle); setText('#latest .section-subtitle', text.latestSubtitle);
+  setText('#photo h2', text.photoTitle); setText('#photo .section-subtitle', text.photoSubtitle);
+  setText('#video h2', text.videoTitle); setText('#video .section-subtitle', text.videoSubtitle);
+  setText('#categories h2', text.categoriesTitle); setText('.how-section h2', text.howTitle);
+  setText('#noResults', text.noResults);
+  setText('.how-grid article:nth-child(1) h3', text.chooseTitle); setText('.how-grid article:nth-child(1) p', text.chooseText);
+  setText('.how-grid article:nth-child(2) h3', text.getTitle); setText('.how-grid article:nth-child(2) p', text.getText);
+  setText('.how-grid article:nth-child(3) h3', text.copyTitle); setText('.how-grid article:nth-child(3) p', text.copyText);
+  setText('.hero-nav a:nth-child(1)', text.navLatest); setText('.hero-nav a:nth-child(2)', text.navPhoto);
+  setText('.hero-nav a:nth-child(3)', text.navVideo); setText('.hero-nav a:nth-child(4)', text.navCategories);
+  setText('.hero-nav a:nth-child(5)', text.navStory); setText('#trendingTitle', text.trendingTitle);
+  setText('.trending-card:nth-child(1) .trending-card-title', text.trendingAll);
+  setText('.trending-card:nth-child(2) .trending-card-title', text.trendingSapua);
+  setText('.trending-card:nth-child(3) .trending-card-title', text.trendingCelebration);
+  setText('.trending-card-subtitle', text.trendingSubtitle);
+  setText('.footer-grid > div:nth-child(2) h3', text.footerExplore);
+  setText('.footer-grid > div:nth-child(3) h3', text.footerInfo);
+  setText('.footer-grid > div:nth-child(4) h3', text.footerSupport);
+  setText('.footer-grid > div:nth-child(3) a:nth-of-type(1)', text.footerAbout);
+  setText('.footer-grid > div:nth-child(3) a:nth-of-type(2)', text.footerContact);
+  setText('.footer-grid > div:nth-child(3) a:nth-of-type(3)', text.footerPrivacy);
+  setText('.footer-grid > div:nth-child(3) a:nth-of-type(4)', text.footerTerms);
+  setText('.footer-grid > div:nth-child(4) a:nth-of-type(1)', text.footerDisclaimer);
+  setText('.footer-grid > div:nth-child(4) a:nth-of-type(2)', text.footerDmca);
+  setText('.copyright a', currentSiteLanguage === 'hi' ? 'एडमिन' : 'Admin');
+  const copyright = $('.copyright');
+  if (copyright) {
+    const year = $('#year')?.textContent || new Date().getFullYear();
+    copyright.innerHTML = `© <span id="year">${escapeText(year)}</span> FreePromptLibraryAI. ${escapeText(text.footerCopyright)} · <a href="/admin/" style="color:inherit">Admin</a>`;
+  }
+  const input = $('#searchInput');
+  if (input) input.placeholder = currentSiteLanguage === 'hi' ? 'कपल, साड़ी, कार्टून या त्योहार के प्रॉम्प्ट खोजें…' : 'Search Couple, Saree, Cartoon, Festival Prompts...';
+  document.querySelectorAll('[data-language]').forEach((button) => {
+    const active = button.dataset.language === currentSiteLanguage;
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
+  document.documentElement.lang = currentSiteLanguage;
+  localStorage.setItem('fpl-language', currentSiteLanguage);
+  if ($('#categoryList')) {
+    document.querySelectorAll('#categoryList [data-category-index]').forEach((link, index) => {
+      const category = text.categoryNames[index];
+      if (category) { link.textContent = category; link.dataset.cat = SITE_UI.en.categoryNames[index]; }
+    });
+  }
+  render();
+}
+(function setupSiteControls() {
+  const savedTheme = localStorage.getItem('fpl-theme') || 'light';
+  document.documentElement.dataset.theme = savedTheme;
+  const themeButton = $('#themeToggle');
+  if (themeButton) {
+    themeButton.textContent = savedTheme === 'dark' ? '☀' : '◐';
+    themeButton.setAttribute('aria-label', savedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    themeButton.addEventListener('click', () => {
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem('fpl-theme', next);
+      themeButton.textContent = next === 'dark' ? '☀' : '◐';
+      themeButton.setAttribute('aria-label', next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    });
+  }
+  applySiteLanguage(localStorage.getItem('fpl-language') || 'en');
+  document.querySelectorAll('[data-language]').forEach((button) => button.addEventListener('click', () => applySiteLanguage(button.dataset.language)));
+})();
+
+function getVisitorId(){
+  try { let id=localStorage.getItem('fpl-visitor-id'); if(!id){id=crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(16).slice(2)}`;localStorage.setItem('fpl-visitor-id',id);} return id; }
+  catch { const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;return [...bytes].map((b,i)=>`${[4,6,8,10].includes(i)?'-':''}${b.toString(16).padStart(2,'0')}`).join(''); }
+}
+function trackPageView(promptId=null){
+  if(!supabaseClient) return;
+  supabaseClient.from('page_views').insert({page_path:location.pathname, prompt_id:promptId, visitor_id:getVisitorId()})
+    .then(({error})=>{if(error) console.debug('Page view analytics is not enabled yet.',error.message);})
+    .catch(()=>{});
+}
+trackPageView(null);
+
+async function loadCustomHomepageSections(){
+  if(!supabaseClient) return;
+  document.querySelectorAll('.custom-home-section').forEach(node=>node.remove());
+  try{
+    const {data,error}=await supabaseClient.from('homepage_sections').select('*').eq('is_published',true).order('placement',{ascending:true}).order('sort_order',{ascending:true}).order('id',{ascending:true});
+    if(error) throw error;
+    const anchors={after_trending:document.querySelector('#trending'),after_latest:document.querySelector('#latest'),after_photo:document.querySelector('#photo'),after_video:document.querySelector('#video'),after_categories:document.querySelector('#categories'),after_howto:document.querySelector('.how-section')};
+    const lastByPlacement=new Map();
+    (data||[]).forEach(section=>{
+      const anchor=lastByPlacement.get(section.placement)||anchors[section.placement];
+      if(!anchor) return;
+      const node=document.createElement('section');
+      node.className=`custom-home-section custom-home-${section.section_type||'info'}`;
+      node.innerHTML=`<h2>${escapeText(section.title||'')}</h2>${section.description?`<p class="section-subtitle">${escapeText(section.description)}</p>`:''}`;
+      if(section.section_type==='cards'){
+        const grid=document.createElement('div');grid.className='cards-grid custom-home-card-grid';
+        (Array.isArray(section.items)?section.items:[]).forEach(item=>{
+          const card=document.createElement('a');card.className='prompt-card custom-home-card';
+          card.href=item.prompt_id?`prompt.html?id=${encodeURIComponent(item.prompt_id)}`:'#latest';
+          const image=document.createElement('div');image.className='card-image custom-home-card-image';
+          if(item.image_url){const img=document.createElement('img');img.src=item.image_url;img.alt=item.title||'Collection image';img.loading='lazy';image.appendChild(img);} else image.classList.add('no-image');
+          const body=document.createElement('div');body.className='card-body';
+          const title=document.createElement('h3');title.textContent=item.title||'';
+          const desc=document.createElement('p');desc.textContent=item.description||'';
+          const button=document.createElement('span');button.className='get-prompt';button.textContent='Get Prompt →';
+          body.append(title,desc,button);card.append(image,body);grid.appendChild(card);
+        });
+        node.appendChild(grid);
+      } else if(section.content){
+        const content=document.createElement('div');content.className='custom-home-info-content';content.textContent=section.content;node.appendChild(content);
+      }
+      anchor.insertAdjacentElement('afterend',node);
+      lastByPlacement.set(section.placement,node);
+    });
+  }catch(error){console.debug('Custom homepage sections are not enabled yet.',error.message);}
 }
 
 // Search is intentionally applied only on form submission (Search button or Enter).
@@ -169,7 +341,8 @@ document.querySelectorAll('[data-trend-action]').forEach((card) => {
 });
 
 const categories = ['Photo Editing','Gemini Photo','Couple','Wedding','Saree','Birthday','Festival','3D Cartoon','Video Generation','Photo to Video','Cinematic','YouTube Thumbnail','Family','Fashion','Travel','Nature','Product','Dance','Logo','Sports','Background'];
-$('#categoryList').innerHTML = categories.map((category) => `<a class="category-link" href="#latest" data-cat="${category}">${category}</a>`).join('');
+$('#categoryList').innerHTML = categories.map((category, index) => `<a class="category-link" href="#latest" data-cat="${category}" data-category-index="${index}">${category}</a>`).join('');
+applySiteLanguage(currentSiteLanguage);
 
 document.querySelectorAll('[data-cat]').forEach((link) => {
   link.addEventListener('click', (event) => {
@@ -188,6 +361,7 @@ document.querySelectorAll('[data-cat]').forEach((link) => {
 $('#mobileMenu').addEventListener('click', () => $('#nav').classList.toggle('open'));
 $('#year').textContent = new Date().getFullYear();
 render();
+loadCustomHomepageSections();
 
 // Load the CMS-managed collection after the local fallback has rendered.
 loadPromptsFromSupabase();

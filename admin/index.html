@@ -42,7 +42,7 @@
       </form>
       <form id="recoveryOtpForm" class="auth-form recovery-step" hidden>
         <label>Email verification code<input type="text" id="recoveryOtp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,8}" minlength="6" maxlength="8" placeholder="Enter 6–8 digit code" required></label>
-        <p class="helper-note">Enter the recovery code from your email. You can also open the secure reset link from that email in this browser.</p>
+        <p class="helper-note">Enter the recovery code from your email, or open its secure reset link in this browser.</p>
         <button class="btn btn-primary btn-full" id="verifyOtpBtn" type="submit">Verify code</button>
         <button class="btn btn-secondary btn-full" id="resendOtpBtn" type="button" disabled>Resend code in 60s</button>
         <p class="form-message" id="recoveryOtpMessage" role="status" aria-live="polite"></p>
@@ -50,7 +50,7 @@
       <form id="recoveryPasswordForm" class="auth-form recovery-step" hidden>
         <label>New password<input type="password" id="recoveryNewPassword" autocomplete="new-password" minlength="8" required></label>
         <label>Confirm new password<input type="password" id="recoveryConfirmPassword" autocomplete="new-password" minlength="8" required></label>
-        <p class="helper-note">Use at least 8 characters. Your verified admin email is required to complete this change.</p>
+        <p class="helper-note">Use at least 8 characters.</p>
         <button class="btn btn-primary btn-full" id="saveNewPasswordBtn" type="submit">Update password</button>
         <p class="form-message" id="recoveryPasswordMessage" role="status" aria-live="polite"></p>
       </form>
@@ -61,15 +61,15 @@
 
   <div class="app-shell" id="dashboardView" hidden>
     <aside class="sidebar" id="sidebar">
-      <a class="sidebar-brand" href="../index.html" aria-label="FreePromptLibraryAI home">
-        <span class="brand-mark">FP</span><span class="brand-name">FreePrompt<span>LibraryAI</span></span>
-      </a>
+      <a class="sidebar-brand" href="../index.html" aria-label="FreePromptLibraryAI home"><span class="brand-mark">FP</span><span class="brand-name">FreePrompt<span>LibraryAI</span></span></a>
       <div class="workspace-label">WORKSPACE</div>
       <nav class="side-nav" aria-label="Admin navigation">
-        <button class="nav-item active" type="button" data-view="overview"><span class="nav-icon">▦</span><span>Overview</span></button>
+        <button class="nav-item active" type="button" data-view="overview"><span class="nav-icon">▦</span><span>Dashboard</span></button>
         <button class="nav-item" type="button" data-view="prompts"><span class="nav-icon">▤</span><span>All prompts</span><span class="nav-count" id="navPromptCount">52</span></button>
         <button class="nav-item" type="button" data-view="categories"><span class="nav-icon">◇</span><span>Categories</span></button>
         <button class="nav-item" type="button" data-view="media"><span class="nav-icon">▧</span><span>Media library</span></button>
+        <button class="nav-item" type="button" data-view="homepage"><span class="nav-icon">▦</span><span>Homepage builder</span></button>
+        <button class="nav-item" type="button" data-view="analytics"><span class="nav-icon">⌁</span><span>Analytics</span></button>
       </nav>
       <div class="sidebar-bottom">
         <a class="sidebar-site-link" href="../index.html" target="_blank" rel="noopener"><span>↗</span> View live website</a>
@@ -80,46 +80,54 @@
     <div class="main-column">
       <header class="topbar">
         <button class="mobile-menu-btn" id="mobileMenuButton" type="button" aria-label="Open navigation">☰</button>
-        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="breadcrumbTitle">Overview</strong></div>
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="breadcrumbTitle">Dashboard</strong></div>
         <div class="topbar-actions"><span class="live-indicator"><i></i> Connected</span><a class="topbar-site" href="../index.html" target="_blank" rel="noopener">View website ↗</a></div>
       </header>
 
       <main class="content-area">
         <section class="view-panel active" data-panel="overview">
-          <div class="page-heading"><div><div class="eyebrow">YOUR LIBRARY AT A GLANCE</div><h1>Good to see you</h1><p>Manage your prompts, content and media from one place.</p></div><button class="btn btn-primary" type="button" data-action="new-prompt">＋ Add new prompt</button></div>
+          <div class="page-heading"><div><div class="eyebrow">YOUR LIBRARY AT A GLANCE</div><h1>Dashboard</h1><p>Manage prompts, content, media and website activity.</p></div><button class="btn btn-primary" type="button" data-action="new-prompt">＋ Add new prompt</button></div>
           <div class="metric-grid">
-            <article class="metric-card metric-main"><div class="metric-top"><span class="metric-icon purple">▤</span><span class="metric-label">TOTAL PROMPTS</span></div><strong id="totalCount">—</strong><small>All items in your library</small></article>
-            <article class="metric-card"><div class="metric-top"><span class="metric-icon green">✓</span><span class="metric-label">PUBLISHED</span></div><strong id="publishedCount">—</strong><small>Visible on your website</small></article>
-            <article class="metric-card"><div class="metric-top"><span class="metric-icon amber">◷</span><span class="metric-label">DRAFTS</span></div><strong id="draftCount">—</strong><small>Not published yet</small></article>
-            <article class="metric-card"><div class="metric-top"><span class="metric-icon blue">✦</span><span class="metric-label">TRENDING</span></div><strong id="trendingCount">—</strong><small>Featured in trending</small></article>
+            <button class="metric-card metric-main metric-click" type="button" data-metric-filter="all"><div class="metric-top"><span class="metric-icon purple">▤</span><span class="metric-label">TOTAL PROMPTS</span></div><strong id="totalCount">—</strong><small>Open all prompts</small></button>
+            <button class="metric-card metric-click" type="button" data-metric-filter="published"><div class="metric-top"><span class="metric-icon green">✓</span><span class="metric-label">PUBLISHED</span></div><strong id="publishedCount">—</strong><small>Open published prompts</small></button>
+            <button class="metric-card metric-click" type="button" data-metric-filter="draft"><div class="metric-top"><span class="metric-icon amber">◷</span><span class="metric-label">DRAFTS</span></div><strong id="draftCount">—</strong><small>Open draft prompts</small></button>
+            <button class="metric-card metric-click" type="button" data-metric-filter="trending"><div class="metric-top"><span class="metric-icon blue">✦</span><span class="metric-label">TRENDING</span></div><strong id="trendingCount">—</strong><small>Open trending prompts</small></button>
           </div>
-          <section class="content-card sequence-card">
-            <div class="card-heading"><div><h2>Prompt sequence</h2><p>Prompts are shown in the same ascending order as your website: 1, 2, 3 …</p></div><button class="btn btn-quiet" type="button" data-action="view-prompts">View all prompts <span>→</span></button></div>
-            <div class="sequence-list" id="sequencePreview"><div class="loading-row">Loading your prompt sequence…</div></div>
-          </section>
+          <section class="content-card sequence-card"><div class="card-heading"><div><h2>Prompt sequence</h2><p>Same ascending order as the public library: 1, 2, 3 …</p></div><button class="btn btn-quiet" type="button" data-action="view-prompts">View all prompts <span>→</span></button></div><div class="sequence-list" id="sequencePreview"><div class="loading-row">Loading your prompt sequence…</div></div></section>
           <div class="overview-bottom">
             <section class="content-card split-card"><div class="card-heading"><div><h2>Content breakdown</h2><p>Photo and video prompts in your library</p></div></div><div class="type-breakdown" id="typeBreakdown"></div></section>
-            <section class="content-card split-card"><div class="card-heading"><div><h2>Quick actions</h2><p>Common content tasks</p></div></div><div class="quick-actions"><button type="button" data-action="new-prompt"><span>＋</span><b>Create a prompt</b><small>Add a new photo or video prompt</small></button><button type="button" data-view="categories"><span>◇</span><b>Browse categories</b><small>See prompts grouped by category</small></button><button type="button" data-view="media"><span>▧</span><b>Open media library</b><small>Review uploaded sample images</small></button></div></section>
+            <section class="content-card split-card"><div class="card-heading"><div><h2>Quick actions</h2><p>Common content tasks</p></div></div><div class="quick-actions"><button type="button" data-action="new-prompt"><span>＋</span><b>Create a prompt</b><small>Add a photo or video prompt</small></button><button type="button" data-view="homepage"><span>▦</span><b>Homepage builder</b><small>Add homepage sections and cards</small></button><button type="button" data-view="analytics"><span>⌁</span><b>View analytics</b><small>See visits and prompt views</small></button></div></section>
           </div>
         </section>
 
         <section class="view-panel" data-panel="prompts">
-          <div class="page-heading"><div><div class="eyebrow">CONTENT MANAGEMENT</div><h1>All prompts</h1><p>Keep every prompt organised in the same sequence as the public library.</p></div><button class="btn btn-primary" type="button" data-action="new-prompt">＋ Add new prompt</button></div>
+          <div class="page-heading"><div><div class="eyebrow">CONTENT MANAGEMENT</div><h1>All prompts</h1><p>Cards are displayed in the same sequence as your website.</p></div><button class="btn btn-primary" type="button" data-action="new-prompt">＋ Add new prompt</button></div>
           <section class="content-card prompt-list-card">
             <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="promptSearch" type="search" placeholder="Search title, category or prompt text…" aria-label="Search prompts"></div><select id="typeFilter" aria-label="Filter by type"><option value="all">All types</option><option value="Photo">Photo</option><option value="Video">Video</option></select><select id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option><option value="published">Published</option><option value="draft">Draft</option></select><select id="categoryFilter" aria-label="Filter by category"><option value="all">All categories</option></select></div>
-            <div class="table-scroll"><table class="prompt-table"><thead><tr><th class="sequence-col">NO.</th><th>Prompt</th><th>Type</th><th>Category</th><th>Status</th><th>Trending</th><th class="actions-col">Actions</th></tr></thead><tbody id="promptRows"><tr><td colspan="7" class="loading-row">Loading prompts…</td></tr></tbody></table></div>
+            <div class="prompt-card-grid" id="promptCards"><div class="loading-row">Loading prompts…</div></div>
             <div class="table-footer"><span id="listSummary">Showing prompts</span><nav class="pagination" id="adminPagination" aria-label="Prompt pages"></nav></div>
           </section>
         </section>
 
         <section class="view-panel" data-panel="categories">
-          <div class="page-heading"><div><div class="eyebrow">LIBRARY ORGANISATION</div><h1>Categories</h1><p>Browse existing categories and open their prompts. Change a category from the prompt editor.</p></div></div>
-          <div class="category-grid" id="categoryGrid"><div class="content-card loading-row">Loading categories…</div></div>
+          <div class="page-heading"><div><div class="eyebrow">LIBRARY ORGANISATION</div><h1>Categories</h1><p>Browse existing categories and open their prompts.</p></div></div><div class="category-grid" id="categoryGrid"><div class="content-card loading-row">Loading categories…</div></div>
         </section>
 
         <section class="view-panel" data-panel="media">
-          <div class="page-heading"><div><div class="eyebrow">VISUAL ASSETS</div><h1>Media library</h1><p>Sample images currently attached to your prompts. Upload or replace images from the prompt editor.</p></div><span class="subtle-chip" id="mediaCount">0 images</span></div>
-          <div class="media-grid" id="mediaGrid"><div class="content-card loading-row">Loading media…</div></div>
+          <div class="page-heading"><div><div class="eyebrow">VISUAL ASSETS</div><h1>Media library</h1><p>Sample images attached to your prompts.</p></div><span class="subtle-chip" id="mediaCount">0 images</span></div><div class="media-grid" id="mediaGrid"><div class="content-card loading-row">Loading media…</div></div>
+        </section>
+
+        <section class="view-panel" data-panel="homepage">
+          <div class="page-heading"><div><div class="eyebrow">PUBLIC WEBSITE CONTENT</div><h1>Homepage builder</h1><p>Add card collections or information sections between existing homepage sections.</p></div><button class="btn btn-primary" id="addHomeSectionBtn" type="button">＋ Add homepage section</button></div>
+          <div class="builder-help content-card"><strong>Choose where your new bar should appear.</strong><span>Card sections can link each item to its prompt detail page. Information sections can contain an About, announcement or any text you write.</span></div>
+          <div id="homeSectionList" class="home-section-list"><div class="content-card loading-row">Loading homepage sections…</div></div>
+        </section>
+
+        <section class="view-panel" data-panel="analytics">
+          <div class="page-heading"><div><div class="eyebrow">REAL WEBSITE ACTIVITY</div><h1>Analytics</h1><p>Visits and prompt detail views recorded by the website. Counts begin after analytics tracking is deployed.</p></div><button class="btn btn-secondary" id="refreshAnalyticsBtn" type="button">↻ Refresh</button></div>
+          <div class="analytics-grid" id="analyticsMetrics"><article class="metric-card"><span class="metric-label">TOTAL VISITORS</span><strong id="analyticsTotal">—</strong><small>Unique browsers recorded</small></article><article class="metric-card"><span class="metric-label">TODAY VISITORS</span><strong id="analyticsToday">—</strong><small>India time</small></article><article class="metric-card"><span class="metric-label">YESTERDAY VISITORS</span><strong id="analyticsYesterday">—</strong><small>India time</small></article><article class="metric-card"><span class="metric-label">THIS MONTH VISITORS</span><strong id="analyticsMonth">—</strong><small>India time</small></article><article class="metric-card"><span class="metric-label">THIS YEAR VISITORS</span><strong id="analyticsYear">—</strong><small>India time</small></article></div>
+          <section class="content-card analytics-card"><div class="card-heading"><div><h2>Yearly visits</h2><p>Visits and unique browsers by calendar year.</p></div></div><div id="yearlyAnalytics" class="analytics-table-wrap"><div class="loading-row">Loading yearly analytics…</div></div></section>
+          <section class="content-card analytics-card"><div class="card-heading"><div><h2>Prompt detail views</h2><p>Which prompt pages visitors open most often.</p></div><select id="analyticsYearFilter" aria-label="Filter prompt analytics by year"><option value="all">All years</option></select></div><div id="promptAnalytics" class="analytics-table-wrap"><div class="loading-row">Loading prompt analytics…</div></div></section>
         </section>
       </main>
       <footer class="app-footer"><span>FreePromptLibraryAI Admin Studio</span><span>Secure content management</span></footer>
@@ -128,20 +136,36 @@
 
   <div class="modal-backdrop" id="editorModal" hidden>
     <section class="editor-modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
-      <header class="modal-header"><div><div class="eyebrow">PROMPT EDITOR <span id="editorSequence"></span></div><h2 id="editorTitle">Add new prompt</h2><p>Write and manage English and Hindi prompt content.</p></div><button class="modal-close" id="closeEditorBtn" type="button" aria-label="Close editor">×</button></header>
+      <header class="modal-header"><div><div class="eyebrow">PROMPT EDITOR <span id="editorSequence"></span></div><h2 id="editorTitle">Add new prompt</h2><p>Create one prompt, then add format variants or related prompts in the same collection.</p></div><button class="modal-close" id="closeEditorBtn" type="button" aria-label="Close editor">×</button></header>
       <form id="promptForm" class="editor-form">
         <input type="hidden" id="promptId">
         <div class="editor-section-title"><span>01</span><div><h3>Basic information</h3><p>Title, type and category</p></div></div>
-        <div class="form-grid"><label>Title (English)<input id="title" required maxlength="180" placeholder="e.g. Golden Hour Portrait"></label><label>Title (Hindi)<input id="titleHi" maxlength="180" placeholder="हिंदी में शीर्षक"></label><label>Prompt type<select id="type"><option>Photo</option><option>Video</option></select></label><label>Category<input id="category" required maxlength="80" list="categorySuggestions" placeholder="e.g. Wedding, Portrait"><datalist id="categorySuggestions"></datalist></label></div>
-        <div class="editor-section-title"><span>02</span><div><h3>Prompt content</h3><p>Provide both language versions</p></div></div>
-        <div class="form-grid"><label class="full-span">Prompt (English)<textarea id="promptEn" rows="5" required placeholder="Write the complete English prompt…"></textarea></label><label class="full-span">Prompt (Hindi)<textarea id="promptHi" rows="5" placeholder="हिंदी प्रॉम्प्ट यहाँ लिखें…"></textarea></label></div>
-        <div class="editor-section-title"><span>03</span><div><h3>Format and media</h3><p>Aspect ratio, duration and sample image</p></div></div>
-        <div class="form-grid"><label>Aspect ratio<input id="aspectRatio" placeholder="e.g. 9:16"></label><label>Duration<input id="duration" placeholder="e.g. 10 seconds"></label><label class="full-span">Sample image <span class="field-hint">JPG, PNG, WebP or AVIF · Maximum 5 MB</span><input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><span class="image-preview-line" id="currentImage"></span></label></div>
-        <div class="editor-section-title"><span>04</span><div><h3>Publishing settings</h3><p>Control visibility and trending placement</p></div></div>
-        <div class="form-grid form-grid-small"><label>Publication status<select id="status"><option value="draft">Draft</option><option value="published">Published</option></select></label><label class="toggle-field"><span><b>Show in Trending</b><small>Feature this prompt in trending collections</small></span><input id="isTrending" type="checkbox"></label></div>
-        <div class="editor-section-title extra-title"><span>05</span><div><h3>Extra detail sections</h3><p>Add headings and English/Hindi explanations for the prompt detail page.</p></div><button type="button" class="btn btn-outline btn-small" id="addSectionBtn">＋ Add section</button></div>
+        <div class="form-grid"><label>Prompt title<input id="title" required maxlength="180" placeholder="e.g. Birthday Portrait Collection"></label><label>Prompt type<select id="type"><option>Photo</option><option>Video</option></select></label><label class="full-span">Category<input id="category" required maxlength="80" list="categorySuggestions" placeholder="e.g. Birthday, Portrait"><datalist id="categorySuggestions"></datalist></label></div>
+        <div class="editor-section-title"><span>02</span><div><h3>Prompt content</h3><p>Use one box. You can write in any language.</p></div></div>
+        <div class="form-grid"><label class="full-span">About this prompt<textarea id="aboutText" rows="3" placeholder="Explain what this prompt is for, in any language…"></textarea></label><label class="full-span">Prompt<textarea id="promptEn" rows="6" required placeholder="Write the complete prompt in the language you prefer…"></textarea></label><label class="full-span">How to use<textarea id="howToUse" rows="3" placeholder="Write any instructions in your preferred language…"></textarea></label></div>
+        <div class="editor-section-title"><span>03</span><div><h3>Format and media</h3><p>Choose the formats you want to publish for this prompt.</p></div></div>
+        <div class="form-grid"><label>Default aspect ratio<input id="aspectRatio" placeholder="e.g. 4:5"></label><label>Duration<input id="duration" placeholder="e.g. 10 seconds"></label><label class="full-span">Sample image <span class="field-hint">JPG, PNG, WebP or AVIF · Maximum 5 MB</span><input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><span class="image-preview-line" id="currentImage"></span></label></div>
+        <div class="variant-builder"><div class="builder-subhead"><div><h3>Prompt formats</h3><p>Add portrait, landscape, Instagram post or any custom size. Only saved formats appear on the website.</p></div><button type="button" class="btn btn-outline btn-small" id="addVariantBtn">＋ Add format</button></div><div id="variantList" class="variant-list"></div></div>
+        <div class="related-builder"><div class="builder-subhead"><div><h3>Related prompts in this collection</h3><p>For example, keep all Birthday prompt variations together on this detail page.</p></div><button type="button" class="btn btn-outline btn-small" id="addPromptBtn">＋ Add prompt</button></div><div id="relatedPromptList" class="related-prompt-list"></div></div>
+        <div class="editor-section-title"><span>04</span><div><h3>Extra information sections</h3><p>Add headings, descriptions and optional images in any language.</p></div><button type="button" class="btn btn-outline btn-small" id="addSectionBtn">＋ Add section</button></div>
         <div id="extraSectionList" class="extra-section-list"></div>
+        <div class="editor-section-title"><span>05</span><div><h3>Publishing settings</h3><p>Control website visibility and trending placement.</p></div></div>
+        <div class="form-grid form-grid-small"><label>Publication status<select id="status"><option value="draft">Draft</option><option value="published">Published</option></select></label><label class="toggle-field"><span><b>Show in Trending</b><small>Feature this prompt in trending collections.</small></span><input id="isTrending" type="checkbox"></label></div>
         <div class="modal-footer"><p id="saveMessage" class="form-message" role="status" aria-live="polite"></p><button type="button" class="btn btn-quiet" id="cancelBtn">Cancel</button><button type="submit" class="btn btn-primary" id="saveBtn">Save prompt</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="homeSectionModal" hidden>
+    <section class="editor-modal home-builder-modal" role="dialog" aria-modal="true" aria-labelledby="homeModalTitle">
+      <header class="modal-header"><div><div class="eyebrow">HOMEPAGE BUILDER</div><h2 id="homeModalTitle">Add homepage section</h2><p>Choose a position, then create cards or an information block.</p></div><button class="modal-close" id="closeHomeModalBtn" type="button" aria-label="Close homepage builder">×</button></header>
+      <form id="homeSectionForm" class="editor-form">
+        <input type="hidden" id="homeSectionId">
+        <div class="form-grid"><label>Section title<input id="homeSectionTitle" required maxlength="160" placeholder="e.g. Birthday collections"></label><label>Section type<select id="homeSectionType"><option value="cards">Card collection</option><option value="info">Information / About section</option></select></label><label class="full-span">Show this section after<select id="homeSectionPlacement"><option value="after_trending">Trending Prompt</option><option value="after_latest">New Prompts</option><option value="after_photo">Free AI Photo Editing Prompt</option><option value="after_video">Free AI Video Prompt</option><option value="after_categories">Browse Prompt Categories</option><option value="after_howto">How to Use</option></select></label><label class="full-span">Short section description<input id="homeSectionDescription" maxlength="240" placeholder="Optional subtitle"></label></div>
+        <div id="homeInfoFields"><label class="full-span">Information text<textarea id="homeSectionContent" rows="6" placeholder="Write About, announcement or any information here…"></textarea></label></div>
+        <div id="homeCardFields" hidden><div class="builder-subhead"><div><h3>Cards in this section</h3><p>Each card needs an image, title, short detail and a linked prompt page.</p></div><button type="button" class="btn btn-outline btn-small" id="addHomeCardBtn">＋ Add card</button></div><div id="homeCardList" class="home-card-list"></div></div>
+        <div class="form-grid form-grid-small"><label>Visibility<select id="homeSectionPublished"><option value="true">Published</option><option value="false">Draft</option></select></label><label>Display order<input id="homeSectionOrder" type="number" min="0" step="1" value="0"></label></div>
+        <div class="modal-footer"><p id="homeSaveMessage" class="form-message" role="status" aria-live="polite"></p><button type="button" class="btn btn-quiet" id="cancelHomeBtn">Cancel</button><button type="submit" class="btn btn-primary" id="saveHomeSectionBtn">Save section</button></div>
       </form>
     </section>
   </div>

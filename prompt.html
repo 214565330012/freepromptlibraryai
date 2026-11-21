@@ -3,16 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="View this free AI photo or video prompt in English and Hindi. Read the details and copy the prompt.">
+<meta name="description" content="View a free AI photo or video prompt. Read the details and copy the prompt.">
 <meta name="theme-color" content="#6959cb">
 <title>Prompt Details | FreePromptLibraryAI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="detail.css">
-<script type="application/ld+json" id="promptSchema">{"@context":"https://schema.org","@type":"WebPage","name":"FreePromptLibraryAI Prompt Details","description":"Free AI prompts in English and Hindi."}</script>
+<script type="application/ld+json" id="promptSchema">{"@context":"https://schema.org","@type":"WebPage","name":"FreePromptLibraryAI Prompt Details","description":"Free AI photo and video prompts."}</script>
 </head>
 <body>
+<div class="site-controls" aria-label="Website display settings"><div class="language-switch" role="group" aria-label="Choose website language"><button type="button" class="language-option" data-language="en" aria-pressed="true">English</button><button type="button" class="language-option" data-language="hi" aria-pressed="false">हिन्दी</button></div><button type="button" id="themeToggle" class="site-control theme-control" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button></div>
 <header class="detail-topbar">
   <a class="detail-brand" href="index.html"><span class="brand-symbol">P</span><span>FreePrompt<span class="brand-accent">LibraryAI</span><small>FREE PHOTO &amp; VIDEO PROMPTS</small></span></a>
   <a class="back-link" href="index.html">← Back to prompts</a>
@@ -24,7 +25,6 @@
     <section class="detail-heading">
       <div class="detail-kicker" id="detailKicker">PHOTO PROMPT</div>
       <h1 id="detailTitle"></h1>
-      <p class="detail-title-hi" id="detailTitleHi"></p>
       <div class="detail-tags" id="detailTags"></div>
     </section>
 
@@ -32,8 +32,8 @@
       <aside class="preview-column">
         <div class="preview-art" id="previewArt">
           <img id="sampleImage" class="sample-image" alt="Prompt sample image" hidden>
-          <span class="preview-label">PROMPT PREVIEW</span>
-          <div class="preview-icon" id="previewIcon">✦</div>
+          <span class="preview-label" id="previewLabel">PROMPT PREVIEW</span>
+          <div class="preview-icon" id="previewIcon" aria-hidden="true">✦</div>
           <strong id="previewCategory">PHOTO PROMPT</strong>
           <span class="preview-name" id="previewName"></span>
         </div>
@@ -43,43 +43,27 @@
 
       <div class="detail-content-column">
         <section class="info-panel">
-          <div class="panel-heading"><div><span class="section-eyebrow">UNDERSTAND THE IDEA</span><h2>About this prompt</h2></div><span class="bilingual-badge">English + Hindi</span></div>
-          <div class="bilingual-info">
-            <article class="language-info"><div class="language-label">ENGLISH</div><p id="aboutEnglish"></p></article>
-            <article class="language-info hindi-info"><div class="language-label">हिन्दी</div><p id="aboutHindi" lang="hi"></p></article>
-          </div>
+          <div class="panel-heading"><div><span class="section-eyebrow">ABOUT</span><h2>About this prompt</h2></div></div>
+          <div class="single-info-box"><p id="aboutContent"></p></div>
         </section>
 
         <section class="prompt-panel">
-          <div class="panel-heading"><div><span class="section-eyebrow">READY TO COPY</span><h2>Copy-ready prompt</h2></div><span class="copy-hint">Choose your language</span></div>
-          <div class="prompt-language-tabs" role="tablist" aria-label="Prompt language">
-            <button type="button" class="prompt-tab active" data-prompt-lang="en" role="tab" aria-selected="true">English Prompt</button>
-            <button type="button" class="prompt-tab" data-prompt-lang="hi" role="tab" aria-selected="false">Hindi Prompt</button>
-          </div>
+          <div class="panel-heading"><div><span class="section-eyebrow">READY TO COPY</span><h2>Prompt</h2></div></div>
+          <div id="variantPicker" class="variant-picker" hidden></div>
           <pre id="promptText" class="prompt-text"></pre>
-          <div class="prompt-actions"><button type="button" id="copyPrompt" class="copy-action">▢ Copy English Prompt</button><span id="copyFeedback" class="copy-feedback" aria-live="polite"></span></div>
+          <div class="prompt-actions"><button type="button" id="copyPrompt" class="copy-action">Copy Prompt</button><span id="copyFeedback" class="copy-feedback" aria-live="polite"></span></div>
         </section>
       </div>
     </section>
 
     <section class="extra-sections" id="extraSections" hidden aria-label="More prompt information"></section>
-
-    <section class="how-to-panel">
-      <div class="panel-heading"><div><span class="section-eyebrow">SIMPLE STEPS</span><h2>How to use this prompt</h2></div></div>
-      <div class="how-to-grid">
-        <article><span>01</span><h3>Choose your language</h3><p>Use the English or Hindi version above.</p></article>
-        <article><span>02</span><h3>Copy the prompt</h3><p>Tap the copy button to copy the full text.</p></article>
-        <article><span>03</span><h3>Paste and create</h3><p>Open your preferred image or video generator, add your reference image when needed, and paste the prompt.</p></article>
-      </div>
-      <div class="how-to-hindi" lang="hi"><strong>हिन्दी में:</strong> अपनी भाषा चुनें, पूरा प्रॉम्प्ट कॉपी करें और अपने पसंदीदा फोटो या वीडियो जनरेटर में पेस्ट करें। जहाँ ज़रूरी हो वहाँ रेफरेंस फोटो भी जोड़ें।</div>
-    </section>
-
+    <section class="related-collection" id="relatedCollection" hidden><div class="panel-heading"><div><span class="section-eyebrow">SAME COLLECTION</span><h2>More prompts in this collection</h2></div></div><div id="relatedPromptDetails" class="related-prompt-details"></div></section>
+    <section class="how-to-panel"><div class="panel-heading"><div><span class="section-eyebrow">HOW TO USE</span><h2>How to use this prompt</h2></div></div><div class="single-info-box"><p id="howToUseContent"></p></div></section>
     <section class="related-section" id="relatedSection"><div class="panel-heading"><div><span class="section-eyebrow">KEEP EXPLORING</span><h2>Related prompts</h2></div><a href="index.html#latest" class="view-all">View all prompts →</a></div><div id="relatedGrid" class="related-grid"></div></section>
   </div>
 </main>
-<footer class="detail-footer"><a href="index.html">FreePrompt<span>LibraryAI</span></a><p>Free AI photo and video prompts in English and Hindi.</p><small>© <span id="detailYear"></span> FreePromptLibraryAI</small></footer>
+<footer class="detail-footer"><a href="index.html">FreePrompt<span>LibraryAI</span></a><p>Free AI photo and video prompts.</p><small>© <span id="detailYear"></span> FreePromptLibraryAI</small></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="prompts.js"></script>
-<script src="detail-info.js"></script>
 <script src="detail.js"></script>
 </body>
 </html>

@@ -31,3 +31,8 @@
 - The homepage hero/header CSS is preserved from the uploaded ZIP.
 - Prompt details remain separate pages (`prompt.html?id=...`).
 - The current Admin panel does not yet include automatic trend research or a scheduled publishing workflow.
+
+
+## Latest Admin and Homepage update
+
+See `UPDATE-GUIDE-GU.md` before deploying. The upgrade requires running `supabase/admin-upgrade-migration.sql` once. Do not rerun the original `supabase/setup.sql` on an already configured database.
