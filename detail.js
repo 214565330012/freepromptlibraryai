@@ -56,8 +56,32 @@ function renderExtraSections(sections){
     const heading=section.heading||section.heading_en||section.heading_hi||'More information';
     const content=section.content||section.content_en||section.content_hi||section.paragraph_en||section.paragraph_hi||'';
     const image=section.image_url?`<img class="extra-section-image" src="${escapeHtml(section.image_url)}" alt="${escapeHtml(section.image_alt||heading)}" loading="lazy">`:'';
-    return `<article class="extra-section-card"><h2>${escapeHtml(heading)}</h2>${content?`<p>${escapeHtml(content)}</p>`:''}${image}</article>`;
+    return `<article class="extra-section-card">${image}<h2>${escapeHtml(heading)}</h2>${content?`<p>${escapeHtml(content)}</p>`:''}</article>`;
   }).join('');host.hidden=!valid.length;
+}
+function renderContentBlocks(blocks){
+  const host=byId('contentBlocks');
+  const valid=Array.isArray(blocks)?blocks.filter(block=>block&&((block.type==='about'&&block.heading)||(block.type==='prompt'&&block.title&&block.prompt_text))):[];
+  if(!host)return;
+  host.innerHTML=valid.map((block,index)=>{
+    const image=block.image_url?`<div class="content-block-image"><img src="${escapeHtml(block.image_url)}" alt="${escapeHtml(block.heading||block.title||'Section image')}" loading="lazy"></div>`:'';
+    if(block.type==='about'){
+      const safeUrl=/^https?:\/\//i.test(block.url||'')?block.url:'';
+      return `<article class="content-block-card content-block-about">${image}<div class="content-block-body"><span class="content-block-kicker">INFORMATION</span><h2>${escapeHtml(block.heading||'')}</h2>${block.content?`<p>${escapeHtml(block.content)}</p>`:''}${safeUrl?`<a class="content-block-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">Visit link ↗</a>`:''}</div></article>`;
+    }
+    const type=block.prompt_type||'Photo';
+    return `<article class="content-block-card content-block-prompt">${image}<div class="content-block-body"><div class="content-block-meta"><span>${escapeHtml(type)}</span>${block.category?`<span>${escapeHtml(block.category)}</span>`:''}${block.aspect_ratio?`<span>${escapeHtml(block.aspect_ratio)}</span>`:''}${block.duration?`<span>${escapeHtml(block.duration)}</span>`:''}</div><h2>${escapeHtml(block.title||'')}</h2>${block.about_text?`<p>${escapeHtml(block.about_text)}</p>`:''}<pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre><div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div>${block.how_to_use?`<div class="content-block-how"><strong>How to use</strong><p>${escapeHtml(block.how_to_use)}</p></div>`:''}</div></article>`;
+  }).join('');
+  host.hidden=!valid.length;
+  host.querySelectorAll('[data-copy-content-block]').forEach(button=>button.addEventListener('click',async()=>{
+    const block=valid[Number(button.dataset.copyContentBlock)];
+    const feedback=button.parentElement.querySelector('.content-block-copy-feedback');
+    try{
+      if(navigator.clipboard&&window.isSecureContext) await navigator.clipboard.writeText(block.prompt_text||'');
+      else{const field=document.createElement('textarea');field.value=block.prompt_text||'';field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.select();const ok=document.execCommand('copy');field.remove();if(!ok)throw new Error('Copy unavailable');}
+      feedback.textContent='Copied successfully.';
+    }catch{feedback.textContent='Select the prompt text and copy it.';}
+  }));
 }
 function renderRelatedCollection(item){
   const host=byId('relatedPromptDetails');
@@ -91,7 +115,7 @@ function renderDetail(item){
   byId('quickFacts').innerHTML=facts.map(([label,value])=>`<div class="fact-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
   setActivePrompt(getMainPromptText(item),item.aspect_ratio||'');renderVariants(item);
   byId('howToUseContent').textContent=getHowToUse(item);
-  renderExtraSections(item.extra_sections);renderRelatedCollection(item);byId('detailContent').hidden=false;byId('notFound').hidden=true;
+  renderExtraSections(item.extra_sections);renderRelatedCollection(item);renderContentBlocks(item.content_blocks);byId('detailContent').hidden=false;byId('notFound').hidden=true;
   document.title=`${item.title} ${item.type} Prompt | FreePromptLibraryAI`;
   const desc=`${item.title}: free ${String(item.type).toLowerCase()} prompt. Read details and copy the prompt.`;
   const meta=document.querySelector('meta[name="description"]');if(meta)meta.setAttribute('content',desc);

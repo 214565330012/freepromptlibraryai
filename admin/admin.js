@@ -9,7 +9,7 @@
     user: null, prompts: [], homeSections: [], page: 1, pageSize: PAGE_SIZE,
     view: 'overview', imageUrl: '', sectionCount: 0, variantCount: 0,
     relatedCount: 0, homeCardCount: 0, recoveryEmail: '', resendTimer: null,
-    otpVerificationInProgress: false, recoveryLinkInProgress: false, analytics: null
+    otpVerificationInProgress: false, recoveryLinkInProgress: false, analytics: null, editingPrompt: null, contentBlockCount: 0
   };
 
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
@@ -376,114 +376,181 @@
     return client.storage.from('prompt-images').getPublicUrl(path).data.publicUrl;
   }
 
-  // -------- Prompt editor: outside-click and Escape never discard an open draft. --------
+  // -------- Prompt editor: ordered prompt and about content blocks. --------
   function resetEditorForm() {
-    $('#promptForm').reset(); $('#promptId').value = '';
-    state.imageUrl = ''; state.sectionCount = 0; state.variantCount = 0; state.relatedCount = 0;
-    $('#extraSectionList').innerHTML = ''; $('#variantList').innerHTML = ''; $('#relatedPromptList').innerHTML = '';
-    $('#imageFile').value = ''; showCurrentImage(''); setMessage($('#saveMessage'));
+    $('#promptForm').reset();
+    $('#promptForm').dataset.dirty = 'false';
+    $('#promptId').value = '';
+    state.imageUrl = '';
+    state.contentBlockCount = 0;
+    state.editingPrompt = null;
+    $('#contentBlockList').innerHTML = '';
+    $('#sectionChooser').hidden = true;
+    $('#imageFile').value = '';
+    showCurrentImage('');
+    setMessage($('#saveMessage'));
+    refreshContentBlockNumbers();
   }
   function openEditor(prompt = null) {
     resetEditorForm();
-    $('#editorModal').hidden = false; document.body.style.overflow = 'hidden';
+    state.editingPrompt = prompt;
+    $('#editorModal').hidden = false;
+    document.body.style.overflow = 'hidden';
     $('#editorTitle').textContent = prompt ? 'Edit prompt' : 'Create a prompt';
     $('#editorSequence').textContent = prompt ? `· PROMPT #${prompt.id}` : '· NEW ITEM';
     if (prompt) {
-      $('#promptId').value = prompt.id; $('#title').value = prompt.title || ''; $('#type').value = prompt.type || 'Photo';
-      $('#category').value = prompt.category || ''; $('#aboutText').value = prompt.about_text || ''; $('#promptEn').value = prompt.content_text || prompt.prompt_en || '';
-      $('#howToUse').value = prompt.how_to_use || ''; $('#aspectRatio').value = prompt.aspect_ratio || '';
-      $('#duration').value = prompt.duration || ''; $('#status').value = prompt.status || 'draft';
-      $('#isTrending').checked = !!prompt.is_trending; state.imageUrl = prompt.image_url || ''; showCurrentImage(state.imageUrl);
-      (Array.isArray(prompt.prompt_variants) ? prompt.prompt_variants : []).forEach(addVariantRow);
-      (Array.isArray(prompt.related_prompts) ? prompt.related_prompts : []).forEach(addRelatedPromptRow);
-      (Array.isArray(prompt.extra_sections) ? prompt.extra_sections : []).forEach(addExtraSection);
-    } else {
-      // New prompts start with the three common output sizes; unused blank formats are not saved.
-      addVariantRow({ name: 'Portrait', aspect_ratio: '4:5' });
-      addVariantRow({ name: 'Landscape', aspect_ratio: '16:9' });
-      addVariantRow({ name: 'Instagram Post', aspect_ratio: '1:1' });
+      $('#promptId').value = prompt.id;
+      $('#title').value = prompt.title || '';
+      $('#type').value = prompt.type || 'Photo';
+      $('#category').value = prompt.category || '';
+      $('#aboutText').value = prompt.about_text || '';
+      $('#promptEn').value = prompt.content_text || prompt.prompt_en || '';
+      $('#howToUse').value = prompt.how_to_use || '';
+      $('#aspectRatio').value = prompt.aspect_ratio || '';
+      $('#duration').value = prompt.duration || '';
+      $('#status').value = prompt.status || 'draft';
+      $('#isTrending').checked = !!prompt.is_trending;
+      state.imageUrl = prompt.image_url || '';
+      showCurrentImage(state.imageUrl);
+      (Array.isArray(prompt.content_blocks) ? prompt.content_blocks : []).forEach((block) => addContentBlock(block.type === 'about' ? 'about' : 'prompt', block));
     }
+    $('#promptForm').dataset.dirty = 'false';
     setTimeout(() => $('#title').focus(), 40);
   }
-  function closeEditor() { $('#editorModal').hidden = true; document.body.style.overflow = ''; resetEditorForm(); }
+  function closeEditor(saved = false) {
+    if (!saved && $('#promptForm').dataset.dirty === 'true') {
+      const discard = window.confirm('Discard the unsaved changes in this prompt?');
+      if (!discard) return;
+    }
+    $('#editorModal').hidden = true;
+    document.body.style.overflow = '';
+    resetEditorForm();
+  }
   function showCurrentImage(url) {
     const line = $('#currentImage');
     line.innerHTML = url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">Current sample image · Open preview ↗</a>` : 'No sample image selected.';
   }
-  function addVariantRow(data = {}) {
-    state.variantCount += 1;
-    const wrap = document.createElement('div'); wrap.className = 'variant-editor';
-    const name = data.name || 'Portrait';
-    wrap.innerHTML = `<div class="dynamic-row-head"><strong>Format ${state.variantCount}</strong><button type="button" class="remove-dynamic">Remove</button></div>
-      <div class="form-grid"><label>Format<select class="variant-name"><option ${name === 'Portrait' ? 'selected' : ''}>Portrait</option><option ${name === 'Landscape' ? 'selected' : ''}>Landscape</option><option ${name === 'Instagram Post' ? 'selected' : ''}>Instagram Post</option><option ${name === 'Custom' ? 'selected' : ''}>Custom</option></select></label><label>Aspect ratio<input class="variant-ratio" value="${escapeHtml(data.aspect_ratio || (name === 'Portrait' ? '4:5' : name === 'Landscape' ? '16:9' : name === 'Instagram Post' ? '1:1' : ''))}" placeholder="e.g. 4:5"></label><label class="full-span">Prompt for this format<textarea class="variant-text" rows="3" placeholder="Prompt for this specific format…">${escapeHtml(data.prompt_text || '')}</textarea></label></div>`;
-    wrap.querySelector('.remove-dynamic').addEventListener('click', () => wrap.remove());
-    $('#variantList').appendChild(wrap);
+  function refreshContentBlockNumbers() {
+    $$('.content-block-editor', $('#contentBlockList')).forEach((wrap, index) => {
+      const label = $('.content-block-number', wrap);
+      if (label) label.textContent = `SECTION ${String(index + 1).padStart(2, '0')}`;
+    });
   }
-  function getVariants() {
-    return $$('.variant-editor', $('#variantList')).map((wrap) => ({ name: $('.variant-name', wrap).value, aspect_ratio: $('.variant-ratio', wrap).value.trim(), prompt_text: $('.variant-text', wrap).value.trim() })).filter((v) => v.prompt_text);
-  }
-  function addRelatedPromptRow(data = {}) {
-    state.relatedCount += 1;
-    const wrap = document.createElement('div'); wrap.className = 'related-prompt-editor';
-    wrap.innerHTML = `<div class="dynamic-row-head"><strong>Related prompt ${state.relatedCount}</strong><button type="button" class="remove-dynamic">Remove</button></div>
-      <div class="form-grid"><label>Prompt title<input class="related-title" maxlength="180" value="${escapeHtml(data.title || '')}" placeholder="e.g. Birthday family portrait"></label><label>Aspect ratio<input class="related-ratio" value="${escapeHtml(data.aspect_ratio || '')}" placeholder="e.g. 4:5"></label><label class="full-span">Prompt<textarea class="related-text" rows="3" placeholder="Write this related prompt…">${escapeHtml(data.prompt_text || '')}</textarea></label><label class="full-span">Sample image (optional)<input class="related-image-file" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><small class="related-current-image">${data.image_url ? `Existing image: ${escapeHtml(data.image_url)}` : 'Maximum 5 MB · JPG, PNG, WebP or AVIF'}</small><input type="hidden" class="related-image-url" value="${escapeHtml(data.image_url || '')}"></label></div>`;
-    wrap.querySelector('.remove-dynamic').addEventListener('click', () => wrap.remove());
-    $('#relatedPromptList').appendChild(wrap);
-  }
-  async function getRelatedPrompts() {
-    const result = [];
-    for (const wrap of $$('.related-prompt-editor', $('#relatedPromptList'))) {
-      const title = $('.related-title', wrap).value.trim();
-      const prompt_text = $('.related-text', wrap).value.trim();
-      const file = $('.related-image-file', wrap).files[0];
-      let image_url = $('.related-image-url', wrap).value.trim();
-      if (file) image_url = await uploadPublicImage(file);
-      if (!title && !prompt_text) continue;
-      if (!title || !prompt_text) throw new Error('Each related prompt needs both a title and prompt text.');
-      result.push({ title, aspect_ratio: $('.related-ratio', wrap).value.trim(), prompt_text, image_url });
+  function addContentBlock(type, data = {}) {
+    state.contentBlockCount += 1;
+    const wrap = document.createElement('article');
+    wrap.className = `content-block-editor content-block-${type}`;
+    wrap.dataset.blockType = type;
+    const header = `<div class="content-block-head"><div><span class="content-block-number"></span><strong>${type === 'prompt' ? 'Prompt section' : 'About / information section'}</strong></div><button type="button" class="remove-content-block">Remove section</button></div>`;
+    if (type === 'prompt') {
+      wrap.innerHTML = `${header}
+        <div class="form-grid">
+          <label>Prompt title<input class="block-title" required maxlength="180" value="${escapeHtml(data.title || '')}" placeholder="e.g. Birthday Couple Portrait"></label>
+          <label>Prompt type<select class="block-prompt-type"><option value="Photo" ${data.prompt_type === 'Video' ? '' : 'selected'}>Photo</option><option value="Video" ${data.prompt_type === 'Video' ? 'selected' : ''}>Video</option></select></label>
+          <label class="full-span">Category<input class="block-category" maxlength="80" list="categorySuggestions" value="${escapeHtml(data.category || '')}" placeholder="e.g. Birthday, Portrait"></label>
+          <label class="full-span">About this prompt<textarea class="block-about" rows="2" placeholder="Write a short description in any language…">${escapeHtml(data.about_text || '')}</textarea></label>
+          <label class="full-span">Prompt<textarea class="block-prompt-text" rows="5" required placeholder="Write the complete prompt in any language…">${escapeHtml(data.prompt_text || '')}</textarea></label>
+          <label class="full-span">How to use<textarea class="block-how-to-use" rows="2" placeholder="Instructions in any language…">${escapeHtml(data.how_to_use || '')}</textarea></label>
+          <label>Aspect ratio<input class="block-aspect-ratio" value="${escapeHtml(data.aspect_ratio || '')}" placeholder="e.g. 4:5, 16:9, 1:1"></label>
+          <label>Duration<input class="block-duration" value="${escapeHtml(data.duration || '')}" placeholder="e.g. 10 seconds"></label>
+          <label class="full-span">Sample image <span class="field-hint">JPG, PNG, WebP or AVIF · Maximum 5 MB</span><input class="block-image-file" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><span class="block-image-note image-preview-line">${data.image_url ? `Current image: ${escapeHtml(data.image_url)}` : 'No image selected.'}</span><input type="hidden" class="block-image-url" value="${escapeHtml(data.image_url || '')}"></label>
+        </div>`;
+    } else {
+      wrap.innerHTML = `${header}
+        <div class="form-grid">
+          <label class="full-span">Heading<input class="about-heading" required maxlength="160" value="${escapeHtml(data.heading || '')}" placeholder="e.g. About this collection"></label>
+          <label class="full-span">Information<textarea class="about-information" rows="4" placeholder="Write information in any language…">${escapeHtml(data.content || '')}</textarea></label>
+          <label class="full-span">Link URL (optional)<input class="about-url" type="url" value="${escapeHtml(data.url || '')}" placeholder="https://example.com"></label>
+          <label class="full-span">Image (optional) <span class="field-hint">JPG, PNG, WebP or AVIF · Maximum 5 MB</span><input class="about-image-file" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><span class="about-image-note image-preview-line">${data.image_url ? `Current image: ${escapeHtml(data.image_url)}` : 'No image selected.'}</span><input type="hidden" class="about-image-url" value="${escapeHtml(data.image_url || '')}"></label>
+        </div>`;
     }
-    return result;
+    wrap.querySelector('.remove-content-block').addEventListener('click', () => {
+      wrap.remove();
+      refreshContentBlockNumbers();
+      $('#promptForm').dataset.dirty = 'true';
+    });
+    const fileInput = wrap.querySelector(type === 'prompt' ? '.block-image-file' : '.about-image-file');
+    const note = wrap.querySelector(type === 'prompt' ? '.block-image-note' : '.about-image-note');
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file) note.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB · Will upload when you save`;
+    });
+    wrap.addEventListener('input', () => { $('#promptForm').dataset.dirty = 'true'; });
+    wrap.addEventListener('change', () => { $('#promptForm').dataset.dirty = 'true'; });
+    $('#contentBlockList').appendChild(wrap);
+    refreshContentBlockNumbers();
+    $('#sectionChooser').hidden = true;
+    $('#promptForm').dataset.dirty = 'true';
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
-  function addExtraSection(data = {}) {
-    state.sectionCount += 1;
-    const wrap = document.createElement('div'); wrap.className = 'extra-editor';
-    wrap.innerHTML = `<div class="dynamic-row-head"><strong>Information section ${state.sectionCount}</strong><button type="button" class="remove-dynamic">Remove</button></div>
-      <label class="full-span">Heading<input class="section-heading" maxlength="150" value="${escapeHtml(data.heading || data.heading_en || data.heading_hi || '')}" placeholder="Section heading"></label>
-      <label class="full-span">Information<textarea class="section-content" rows="3" placeholder="Write in any language…">${escapeHtml(data.content || data.content_en || data.content_hi || data.paragraph_en || data.paragraph_hi || '')}</textarea></label>
-      <label class="full-span">Optional image URL<input class="section-image" type="url" placeholder="https://…" value="${escapeHtml(data.image_url || '')}"></label>`;
-    wrap.querySelector('.remove-dynamic').addEventListener('click', () => wrap.remove());
-    $('#extraSectionList').appendChild(wrap);
+  async function collectContentBlocks() {
+    const blocks = [];
+    for (const wrap of $$('.content-block-editor', $('#contentBlockList'))) {
+      if (wrap.dataset.blockType === 'prompt') {
+        const title = $('.block-title', wrap).value.trim();
+        const prompt_text = $('.block-prompt-text', wrap).value.trim();
+        const file = $('.block-image-file', wrap).files[0];
+        let image_url = $('.block-image-url', wrap).value.trim();
+        if (file) image_url = await uploadPublicImage(file);
+        if (!title || !prompt_text) throw new Error('Each added prompt section needs a title and prompt text.');
+        blocks.push({
+          type: 'prompt', title, prompt_type: $('.block-prompt-type', wrap).value,
+          category: $('.block-category', wrap).value.trim() || 'General',
+          about_text: $('.block-about', wrap).value.trim(), prompt_text,
+          how_to_use: $('.block-how-to-use', wrap).value.trim(),
+          aspect_ratio: $('.block-aspect-ratio', wrap).value.trim(),
+          duration: $('.block-duration', wrap).value.trim(), image_url
+        });
+      } else {
+        const heading = $('.about-heading', wrap).value.trim();
+        const content = $('.about-information', wrap).value.trim();
+        const url = $('.about-url', wrap).value.trim();
+        const file = $('.about-image-file', wrap).files[0];
+        let image_url = $('.about-image-url', wrap).value.trim();
+        if (file) image_url = await uploadPublicImage(file);
+        if (!heading) throw new Error('Each About section needs a heading.');
+        if (url && !/^https?:\/\//i.test(url)) throw new Error('About section links must start with https:// or http://.');
+        blocks.push({ type: 'about', heading, content, url, image_url });
+      }
+    }
+    return blocks;
   }
-  function getExtraSections() {
-    return $$('.extra-editor', $('#extraSectionList')).map((wrap) => ({ heading: $('.section-heading', wrap).value.trim(), content: $('.section-content', wrap).value.trim(), image_url: $('.section-image', wrap).value.trim() })).filter((s) => s.heading || s.content || s.image_url);
-  }
-  $('#addVariantBtn').addEventListener('click', () => addVariantRow());
-  $('#addPromptBtn').addEventListener('click', () => addRelatedPromptRow());
-  $('#addSectionBtn').addEventListener('click', () => addExtraSection());
-  $('#closeEditorBtn').addEventListener('click', closeEditor);
-  $('#cancelBtn').addEventListener('click', closeEditor);
-  // Do not close the editor when clicking the backdrop or pressing Escape. This protects unsaved work.
+  $('#addSectionBtn').addEventListener('click', () => {
+    $('#sectionChooser').hidden = !$('#sectionChooser').hidden;
+  });
+  $('#addPromptBlockBtn').addEventListener('click', () => addContentBlock('prompt'));
+  $('#addAboutBlockBtn').addEventListener('click', () => addContentBlock('about'));
+  $('#closeEditorBtn').addEventListener('click', () => closeEditor(false));
+  $('#cancelBtn').addEventListener('click', () => closeEditor(false));
+  // The editor never closes by clicking outside or pressing Escape; explicit close asks before discarding.
   $('#editorModal').addEventListener('click', (event) => { if (event.target === $('#editorModal')) event.preventDefault(); });
+  $('#promptForm').addEventListener('input', () => { $('#promptForm').dataset.dirty = 'true'; });
+  $('#promptForm').addEventListener('change', () => { $('#promptForm').dataset.dirty = 'true'; });
   $('#promptForm').addEventListener('submit', async (event) => {
     event.preventDefault();
-    const button = $('#saveBtn'); button.disabled = true; setMessage($('#saveMessage'), 'Saving prompt…');
+    const button = $('#saveBtn'); button.disabled = true; setMessage($('#saveMessage'), 'Saving prompt and ordered sections…');
     try {
       const file = $('#imageFile').files[0];
       if (file) state.imageUrl = await uploadPublicImage(file);
-      const relatedPrompts = await getRelatedPrompts();
+      const contentBlocks = await collectContentBlocks();
       const promptText = $('#promptEn').value.trim();
+      const oldPrompt = state.editingPrompt || {};
       const payload = {
         title: $('#title').value.trim(), title_hi: '', type: $('#type').value, category: $('#category').value.trim() || 'General',
         prompt_en: promptText, prompt_hi: '', content_text: promptText, about_text: $('#aboutText').value.trim(), how_to_use: $('#howToUse').value.trim(),
-        prompt_variants: getVariants(), related_prompts: relatedPrompts,
+        // Preserve legacy arrays for prompts created before the ordered section builder existed.
+        prompt_variants: Array.isArray(oldPrompt.prompt_variants) ? oldPrompt.prompt_variants : [],
+        related_prompts: Array.isArray(oldPrompt.related_prompts) ? oldPrompt.related_prompts : [],
+        extra_sections: Array.isArray(oldPrompt.extra_sections) ? oldPrompt.extra_sections : [],
+        content_blocks: contentBlocks,
         aspect_ratio: $('#aspectRatio').value.trim(), duration: $('#duration').value.trim(), image_url: state.imageUrl,
-        is_trending: $('#isTrending').checked, status: $('#status').value, extra_sections: getExtraSections(), updated_at: new Date().toISOString()
+        is_trending: $('#isTrending').checked, status: $('#status').value, updated_at: new Date().toISOString()
       };
       const id = $('#promptId').value;
       const result = id ? await client.from('prompts').update(payload).eq('id', Number(id)) : await client.from('prompts').insert(payload);
       if (result.error) throw result.error;
-      closeEditor(); await loadPrompts(); toast(id ? 'Prompt updated successfully.' : 'Prompt collection added to the end of the sequence.');
-    } catch (error) { setMessage($('#saveMessage'), `${error.message || 'Could not save this prompt.'} If a new database field is missing, run the supplied migration SQL once.`, true); }
+      closeEditor(true); await loadPrompts(); toast(id ? 'Prompt updated successfully.' : 'Prompt collection added to the end of the sequence.');
+    } catch (error) { setMessage($('#saveMessage'), `${error.message || 'Could not save this prompt.'} Make sure the ordered content_blocks database migration has been run.`, true); }
     finally { button.disabled = false; }
   });
 

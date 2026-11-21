@@ -1,40 +1,29 @@
-FreePromptLibraryAI — Update Guide (Gujarati)
+# FreePromptLibraryAI – Ordered Content Sections Update
 
-આ ZIP તમારી હાલની Website પરથી તૈયાર કરેલો સુધારેલો Project છે. GitHub/Cloudflare પર મૂક્તા પહેલાં હાલની ચાલતી Website ની ZIP Backup રાખો.
+## આ Update માં
+- Admin prompt cards desktop પર 4 columns માં દેખાય છે.
+- Admin card image `contain` mode માં છે જેથી આખી image દેખાય.
+- Prompt editor માં જૂના `Add format`, `Add prompt`, અને અલગ `Extra information sections` controls દૂર કર્યા છે.
+- એક વાદળી `Add Section` બટન નીચે રહે છે. તે ખોલતાં `Add Prompt` અથવા `Add About Section` પસંદ કરી શકાય છે.
+- નવી sections જે ક્રમમાં ઉમેરાય છે તે જ ક્રમ `content_blocks` JSON array માં સાચવાય છે અને Prompt Detail Page પર દર્શાવાય છે.
+- About section માં image heading/information પહેલાં દેખાય છે; optional URL link પણ છે.
+- Prompt section માં title, type, category, about, prompt, how-to-use, aspect ratio, duration અને image fields છે.
+- Unsaved editor backdrop click થી બંધ થતો નથી; X/Cancel પર unsaved changes discard confirm થાય છે.
 
-1) GitHub Update
-- GitHub Repository ખોલો: 214565330012/freepromptlibraryai (branch: main).
-- હાલની Repository ની Backup ZIP અલગ રાખો.
-- આ ZIP Extract કરો.
-- Extract થયેલા freepromptlibraryai-main ફોલ્ડરની અંદરની ફાઇલો અને ફોલ્ડર્સ Repository ના Root માં Upload કરો; ફોલ્ડરનું outer wrapper `freepromptlibraryai-main/` બનાવીને nested upload ન કરશો.
-- હાલના સમાન paths ની ફાઇલો replace થવી જોઈએ. ખાસ: `index.html`, `app.js`, `styles.css`, `prompt.html`, `detail.js`, `detail.css`, `admin/index.html`, `admin/admin.js`, `admin/admin.css`, `supabase-config.js`, `_redirects`, `404.html`.
-- Commit કર્યા પછી Cloudflare Pages Deployment Success થાય તેની રાહ જુઓ.
+## Supabase – એકવારનું Migration
+1. `supabase/content-blocks-migration.sql` ખોલો.
+2. Supabase → SQL Editor → New Query માં આખો SQL paste કરો.
+3. Run કરો. આ migration માત્ર `prompts.content_blocks` JSONB column ઉમેરે છે; જૂનો data delete/replace કરતું નથી.
+4. જૂની `setup.sql` અથવા `admin-upgrade-migration.sql` ફરીથી ચલાવવાની જરૂર નથી.
 
-2) Supabase Database Migration — એક જ વાર
-- Supabase Project > SQL Editor > New Query ખોલો.
-- આ Project ની `supabase/admin-upgrade-migration.sql` ફાઇલ ખોલો.
-- આખો કોડ Paste કરીને Run કરો.
-- `supabase/setup.sql` ફરીથી Run ન કરશો; હાલનો Admin User અને 52 Prompt records પહેલેથી છે.
-- Migration additive છે: હાલના Prompts/Admin User ને delete અથવા overwrite કરતી નથી; નવા fields, Homepage Builder, Analytics tables/functions ઉમેરે છે.
+## GitHub Upload
+1. હાલની live repository ZIP backup રાખો.
+2. આ ZIP Extract કરો.
+3. Extract કરેલા project folder ની અંદરની બધી files/folders GitHub repository ના root માં upload કરો; બહારનું wrapper folder નહીં.
+4. Existing same-path files replace કરો; GitHub root માં `index.html` અને project folders ની રચના યથાવત્ રાખો.
+5. Commit કરો અને Cloudflare Pages deployment `Success` થાય ત્યાં સુધી રાહ જુઓ.
 
-3) પછી ચકાસો
-- Homepage: https://freepromptlibraryai.pages.dev
-- Admin: https://freepromptlibraryai.pages.dev/admin/
-- Admin માં Sign In, All Prompts (1,2,3… ID ascending), Add/Edit/Delete, sample image upload, Homepage Builder અને Analytics ચકાસો.
-- Admin Email/Password reset flow Supabase-managed છે.
-- Image upload JPG, PNG, WebP અથવા AVIF; per-file max 5 MB.
-- Existing storage bucket `prompt-images` વપરાય છે.
-
-Language note:
-- English/Hindi switch હાલના fixed Website UI labels ને બદલે છે.
-- જૂના records માં `title_hi`/`prompt_hi` હશે તો Hindi mode માં એ ઉપયોગ થાય છે.
-- નવા Admin prompt માટે એક જ content box છે; તેમાં તમે જે ભાષા લખશો તે જ દેખાશે. User-written prompt/About/How-to/custom section નું auto-translation આ ZIP માં નથી; તેના માટે અલગ translation service/API key જોઈએ.
-- Dark mode પસંદગી browser localStorage માં સાચવાય છે.
-
-Analytics note:
-- Analytics page `page_views` માં anonymous random visitor UUID અને page path/time નોંધે છે; IP, નામ કે email track કરતું નથી.
-- Unique visitors browser/device આધારિત અંદાજ છે (localStorage/browser બદલવાથી ગણતરી બદલાઈ શકે). Bots/automated traffic સંપૂર્ણ રીતે ફિલ્ટર થતું નથી.
-
-Security:
-- `supabase-config.js` માં ફક્ત Supabase Publishable Key છે. Secret/service_role key ક્યારેય browser code માં ન મૂકો.
-- `_redirects` `/supabase/*` પરની SQL files ને public Pages URL પરથી 404 આપે છે.
+## નોંધ
+- Existing columns `prompt_variants`, `related_prompts`, `extra_sections` ને delete કરેલા નથી. જૂના prompt records માટે detail page compatibility રાખવામાં આવી છે.
+- New ordered blocks માટે Supabase migration run થયેલું હોવું જરૂરી છે; નહીં તો Save વખતે `content_blocks` missing-column error મળશે.
+- Live Supabase CRUD અને image upload deployment પછી actual browser માં ચકાસવાનું બાકી રહેશે.
