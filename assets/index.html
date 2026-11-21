@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#17152d">
+  <title>Admin Studio | FreePromptLibraryAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <section class="auth-screen" id="loginView">
+    <div class="auth-brand"><span class="brand-mark">FP</span><span>FreePrompt<span class="brand-accent">LibraryAI</span></span></div>
+    <div class="auth-card">
+      <div class="auth-kicker">PRIVATE WORKSPACE</div>
+      <h1>Welcome back</h1>
+      <p class="auth-copy">Sign in to manage your prompt library.</p>
+      <form id="loginForm" class="auth-form">
+        <label>Email address<input type="email" id="loginEmail" autocomplete="username" placeholder="admin@example.com" required></label>
+        <label>Password<input type="password" id="loginPassword" autocomplete="current-password" placeholder="Enter your password" required></label>
+        <button class="btn btn-primary btn-full" type="submit">Sign in to Admin <span aria-hidden="true">→</span></button>
+        <p class="form-message" id="loginMessage" role="status" aria-live="polite"></p>
+      </form>
+      <button class="link-button" id="forgotPasswordBtn" type="button">Forgot password?</button>
+    </div>
+    <p class="auth-foot">Protected by Supabase Authentication · Admin-only access</p>
+  </section>
+
+  <section class="auth-screen" id="recoveryView" hidden>
+    <div class="auth-brand"><span class="brand-mark">FP</span><span>FreePrompt<span class="brand-accent">LibraryAI</span></span></div>
+    <div class="auth-card recovery-card">
+      <div class="auth-kicker">ACCOUNT RECOVERY</div>
+      <h1>Reset your password</h1>
+      <p class="auth-copy" id="recoveryIntro">Enter your admin email. We will send a verification code or secure reset link.</p>
+      <form id="recoveryRequestForm" class="auth-form recovery-step">
+        <label>Email address<input type="email" id="recoveryEmail" autocomplete="username" required></label>
+        <button class="btn btn-primary btn-full" id="sendOtpBtn" type="submit">Send recovery email</button>
+        <p class="form-message" id="recoveryRequestMessage" role="status" aria-live="polite"></p>
+      </form>
+      <form id="recoveryOtpForm" class="auth-form recovery-step" hidden>
+        <label>Email verification code<input type="text" id="recoveryOtp" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,8}" minlength="6" maxlength="8" placeholder="Enter 6–8 digit code" required></label>
+        <p class="helper-note">Enter the recovery code from your email. You can also open the secure reset link from that email in this browser.</p>
+        <button class="btn btn-primary btn-full" id="verifyOtpBtn" type="submit">Verify code</button>
+        <button class="btn btn-secondary btn-full" id="resendOtpBtn" type="button" disabled>Resend code in 60s</button>
+        <p class="form-message" id="recoveryOtpMessage" role="status" aria-live="polite"></p>
+      </form>
+      <form id="recoveryPasswordForm" class="auth-form recovery-step" hidden>
+        <label>New password<input type="password" id="recoveryNewPassword" autocomplete="new-password" minlength="8" required></label>
+        <label>Confirm new password<input type="password" id="recoveryConfirmPassword" autocomplete="new-password" minlength="8" required></label>
+        <p class="helper-note">Use at least 8 characters. Your verified admin email is required to complete this change.</p>
+        <button class="btn btn-primary btn-full" id="saveNewPasswordBtn" type="submit">Update password</button>
+        <p class="form-message" id="recoveryPasswordMessage" role="status" aria-live="polite"></p>
+      </form>
+      <button class="link-button" id="backToLoginBtn" type="button">← Back to sign in</button>
+    </div>
+    <p class="auth-foot">FreePromptLibraryAI · Secure account recovery</p>
+  </section>
+
+  <div class="app-shell" id="dashboardView" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a class="sidebar-brand" href="../index.html" aria-label="FreePromptLibraryAI home">
+        <span class="brand-mark">FP</span><span class="brand-name">FreePrompt<span>LibraryAI</span></span>
+      </a>
+      <div class="workspace-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Admin navigation">
+        <button class="nav-item active" type="button" data-view="overview"><span class="nav-icon">▦</span><span>Overview</span></button>
+        <button class="nav-item" type="button" data-view="prompts"><span class="nav-icon">▤</span><span>All prompts</span><span class="nav-count" id="navPromptCount">52</span></button>
+        <button class="nav-item" type="button" data-view="categories"><span class="nav-icon">◇</span><span>Categories</span></button>
+        <button class="nav-item" type="button" data-view="media"><span class="nav-icon">▧</span><span>Media library</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <a class="sidebar-site-link" href="../index.html" target="_blank" rel="noopener"><span>↗</span> View live website</a>
+        <div class="admin-profile"><span class="profile-avatar" id="profileInitials">A</span><span class="profile-copy"><strong id="profileEmail">Admin</strong><small>Administrator</small></span><button id="signOutBtn" type="button" class="signout-icon" title="Sign out" aria-label="Sign out">⇥</button></div>
+      </div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <button class="mobile-menu-btn" id="mobileMenuButton" type="button" aria-label="Open navigation">☰</button>
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="breadcrumbTitle">Overview</strong></div>
+        <div class="topbar-actions"><span class="live-indicator"><i></i> Connected</span><a class="topbar-site" href="../index.html" target="_blank" rel="noopener">View website ↗</a></div>
+      </header>
+
+      <main class="content-area">
+        <section class="view-panel active" data-panel="overview">
+          <div class="page-heading"><div><div class="eyebrow">YOUR LIBRARY AT A GLANCE</div><h1>Good to see you</h1><p>Manage your prompts, content and media from one place.</p></div><button class="btn btn-primary" type="button" data-action="new-prompt">＋ Add new prompt</button></div>
+          <div class="metric-grid">
+            <article class="metric-card metric-main"><div class="metric-top"><span class="metric-icon purple">▤</span><span class="metric-label">TOTAL PROMPTS</span></div><strong id="totalCount">—</strong><small>All items in your library</small></article>
+            <article class="metric-card"><div class="metric-top"><span class="metric-icon green">✓</span><span class="metric-label">PUBLISHED</span></div><strong id="publishedCount">—</strong><small>Visible on your website</small></article>
+            <article class="metric-card"><div class="metric-top"><span class="metric-icon amber">◷</span><span class="metric-label">DRAFTS</span></div><strong id="draftCount">—</strong><small>Not published yet</small></article>
+            <article class="metric-card"><div class="metric-top"><span class="metric-icon blue">✦</span><span class="metric-label">TRENDING</span></div><strong id="trendingCount">—</strong><small>Featured in trending</small></article>
+          </div>
+          <section class="content-card sequence-card">
+            <div class="card-heading"><div><h2>Prompt sequence</h2><p>Prompts are shown in the same ascending order as your website: 1, 2, 3 …</p></div><button class="btn btn-quiet" type="button" data-action="view-prompts">View all prompts <span>→</span></button></div>
+            <div class="sequence-list" id="sequencePreview"><div class="loading-row">Loading your prompt sequence…</div></div>
+          </section>
+          <div class="overview-bottom">
+            <section class="content-card split-card"><div class="card-heading"><div><h2>Content breakdown</h2><p>Photo and video prompts in your library</p></div></div><div class="type-breakdown" id="typeBreakdown"></div></section>
+            <section class="content-card split-card"><div class="card-heading"><div><h2>Quick actions</h2><p>Common content tasks</p></div></div><div class="quick-actions"><button type="button" data-action="new-prompt"><span>＋</span><b>Create a prompt</b><small>Add a new photo or video prompt</small></button><button type="button" data-view="categories"><span>◇</span><b>Browse categories</b><small>See prompts grouped by category</small></button><button type="button" data-view="media"><span>▧</span><b>Open media library</b><small>Review uploaded sample images</small></button></div></section>
+          </div>
+        </section>
+
+        <section class="view-panel" data-panel="prompts">
+          <div class="page-heading"><div><div class="eyebrow">CONTENT MANAGEMENT</div><h1>All prompts</h1><p>Keep every prompt organised in the same sequence as the public library.</p></div><button class="btn btn-primary" type="button" data-action="new-prompt">＋ Add new prompt</button></div>
+          <section class="content-card prompt-list-card">
+            <div class="list-toolbar"><div class="search-box"><span>⌕</span><input id="promptSearch" type="search" placeholder="Search title, category or prompt text…" aria-label="Search prompts"></div><select id="typeFilter" aria-label="Filter by type"><option value="all">All types</option><option value="Photo">Photo</option><option value="Video">Video</option></select><select id="statusFilter" aria-label="Filter by status"><option value="all">All statuses</option><option value="published">Published</option><option value="draft">Draft</option></select><select id="categoryFilter" aria-label="Filter by category"><option value="all">All categories</option></select></div>
+            <div class="table-scroll"><table class="prompt-table"><thead><tr><th class="sequence-col">NO.</th><th>Prompt</th><th>Type</th><th>Category</th><th>Status</th><th>Trending</th><th class="actions-col">Actions</th></tr></thead><tbody id="promptRows"><tr><td colspan="7" class="loading-row">Loading prompts…</td></tr></tbody></table></div>
+            <div class="table-footer"><span id="listSummary">Showing prompts</span><nav class="pagination" id="adminPagination" aria-label="Prompt pages"></nav></div>
+          </section>
+        </section>
+
+        <section class="view-panel" data-panel="categories">
+          <div class="page-heading"><div><div class="eyebrow">LIBRARY ORGANISATION</div><h1>Categories</h1><p>Browse existing categories and open their prompts. Change a category from the prompt editor.</p></div></div>
+          <div class="category-grid" id="categoryGrid"><div class="content-card loading-row">Loading categories…</div></div>
+        </section>
+
+        <section class="view-panel" data-panel="media">
+          <div class="page-heading"><div><div class="eyebrow">VISUAL ASSETS</div><h1>Media library</h1><p>Sample images currently attached to your prompts. Upload or replace images from the prompt editor.</p></div><span class="subtle-chip" id="mediaCount">0 images</span></div>
+          <div class="media-grid" id="mediaGrid"><div class="content-card loading-row">Loading media…</div></div>
+        </section>
+      </main>
+      <footer class="app-footer"><span>FreePromptLibraryAI Admin Studio</span><span>Secure content management</span></footer>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="editorModal" hidden>
+    <section class="editor-modal" role="dialog" aria-modal="true" aria-labelledby="editorTitle">
+      <header class="modal-header"><div><div class="eyebrow">PROMPT EDITOR <span id="editorSequence"></span></div><h2 id="editorTitle">Add new prompt</h2><p>Write and manage English and Hindi prompt content.</p></div><button class="modal-close" id="closeEditorBtn" type="button" aria-label="Close editor">×</button></header>
+      <form id="promptForm" class="editor-form">
+        <input type="hidden" id="promptId">
+        <div class="editor-section-title"><span>01</span><div><h3>Basic information</h3><p>Title, type and category</p></div></div>
+        <div class="form-grid"><label>Title (English)<input id="title" required maxlength="180" placeholder="e.g. Golden Hour Portrait"></label><label>Title (Hindi)<input id="titleHi" maxlength="180" placeholder="हिंदी में शीर्षक"></label><label>Prompt type<select id="type"><option>Photo</option><option>Video</option></select></label><label>Category<input id="category" required maxlength="80" list="categorySuggestions" placeholder="e.g. Wedding, Portrait"><datalist id="categorySuggestions"></datalist></label></div>
+        <div class="editor-section-title"><span>02</span><div><h3>Prompt content</h3><p>Provide both language versions</p></div></div>
+        <div class="form-grid"><label class="full-span">Prompt (English)<textarea id="promptEn" rows="5" required placeholder="Write the complete English prompt…"></textarea></label><label class="full-span">Prompt (Hindi)<textarea id="promptHi" rows="5" placeholder="हिंदी प्रॉम्प्ट यहाँ लिखें…"></textarea></label></div>
+        <div class="editor-section-title"><span>03</span><div><h3>Format and media</h3><p>Aspect ratio, duration and sample image</p></div></div>
+        <div class="form-grid"><label>Aspect ratio<input id="aspectRatio" placeholder="e.g. 9:16"></label><label>Duration<input id="duration" placeholder="e.g. 10 seconds"></label><label class="full-span">Sample image <span class="field-hint">JPG, PNG, WebP or AVIF · Maximum 5 MB</span><input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><span class="image-preview-line" id="currentImage"></span></label></div>
+        <div class="editor-section-title"><span>04</span><div><h3>Publishing settings</h3><p>Control visibility and trending placement</p></div></div>
+        <div class="form-grid form-grid-small"><label>Publication status<select id="status"><option value="draft">Draft</option><option value="published">Published</option></select></label><label class="toggle-field"><span><b>Show in Trending</b><small>Feature this prompt in trending collections</small></span><input id="isTrending" type="checkbox"></label></div>
+        <div class="editor-section-title extra-title"><span>05</span><div><h3>Extra detail sections</h3><p>Add headings and English/Hindi explanations for the prompt detail page.</p></div><button type="button" class="btn btn-outline btn-small" id="addSectionBtn">＋ Add section</button></div>
+        <div id="extraSectionList" class="extra-section-list"></div>
+        <div class="modal-footer"><p id="saveMessage" class="form-message" role="status" aria-live="polite"></p><button type="button" class="btn btn-quiet" id="cancelBtn">Cancel</button><button type="submit" class="btn btn-primary" id="saveBtn">Save prompt</button></div>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../supabase-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
