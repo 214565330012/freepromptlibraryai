@@ -366,11 +366,12 @@ function renderConfiguredSocials(socials) {
   const socialSection = $('#socialSection');
   const grid = $('#socialLinkGrid');
   const footerGrid = $('#footerSocialLinks');
+  const brand = {instagram:{letter:'I',cls:'instagram'},facebook:{letter:'f',cls:'facebook'},threads:{letter:'t',cls:'threads'},whatsapp:{letter:'W',cls:'whatsapp'}};
   if (socialSection && grid) {
     socialSection.hidden = !visible.length;
-    grid.innerHTML = visible.map(item => `<a class="social-link-card" href="${escapeText(item.url)}" target="_blank" rel="noopener noreferrer"><span class="social-link-icon">${escapeText((item.platform||'S').slice(0,1).toUpperCase())}</span><strong>${escapeText(item.platform||'Social')}</strong><span>Follow ↗</span></a>`).join('');
+    grid.innerHTML = visible.map(item => { const key=String(item.platform||'').toLowerCase(); const mark=brand[key]||{letter:(item.platform||'S').slice(0,1).toUpperCase(),cls:'social-generic'}; return `<a class="social-link-card" href="${escapeText(item.url)}" target="_blank" rel="noopener noreferrer"><span class="social-link-icon ${mark.cls}">${mark.letter}</span><strong>${escapeText(item.platform||'Social')}</strong><span>Follow ↗</span></a>`; }).join('');
   }
-  if (footerGrid) footerGrid.innerHTML = visible.length ? visible.map(item => `<a href="${escapeText(item.url)}" target="_blank" rel="noopener noreferrer">${escapeText(item.platform||'Social')} ↗</a>`).join('') : '<span class="footer-social-empty">Social links will appear here.</span>';
+  if (footerGrid) footerGrid.innerHTML = visible.length ? visible.map(item => { const key=String(item.platform||'').toLowerCase(); const mark=brand[key]||{letter:(item.platform||'S').slice(0,1).toUpperCase(),cls:'social-generic'}; return `<a href="${escapeText(item.url)}" target="_blank" rel="noopener noreferrer"><span class="footer-social-mark ${mark.cls}">${mark.letter}</span>${escapeText(item.platform||'Social')} ↗</a>`; }).join('') : '<span class="footer-social-empty">Social links will appear here.</span>';
 }
 async function loadPublicSiteSettings() {
   if (!supabaseClient) return;
@@ -447,3 +448,7 @@ loadPublicSiteSettings();
 
 // Load the CMS-managed collection after the local fallback has rendered.
 loadPromptsFromSupabase();
+
+
+// Floating back-to-top control
+(() => { const button=document.getElementById('backToTop'); if(!button)return; const update=()=>button.classList.toggle('visible',window.scrollY>320); window.addEventListener('scroll',update,{passive:true}); update(); button.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'})); })();

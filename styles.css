@@ -370,3 +370,20 @@ footer#footer{margin-top:24px;padding:58px max(5%,calc((100% - 1100px)/2)) 0;bac
 
 @media(max-width:760px){.hero-headings h1{font-size:var(--hero-title1-mobile-size,21px)}.hero-headings h2{font-size:var(--hero-title2-mobile-size,20px)}}
 .search-wrap button.search-button-animated:active{transform:scale(.97)}
+
+/* Homepage top identity strip: keep the existing hero colours untouched. */
+.home-topbar{height:62px;width:100%;display:flex;align-items:center;justify-content:space-between;padding:0 max(20px,calc((100% - 1160px)/2));background:#fff;border-bottom:1px solid #ececf5;position:relative;z-index:30}
+.home-topbar-brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:#17172f}
+.home-brand-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#6688ea,#874bb0);display:grid;place-items:center;color:#fff;font-size:20px;font-weight:800}
+.home-topbar-brand strong{display:block;font-size:16px;line-height:1.1;font-weight:800}.home-topbar-brand strong span{color:#7653bb}.home-topbar-brand small{display:block;font-size:7px;letter-spacing:1.5px;font-weight:700;color:#8a8ca3;margin-top:3px}
+.home-topbar .site-controls{position:static;display:flex;align-items:center;gap:7px}
+.social-link-icon.instagram,.footer-social-mark.instagram{background:linear-gradient(135deg,#f9ce34,#ee2a7b 52%,#6228d7)!important;color:#fff}
+.social-link-icon.facebook,.footer-social-mark.facebook{background:#1877f2!important;color:#fff}
+.social-link-icon.threads,.footer-social-mark.threads{background:#171717!important;color:#fff}
+.social-link-icon.whatsapp,.footer-social-mark.whatsapp{background:#25d366!important;color:#fff}
+.social-link-icon{font-family:Arial,sans-serif;font-size:18px!important;font-weight:800!important}
+.footer-social-mark{width:24px;height:24px;display:inline-grid;place-items:center;border-radius:50%;font:800 13px Arial,sans-serif;color:#fff;background:#6d59bd}
+.back-to-top{position:fixed;right:22px;bottom:28px;z-index:150;width:43px;height:43px;border:0;border-radius:50%;background:linear-gradient(135deg,#6688ea,#874bb0);color:#fff;font-size:25px;font-weight:800;box-shadow:0 5px 18px #2d235344;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .2s,transform .2s,visibility .2s}
+.back-to-top.visible{opacity:1;visibility:visible;transform:translateY(0)}
+:root[data-theme="dark"] .home-topbar{background:#1c1b31;border-color:#393650}:root[data-theme="dark"] .home-topbar-brand{color:#f4f1ff}:root[data-theme="dark"] .home-topbar-brand small{color:#b9b5d0}
+@media(max-width:600px){.home-topbar{height:56px;padding:0 10px}.home-brand-mark{width:32px;height:32px}.home-topbar-brand strong{font-size:13px}.home-topbar-brand small{font-size:6px;letter-spacing:1px}.home-topbar .language-switch{gap:2px}.home-topbar .language-option{padding:5px 7px;font-size:9px}.home-topbar .theme-control{min-width:28px}.back-to-top{right:13px;bottom:18px;width:39px;height:39px}}

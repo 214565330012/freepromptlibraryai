@@ -143,3 +143,9 @@
 .complaint-admin-actions button{padding:8px 10px;border:1px solid #f1dce2;border-radius:8px;background:#fff;color:#c04d63;font:700 9px "DM Sans",sans-serif;cursor:pointer}
 @media(max-width:900px){.builder-nav-link-row{grid-template-columns:1fr 1fr}.builder-nav-enabled{justify-content:flex-start}.complaint-admin-card{grid-template-columns:1fr}.complaint-admin-actions{justify-content:flex-end}}
 @media(max-width:600px){.homepage-builder-card{padding:14px}.builder-settings-subhead{align-items:flex-start;flex-direction:column;gap:4px}.builder-nav-link-row{grid-template-columns:1fr}.builder-nav-enabled{height:auto;justify-content:flex-start}.builder-form-actions{align-items:stretch;flex-direction:column}.builder-form-actions .btn{width:100%}.complaint-admin-top{flex-direction:column;gap:5px}.complaint-admin-actions{justify-content:stretch}.complaint-admin-actions select,.complaint-admin-actions button{flex:1;max-width:none}}
+
+/* Quick, separate information-page edit actions in Homepage Builder. */
+.builder-page-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 18px}
+.builder-page-shortcuts button{min-height:42px;padding:9px 12px;border:1px solid #dedaf4;border-radius:10px;background:#f7f5ff;color:#5844a8;font:700 12px Poppins,Arial,sans-serif;cursor:pointer;text-align:left;transition:background .2s,border-color .2s,transform .2s}
+.builder-page-shortcuts button:hover{background:#eeeaff;border-color:#9b8ae8;transform:translateY(-1px)}
+@media(max-width:760px){.builder-page-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}}

@@ -6,6 +6,7 @@
   const slug = (params.get('slug') || 'about').toLowerCase().replace(/[^a-z0-9-]/g, '');
   const pageTitles = {about:'About Us',contact:'Contact Us',privacy:'Privacy Policy',terms:'Terms & Conditions',disclaimer:'Disclaimer',dmca:'DMCA'};
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function linkifyPolicyTerms(value){let text=esc(value);const links=[['Terms & Conditions','terms'],['Privacy Policy','privacy'],['Disclaimer','disclaimer']];for(const [label,slug] of links){const re=new RegExp('(?<![\w\-/])('+label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')(?![\w])','gi');text=text.replace(re,match=>`<a href="page.html?slug=${slug}">${match}</a>`);}return text;}
   function setStatus(message, error=false){const p=$('#complaintStatus');p.textContent=message;p.classList.toggle('error',error);}
   function setupTheme(){
     const saved=localStorage.getItem('fpl-theme')||'light';document.documentElement.dataset.theme=saved;
@@ -23,7 +24,7 @@
     if(error||!page||!page.is_published){$('#contentPageTitle').textContent='Page not available';$('#contentPageIntro').textContent='This page has not been published yet.';$('#contentPageSections').innerHTML='<p>Please return to the homepage.</p>';return;}
     $('#contentPageTitle').textContent=page.title||pageTitles[slug]||'Information';
     $('#contentPageIntro').textContent=page.intro||'';
-    $('#contentPageSections').innerHTML=(Array.isArray(page.sections)?page.sections:[]).map(section=>`<section class="content-page-section"><h2>${esc(section.heading||'')}</h2><p>${esc(section.content||'')}</p></section>`).join('')||'<p>Information will be updated soon.</p>';
+    $('#contentPageSections').innerHTML=(Array.isArray(page.sections)?page.sections:[]).map(section=>`<section class="content-page-section"><h2>${esc(section.heading||'')}</h2><p>${linkifyPolicyTerms(section.content||'')}</p></section>`).join('')||'<p>Information will be updated soon.</p>';
     if(slug==='contact'){
       const email=settings?.settings?.contactEmail||'';
       $('#contactDetails').hidden=false;

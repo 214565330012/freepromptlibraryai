@@ -10,13 +10,13 @@
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="site-controls" aria-label="Website display settings">
-  <div class="language-switch" role="group" aria-label="Choose website language">
-    <button type="button" class="language-option" data-language="en" aria-pressed="true">English</button>
-    <button type="button" class="language-option" data-language="hi" aria-pressed="false">हिन्दी</button>
+<header class="home-topbar">
+  <a class="home-topbar-brand" href="index.html" aria-label="FreePromptLibraryAI home"><span class="home-brand-mark">P</span><span><strong>FreePrompt<span>LibraryAI</span></strong><small>FREE PHOTO &amp; VIDEO PROMPTS</small></span></a>
+  <div class="site-controls" aria-label="Website display settings">
+    <div class="language-switch" role="group" aria-label="Choose website language"><button type="button" class="language-option" data-language="en" aria-pressed="true">English</button><button type="button" class="language-option" data-language="hi" aria-pressed="false">हिन्दी</button></div>
+    <button type="button" id="themeToggle" class="site-control theme-control" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
   </div>
-  <button type="button" id="themeToggle" class="site-control theme-control" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
-</div>
+</header>
 
 
 <section class="hero">
@@ -108,6 +108,7 @@
   </div>
   <div class="copyright">© <span id="year"></span> FreePromptLibraryAI. All rights reserved. · <a href="/admin/" style="color:inherit">Admin</a></div>
 </footer>
+<button type="button" class="back-to-top" id="backToTop" aria-label="Back to top" title="Back to top">↑</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="prompts.js"></script><script src="app.js"></script>
 </body></html>

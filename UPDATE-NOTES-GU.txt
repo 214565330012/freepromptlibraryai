@@ -1,0 +1,14 @@
+FreePromptLibraryAI UI Update
+
+Changed files:
+- index.html: added top brand strip with language/theme controls (no Back button) and floating Back to Top button.
+- styles.css: top strip styling, social platform letter marks in platform colours, floating Back to Top styling.
+- app.js: platform-specific stylised letter marks and Back to Top behavior.
+- admin/index.html: removed the Supabase protected-access footer sentence; added separate quick edit buttons for About, Contact, Privacy, Terms, Disclaimer and DMCA.
+- admin/admin.js: quick edit buttons select and load the chosen information page.
+- admin/admin.css: quick edit button layout.
+- page.js: makes Privacy Policy, Terms & Conditions and Disclaimer references clickable inside section descriptions (not headings).
+- page.css: improves information page text contrast, weight and readability.
+
+No Supabase schema changes are included. No prompt data or prompt ordering was changed.
+Upload the files preserving their folder paths, then commit to GitHub.

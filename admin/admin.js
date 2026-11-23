@@ -651,6 +651,7 @@
     }catch(error){setMessage($('#contentPageMessage'),`${error.message||'Could not load page.'} Run homepage-control-complaints-migration.sql in Supabase first.`,true);}
   }
   $('#contentPageSlug').addEventListener('change',()=>loadContentPage($('#contentPageSlug').value));
+  $$('[data-content-page]').forEach(button=>button.addEventListener('click',()=>{const slug=button.dataset.contentPage;$('#contentPageSlug').value=slug;loadContentPage(slug);$('#contentPageForm').scrollIntoView({behavior:'smooth',block:'start'});}));
   $('#addContentPageSectionBtn').addEventListener('click',()=>addContentPageSection());
   $('#contentPageForm').addEventListener('submit',async event=>{
     event.preventDefault();const button=$('#saveContentPageBtn');button.disabled=true;setMessage($('#contentPageMessage'),'Saving information page…');

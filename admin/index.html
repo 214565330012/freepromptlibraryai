@@ -26,7 +26,6 @@
       </form>
       <button class="link-button" id="forgotPasswordBtn" type="button">Forgot password?</button>
     </div>
-    <p class="auth-foot">Protected by Supabase Authentication · Admin-only access</p>
   </section>
 
   <section class="auth-screen" id="recoveryView" hidden>
@@ -165,6 +164,9 @@
 
           <section class="content-card homepage-builder-card">
             <div class="card-heading"><div><h2>Information pages</h2><p>Edit About Us, Contact Us, Privacy Policy, Terms &amp; Conditions, Disclaimer and DMCA pages. Add any number of heading and description blocks.</p></div></div>
+            <div class="builder-page-shortcuts" aria-label="Edit information pages">
+              <button type="button" data-content-page="about">Edit About Us</button><button type="button" data-content-page="contact">Edit Contact Us</button><button type="button" data-content-page="privacy">Edit Privacy Policy</button><button type="button" data-content-page="terms">Edit Terms &amp; Conditions</button><button type="button" data-content-page="disclaimer">Edit Disclaimer</button><button type="button" data-content-page="dmca">Edit DMCA</button>
+            </div>
             <form id="contentPageForm" class="builder-settings-form">
               <div class="form-grid"><label>Choose page<select id="contentPageSlug"><option value="about">About Us</option><option value="contact">Contact Us</option><option value="privacy">Privacy Policy</option><option value="terms">Terms &amp; Conditions</option><option value="disclaimer">Disclaimer</option><option value="dmca">DMCA</option></select></label><label>Page title<input id="contentPageTitle" required maxlength="160"></label><label class="full-span">Short introduction<input id="contentPageIntro" maxlength="500" placeholder="Short description under the page heading"></label></div>
               <div class="builder-subhead"><div><h3>Page content</h3><p>Each block has one heading and its description. Add them in the order you want.</p></div><button class="btn btn-outline btn-small" type="button" id="addContentPageSectionBtn">＋ Add heading and description</button></div>
