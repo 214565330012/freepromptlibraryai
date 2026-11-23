@@ -1,8 +1,13 @@
-Update notes - page loading and homepage builder card layout
+નવી અપડેટ — Homepage Builder અને Page Navigation
 
-1. Fixed the policy-term link conversion in page.js. The previous dynamically-created regular expression could throw a JavaScript syntax error while rendering saved page content. It now safely links Terms & Conditions, Privacy Policy and Disclaimer.
-2. Information page database errors are logged and shown as a useful message instead of silently being presented as a missing page.
-3. Homepage Builder settings groups (Header text, Search controls, Navigation, Footer, Contact/Social) are now displayed as separate full-width edit cards with independent Edit/Close controls.
-4. Information page shortcuts are displayed as separate full-width edit rows.
+1. Homepage Builder ના Hero, Search, Navigation, Footer અને Contact/Social વિભાગો હવે અલગ Edit cards દ્વારા modal માં ખુલશે.
+2. દરેક વિભાગના ફેરફારો માટે modal ની અંદર અલગ Save this section બટન છે. જૂનું બહાર દેખાતું Save homepage controls બટન દૂર કરાયું છે.
+3. Information Pages ના About, Contact, Privacy Policy, Terms & Conditions, Disclaimer અને DMCA cards ક્લિક કરતાં અલગ editor modal ખૂલે છે. જૂનું નીચેનું inline editor દૂર કરાયું છે.
+4. Policy text linkify કરતી વખતે થતી JavaScript regular-expression ભૂલ સુધારાઈ છે.
+5. Homepage પરથી માહિતી પેજ પર જઈ પાછા આવતાં homepage નું અગાઉનું scroll સ્થાન restore કરવાનો પ્રયાસ ઉમેર્યો છે.
+6. Footer/Disclaimer markup અને Supabase schema/records બદલ્યા નથી.
 
-No database migration or destructive SQL is included in this patch. Existing Supabase data, prompt records, and uploaded images are not changed by these frontend changes.
+Deploy:
+- ZIP extract કરો અને GitHub main branch માં files upload/replace કરો.
+- Supabase માં કોઈ SQL ફરીથી ચલાવવાની જરૂર નથી.
+- Deploy થયા પછી Homepage Builder ના દરેક Edit modal અને Save test કરો.

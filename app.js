@@ -1,3 +1,20 @@
+// Preserve homepage scroll position while navigating to an information/detail page and back.
+(() => {
+  try {
+    const key='fpl-home-scroll-y';
+    if(sessionStorage.getItem('fpl-restore-home-scroll')==='1'){
+      const y=Number(sessionStorage.getItem(key)||0);sessionStorage.removeItem('fpl-restore-home-scroll');
+      window.addEventListener('load',()=>requestAnimationFrame(()=>window.scrollTo(0,y)),{once:true});
+    }
+    document.addEventListener('click',event=>{
+      const a=event.target.closest('a[href]');if(!a)return;
+      const href=a.getAttribute('href')||'';
+      if(/^(?:page\.html|prompt\.html|detail\.html)/i.test(href)||/page\.html\?slug=/i.test(href)){
+        sessionStorage.setItem(key,String(window.scrollY));sessionStorage.setItem('fpl-restore-home-scroll','1');
+      }
+    },true);
+  }catch(_){/* storage may be unavailable; navigation remains functional */}
+})();
 const $ = (selector) => document.querySelector(selector);
 
 const PAGE_SIZE = 18;
@@ -443,6 +460,7 @@ document.querySelectorAll('[data-cat]').forEach((link) => {
 $('#mobileMenu').addEventListener('click', () => $('#nav').classList.toggle('open'));
 $('#year').textContent = new Date().getFullYear();
 render();
+try{if(sessionStorage.getItem('fpl-restore-home-scroll')==='1'){const y=Number(sessionStorage.getItem('fpl-home-scroll-y')||0);sessionStorage.removeItem('fpl-restore-home-scroll');setTimeout(()=>window.scrollTo(0,y),180);}}catch(_){}
 loadCustomHomepageSections();
 loadPublicSiteSettings();
 

@@ -150,19 +150,11 @@
 .builder-page-shortcuts button:hover{background:#eeeaff;border-color:#9b8ae8;transform:translateY(-1px)}
 @media(max-width:760px){.builder-page-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* Independent homepage builder edit cards and focused save dialogs */
+.homepage-control-cards{display:grid;gap:12px;margin-top:12px}
+.homepage-control-card{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 18px;border:1px solid #e5e2f1;border-radius:14px;background:#fff}
+.homepage-control-card>div{display:grid;gap:5px}.homepage-control-card strong{font:800 12px Manrope,sans-serif;color:#37334e}.homepage-control-card small{font-size:9px;color:#928da5}
+.homepage-control-card .btn{min-width:82px}.home-control-backdrop{z-index:90}.home-control-modal,.content-page-modal{width:min(900px,100%);max-height:92vh;display:flex;flex-direction:column}.home-control-modal-body,.content-page-modal-body{padding:20px 25px;overflow:auto}.home-control-modal-body .home-control-group[hidden]{display:none!important}.home-control-modal-body .builder-settings-subhead{margin:0 0 14px}.home-control-modal-footer{position:sticky;bottom:0;display:flex;align-items:center;gap:10px;padding:14px 22px;border-top:1px solid var(--line);background:#fff}.home-control-modal-footer .form-message{flex:1;margin:0}.content-page-modal-body #contentPageForm{display:grid;gap:15px}.content-page-modal-body #saveContentPageBtn{display:none!important}.content-page-modal-body .builder-form-actions{display:none!important}.modal-open{overflow:hidden}
+@media(max-width:650px){.homepage-control-card{align-items:flex-start}.homepage-control-card small{line-height:1.5}.home-control-modal-body,.content-page-modal-body{padding:15px}.home-control-modal-footer{padding:12px;flex-wrap:wrap}.home-control-modal-footer .form-message{flex-basis:100%}}
 
-/* Homepage builder: individually editable, full-width setting cards */
-.builder-edit-card{display:block;width:100%;border:1px solid var(--line,#e5e7f0);border-radius:14px;background:#fff;margin:0 0 12px;overflow:hidden}
-.builder-edit-card-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 16px;min-height:64px}
-.builder-edit-card-title{min-width:0;flex:1}
-.builder-edit-card-title .builder-settings-subhead{margin:0;padding:0;border:0;background:transparent}
-.builder-edit-card-title .builder-settings-subhead strong{font-size:14px}
-.builder-edit-card-title .builder-settings-subhead span{display:block;margin-top:3px}
-.builder-edit-card-body{padding:0 16px 16px;border-top:1px solid #edf0f7}
-.builder-edit-card-body[hidden]{display:none}
-.builder-edit-toggle{flex:0 0 auto;min-width:72px}
-.builder-page-shortcuts{display:grid;grid-template-columns:1fr;gap:9px;margin:12px 0 18px}
-.builder-page-shortcuts button{width:100%;min-height:54px;display:flex;align-items:center;justify-content:space-between;text-align:left;padding:12px 16px;border:1px solid #e3e5ef;border-radius:12px;background:#fff;color:#222b4a;font-weight:650;cursor:pointer}
-.builder-page-shortcuts button::after{content:'Edit  →';color:#7058d5;font-size:12px;font-weight:700}
-.builder-page-shortcuts button:hover{border-color:#8a75e7;background:#faf9ff}
-@media(max-width:600px){.builder-edit-card-head{padding:11px 12px}.builder-edit-card-body{padding:0 12px 12px}}
+.builder-actions-in-modal{display:none!important}

@@ -240,7 +240,7 @@
     if (view === 'prompts') renderPromptList();
     if (view === 'categories') renderCategories();
     if (view === 'media') renderMedia();
-    if (view === 'homepage') { setupHomepageBuilderEditCards(); loadHomeSections(); loadHomepageSettings(); loadContentPage($('#contentPageSlug').value || 'about'); }
+    if (view === 'homepage') { loadHomeSections(); loadHomepageSettings(); loadContentPage($('#contentPageSlug').value || 'about'); }
     if (view === 'complaints') loadComplaints();
     if (view === 'analytics') loadAnalytics();
   }
@@ -566,6 +566,57 @@
     } catch (error) { toast(error.message || 'Could not delete prompt.', true); }
   }
 
+  // Present every homepage control as an independent edit card and modal.
+  function setupHomepageBuilderModals(){
+    const panel=$('[data-panel="homepage"]');
+    const settingsCard=panel?.querySelector('.homepage-builder-card');
+    const settingsForm=$('#homepageSettingsForm');
+    if(settingsCard && settingsForm && !$('#homepageControlCards')){
+      const groups=[];let current=null;
+      [...settingsForm.children].forEach(node=>{
+        if(node.classList?.contains('builder-settings-subhead')){
+          current={title:node.querySelector('strong')?.textContent||'Homepage settings',hint:node.querySelector('span')?.textContent||'',nodes:[node]};groups.push(current);
+        } else if(current && !node.classList?.contains('builder-form-actions')) current.nodes.push(node);
+      });
+      const titles=['Header text and typography','Search box and complaint shortcut','Navigation buttons','Footer appearance','Contact email and social media'];
+      const cards=document.createElement('div');cards.id='homepageControlCards';cards.className='homepage-control-cards';
+      groups.forEach((group,index)=>{
+        const card=document.createElement('article');card.className='homepage-control-card';
+        card.innerHTML=`<div><strong>${escapeHtml(titles[index]||group.title)}</strong><small>${escapeHtml(group.hint)}</small></div><button type="button" class="btn btn-outline" data-open-home-control="${index}">Edit</button>`;cards.appendChild(card);
+        const wrap=document.createElement('div');wrap.className='home-control-group';wrap.dataset.homeControlGroup=String(index);group.nodes.forEach(n=>wrap.appendChild(n));group.wrap=wrap;
+      });
+      const modal=document.createElement('div');modal.id='homeControlModal';modal.className='modal-backdrop home-control-backdrop';modal.hidden=true;
+      modal.innerHTML='<section class="editor-modal home-control-modal" role="dialog" aria-modal="true"><header class="modal-header"><div><div class="eyebrow">HOMEPAGE BUILDER</div><h2 id="homeControlModalTitle">Edit homepage section</h2><p>Changes are saved to the live website.</p></div><button type="button" class="modal-close" data-close-home-control aria-label="Close">×</button></header><div class="home-control-modal-body"></div><footer class="home-control-modal-footer"><p id="homeControlModalMessage" class="form-message" role="status"></p><button type="button" class="btn btn-secondary" data-close-home-control>Cancel</button><button type="button" class="btn btn-primary" id="saveHomeControlModal">Save this section</button></footer></section>';
+      document.body.appendChild(modal);
+      const body=$('.home-control-modal-body',modal);body.appendChild(settingsForm);groups.forEach(g=>{g.wrap.hidden=true;settingsForm.appendChild(g.wrap)});
+      settingsForm.querySelector('.builder-form-actions')?.classList.add('builder-actions-in-modal');settingsForm.hidden=false;settingsCard.appendChild(cards);
+      const close=()=>{modal.hidden=true;document.body.classList.remove('modal-open');};
+      cards.addEventListener('click',e=>{const btn=e.target.closest('[data-open-home-control]');if(!btn)return;const idx=Number(btn.dataset.openHomeControl);groups.forEach((g,i)=>g.wrap.hidden=i!==idx);$('#homeControlModalTitle').textContent=titles[idx]||'Edit homepage section';$('#homeControlModalMessage').textContent='';modal.hidden=false;document.body.classList.add('modal-open');});
+      modal.querySelectorAll('[data-close-home-control]').forEach(b=>b.addEventListener('click',close));
+      modal.addEventListener('click',e=>{if(e.target===modal)close()});
+      $('#saveHomeControlModal').addEventListener('click',async()=>{
+        const button=$('#saveHomeControlModal');button.disabled=true;
+        try{$('#homeControlModalMessage').textContent='Saving…';settingsForm.requestSubmit();}
+        finally{setTimeout(()=>button.disabled=false,500)}
+      });
+    }
+    const pageCard=panel?.querySelectorAll('.homepage-builder-card')[1];
+    const pageForm=$('#contentPageForm');
+    if(pageCard && pageForm && !$('#contentPageModal')){
+      const shortcuts=$$('.builder-page-shortcuts button',pageCard);
+      const modal=document.createElement('div');modal.id='contentPageModal';modal.className='modal-backdrop home-control-backdrop';modal.hidden=true;
+      modal.innerHTML='<section class="editor-modal content-page-modal" role="dialog" aria-modal="true"><header class="modal-header"><div><div class="eyebrow">INFORMATION PAGE EDITOR</div><h2 id="contentPageModalTitle">Edit information page</h2><p>Update this page and save it independently.</p></div><button type="button" class="modal-close" data-close-content-page>×</button></header><div class="content-page-modal-body"></div><footer class="home-control-modal-footer"><p id="contentPageModalMessage" class="form-message" role="status"></p><button type="button" class="btn btn-secondary" data-close-content-page>Cancel</button><button type="submit" form="contentPageForm" class="btn btn-primary">Save this page</button></footer></section>';
+      document.body.appendChild(modal);$('.content-page-modal-body',modal).appendChild(pageForm);const pageActions=pageForm.querySelector('.builder-form-actions');const pageMessage=$('#contentPageMessage');if(pageMessage)modal.querySelector('.home-control-modal-footer').prepend(pageMessage);pageActions?.classList.add('builder-actions-in-modal');
+      const close=()=>{modal.hidden=true;document.body.classList.remove('modal-open')};
+      shortcuts.forEach(btn=>btn.addEventListener('click',()=>{const slug=btn.dataset.contentPage;$('#contentPageSlug').value=slug;loadContentPage(slug);$('#contentPageModalTitle').textContent=`Edit ${btn.textContent.replace(/^Edit\s*/,'')}`;$('#contentPageModalMessage').textContent='';modal.hidden=false;document.body.classList.add('modal-open')}));
+      modal.querySelectorAll('[data-close-content-page]').forEach(b=>b.addEventListener('click',close));modal.addEventListener('click',e=>{if(e.target===modal)close()});
+      // The original inline form message remains the authoritative save status.
+      const save=pageForm.querySelector('#saveContentPageBtn'); if(save) save.hidden=true;
+      pageForm.addEventListener('submit',()=>setTimeout(()=>{const msg=$('#contentPageMessage')?.textContent||'';$('#contentPageModalMessage').textContent=msg;if(msg.includes('saved'))setTimeout(close,500)},250));
+    }
+  }
+  setupHomepageBuilderModals();
+
   // Homepage-wide settings, information pages and visitor complaint inbox.
   const defaultHomepageSettings = {
     hero: { title1:'Free Gemini Photo Editing Prompts', title2:'Free Google Flow Video Prompts', subtitle:'New AI Trending Photo & Video Prompts Every Day — Copy And Paste For Gemini, ChatGPT, Flow AI And Other Creative Tools.', fontFamily:'Poppins', title1Size:32, title2Size:29 },
@@ -585,30 +636,6 @@
     row.querySelector('.remove-builder-row').addEventListener('click',()=>row.remove());
     $('#homeNavLinkList').appendChild(row);
   }
-  function setupHomepageBuilderEditCards(){
-    const form=$('#homepageSettingsForm');
-    if(!form || form.dataset.editCardsReady==='true') return;
-    form.dataset.editCardsReady='true';
-    const groups=$$('.builder-settings-subhead',form);
-    groups.forEach((subhead,index)=>{
-      const nodes=[];let cursor=subhead.nextSibling;
-      while(cursor){
-        if(cursor.nodeType===1 && (cursor.classList.contains('builder-settings-subhead') || cursor.classList.contains('builder-form-actions'))) break;
-        const next=cursor.nextSibling;nodes.push(cursor);cursor=next;
-      }
-      const card=document.createElement('section');card.className='builder-edit-card';
-      const head=document.createElement('div');head.className='builder-edit-card-head';
-      const title=document.createElement('div');title.className='builder-edit-card-title';
-      const edit=document.createElement('button');edit.type='button';edit.className='btn btn-outline btn-small builder-edit-toggle';edit.textContent='Edit';
-      head.append(title,edit);card.appendChild(head);
-      const parent=subhead.parentNode;parent.replaceChild(card,subhead);title.appendChild(subhead);
-      const body=document.createElement('div');body.className='builder-edit-card-body';
-      nodes.forEach(node=>body.appendChild(node));card.appendChild(body);
-      const initiallyOpen=index===0;body.hidden=!initiallyOpen;edit.textContent=initiallyOpen?'Close':'Edit';
-      edit.addEventListener('click',()=>{const open=body.hidden;body.hidden=!open;edit.textContent=open?'Close':'Edit';});
-    });
-  }
-
   async function loadHomepageSettings() {
     setMessage($('#homepageSettingsMessage'),'Loading homepage settings…');
     try {
@@ -655,8 +682,8 @@
       };
       for(const social of settings.socials){if(social.url&&!/^https?:\/\//i.test(social.url))throw new Error(`${social.platform} link must start with https:// or http://.`);}
       const {error}=await client.from('site_settings').upsert({id:1,settings,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;
-      state.siteSettings=settings;setMessage($('#homepageSettingsMessage'),'Homepage controls saved successfully.');toast('Homepage controls saved.');
-    }catch(error){setMessage($('#homepageSettingsMessage'),error.message||'Could not save homepage controls.',true);}finally{button.disabled=false;}
+      state.siteSettings=settings;setMessage($('#homepageSettingsMessage'),'Homepage controls saved successfully.');if($('#homeControlModalMessage'))$('#homeControlModalMessage').textContent='Saved successfully.';toast('Homepage controls saved.');
+    }catch(error){setMessage($('#homepageSettingsMessage'),error.message||'Could not save homepage controls.',true);if($('#homeControlModalMessage'))$('#homeControlModalMessage').textContent=error.message||'Could not save this section.';}finally{button.disabled=false;}
   });
 
   function addContentPageSection(data={}){

@@ -6,7 +6,16 @@
   const slug = (params.get('slug') || 'about').toLowerCase().replace(/[^a-z0-9-]/g, '');
   const pageTitles = {about:'About Us',contact:'Contact Us',privacy:'Privacy Policy',terms:'Terms & Conditions',disclaimer:'Disclaimer',dmca:'DMCA'};
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function linkifyPolicyTerms(value){let text=esc(value);const links=[['Terms & Conditions','terms'],['Privacy Policy','privacy'],['Disclaimer','disclaimer']];for(const [label,targetSlug] of links){const escapedLabel=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');const re=new RegExp('(^|[^a-zA-Z0-9_/-])('+escapedLabel+')(?![a-zA-Z0-9_])','gi');text=text.replace(re,(_match,prefix,match)=>`${prefix}<a href="page.html?slug=${targetSlug}">${match}</a>`);}return text;}
+  function linkifyPolicyTerms(value){
+    let text=esc(value);
+    const links=[['Terms & Conditions','terms'],['Privacy Policy','privacy'],['Disclaimer','disclaimer']];
+    for(const [label,target] of links){
+      const escaped=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+      const re=new RegExp('(^|[^A-Za-z0-9_/-])('+escaped+')(?![A-Za-z0-9_])','gi');
+      text=text.replace(re,(match,prefix,matched)=>`${prefix}<a href="page.html?slug=${target}">${matched}</a>`);
+    }
+    return text;
+  }
   function setStatus(message, error=false){const p=$('#complaintStatus');p.textContent=message;p.classList.toggle('error',error);}
   function setupTheme(){
     const saved=localStorage.getItem('fpl-theme')||'light';document.documentElement.dataset.theme=saved;
@@ -21,8 +30,7 @@
       client.from('content_pages').select('*').eq('slug',slug).maybeSingle(),
       client.from('site_settings').select('settings').eq('id',1).maybeSingle()
     ]);
-    if(error){console.error('Information page query failed:',error);$('#contentPageTitle').textContent=pageTitles[slug]||'Information';$('#contentPageIntro').textContent='';$('#contentPageSections').innerHTML=`<p>This page could not be loaded right now. Please refresh the page. (${esc(error.message||'Database request failed')})</p>`;return;}
-    if(!page||!page.is_published){$('#contentPageTitle').textContent='Page not available';$('#contentPageIntro').textContent='This page has not been published yet.';$('#contentPageSections').innerHTML='<p>Please return to the homepage.</p>';return;}
+    if(error||!page||!page.is_published){$('#contentPageTitle').textContent='Page not available';$('#contentPageIntro').textContent='This page has not been published yet.';$('#contentPageSections').innerHTML='<p>Please return to the homepage.</p>';return;}
     $('#contentPageTitle').textContent=page.title||pageTitles[slug]||'Information';
     $('#contentPageIntro').textContent=page.intro||'';
     $('#contentPageSections').innerHTML=(Array.isArray(page.sections)?page.sections:[]).map(section=>`<section class="content-page-section"><h2>${esc(section.heading||'')}</h2><p>${linkifyPolicyTerms(section.content||'')}</p></section>`).join('')||'<p>Information will be updated soon.</p>';
