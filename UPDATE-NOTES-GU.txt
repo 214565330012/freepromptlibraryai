@@ -1,14 +1,8 @@
-FreePromptLibraryAI UI Update
+Update notes - page loading and homepage builder card layout
 
-Changed files:
-- index.html: added top brand strip with language/theme controls (no Back button) and floating Back to Top button.
-- styles.css: top strip styling, social platform letter marks in platform colours, floating Back to Top styling.
-- app.js: platform-specific stylised letter marks and Back to Top behavior.
-- admin/index.html: removed the Supabase protected-access footer sentence; added separate quick edit buttons for About, Contact, Privacy, Terms, Disclaimer and DMCA.
-- admin/admin.js: quick edit buttons select and load the chosen information page.
-- admin/admin.css: quick edit button layout.
-- page.js: makes Privacy Policy, Terms & Conditions and Disclaimer references clickable inside section descriptions (not headings).
-- page.css: improves information page text contrast, weight and readability.
+1. Fixed the policy-term link conversion in page.js. The previous dynamically-created regular expression could throw a JavaScript syntax error while rendering saved page content. It now safely links Terms & Conditions, Privacy Policy and Disclaimer.
+2. Information page database errors are logged and shown as a useful message instead of silently being presented as a missing page.
+3. Homepage Builder settings groups (Header text, Search controls, Navigation, Footer, Contact/Social) are now displayed as separate full-width edit cards with independent Edit/Close controls.
+4. Information page shortcuts are displayed as separate full-width edit rows.
 
-No Supabase schema changes are included. No prompt data or prompt ordering was changed.
-Upload the files preserving their folder paths, then commit to GitHub.
+No database migration or destructive SQL is included in this patch. Existing Supabase data, prompt records, and uploaded images are not changed by these frontend changes.

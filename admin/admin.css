@@ -149,3 +149,20 @@
 .builder-page-shortcuts button{min-height:42px;padding:9px 12px;border:1px solid #dedaf4;border-radius:10px;background:#f7f5ff;color:#5844a8;font:700 12px Poppins,Arial,sans-serif;cursor:pointer;text-align:left;transition:background .2s,border-color .2s,transform .2s}
 .builder-page-shortcuts button:hover{background:#eeeaff;border-color:#9b8ae8;transform:translateY(-1px)}
 @media(max-width:760px){.builder-page-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* Homepage builder: individually editable, full-width setting cards */
+.builder-edit-card{display:block;width:100%;border:1px solid var(--line,#e5e7f0);border-radius:14px;background:#fff;margin:0 0 12px;overflow:hidden}
+.builder-edit-card-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 16px;min-height:64px}
+.builder-edit-card-title{min-width:0;flex:1}
+.builder-edit-card-title .builder-settings-subhead{margin:0;padding:0;border:0;background:transparent}
+.builder-edit-card-title .builder-settings-subhead strong{font-size:14px}
+.builder-edit-card-title .builder-settings-subhead span{display:block;margin-top:3px}
+.builder-edit-card-body{padding:0 16px 16px;border-top:1px solid #edf0f7}
+.builder-edit-card-body[hidden]{display:none}
+.builder-edit-toggle{flex:0 0 auto;min-width:72px}
+.builder-page-shortcuts{display:grid;grid-template-columns:1fr;gap:9px;margin:12px 0 18px}
+.builder-page-shortcuts button{width:100%;min-height:54px;display:flex;align-items:center;justify-content:space-between;text-align:left;padding:12px 16px;border:1px solid #e3e5ef;border-radius:12px;background:#fff;color:#222b4a;font-weight:650;cursor:pointer}
+.builder-page-shortcuts button::after{content:'Edit  →';color:#7058d5;font-size:12px;font-weight:700}
+.builder-page-shortcuts button:hover{border-color:#8a75e7;background:#faf9ff}
+@media(max-width:600px){.builder-edit-card-head{padding:11px 12px}.builder-edit-card-body{padding:0 12px 12px}}

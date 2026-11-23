@@ -240,7 +240,7 @@
     if (view === 'prompts') renderPromptList();
     if (view === 'categories') renderCategories();
     if (view === 'media') renderMedia();
-    if (view === 'homepage') { loadHomeSections(); loadHomepageSettings(); loadContentPage($('#contentPageSlug').value || 'about'); }
+    if (view === 'homepage') { setupHomepageBuilderEditCards(); loadHomeSections(); loadHomepageSettings(); loadContentPage($('#contentPageSlug').value || 'about'); }
     if (view === 'complaints') loadComplaints();
     if (view === 'analytics') loadAnalytics();
   }
@@ -585,6 +585,30 @@
     row.querySelector('.remove-builder-row').addEventListener('click',()=>row.remove());
     $('#homeNavLinkList').appendChild(row);
   }
+  function setupHomepageBuilderEditCards(){
+    const form=$('#homepageSettingsForm');
+    if(!form || form.dataset.editCardsReady==='true') return;
+    form.dataset.editCardsReady='true';
+    const groups=$$('.builder-settings-subhead',form);
+    groups.forEach((subhead,index)=>{
+      const nodes=[];let cursor=subhead.nextSibling;
+      while(cursor){
+        if(cursor.nodeType===1 && (cursor.classList.contains('builder-settings-subhead') || cursor.classList.contains('builder-form-actions'))) break;
+        const next=cursor.nextSibling;nodes.push(cursor);cursor=next;
+      }
+      const card=document.createElement('section');card.className='builder-edit-card';
+      const head=document.createElement('div');head.className='builder-edit-card-head';
+      const title=document.createElement('div');title.className='builder-edit-card-title';
+      const edit=document.createElement('button');edit.type='button';edit.className='btn btn-outline btn-small builder-edit-toggle';edit.textContent='Edit';
+      head.append(title,edit);card.appendChild(head);
+      const parent=subhead.parentNode;parent.replaceChild(card,subhead);title.appendChild(subhead);
+      const body=document.createElement('div');body.className='builder-edit-card-body';
+      nodes.forEach(node=>body.appendChild(node));card.appendChild(body);
+      const initiallyOpen=index===0;body.hidden=!initiallyOpen;edit.textContent=initiallyOpen?'Close':'Edit';
+      edit.addEventListener('click',()=>{const open=body.hidden;body.hidden=!open;edit.textContent=open?'Close':'Edit';});
+    });
+  }
+
   async function loadHomepageSettings() {
     setMessage($('#homepageSettingsMessage'),'Loading homepage settings…');
     try {
