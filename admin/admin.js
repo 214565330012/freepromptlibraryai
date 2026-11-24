@@ -869,6 +869,83 @@
     const deleteHome = event.target.closest('[data-delete-home-section]'); if (deleteHome) deleteHomeSection(deleteHome.dataset.deleteHomeSection);
   });
 
+  // Homepage Builder: split the existing, proven settings form into independent edit dialogs.
+  function initialiseHomepageBuilderDialogs(){
+    const settingsForm=$('#homepageSettingsForm');
+    if(settingsForm && !settingsForm.dataset.dialogised){
+      settingsForm.dataset.dialogised='true';
+      const host=document.createElement('div');host.className='builder-launch-card-grid';host.id='homepageControlCards';
+      const status=document.createElement('p');status.id='homepageSettingsMessage';status.className='form-message';status.setAttribute('role','status');status.setAttribute('aria-live','polite');host.appendChild(status);
+      settingsForm.parentElement.insertBefore(host,settingsForm);
+      const headings=$$('.builder-settings-subhead',settingsForm);
+      const groups=[];
+      headings.forEach((heading,index)=>{
+        const nodes=[];let node=heading;
+        while(node){const next=node.nextElementSibling;if(node.classList?.contains('builder-settings-subhead')||node.classList?.contains('builder-form-actions'))break;nodes.push(node);node=next;}
+        groups.push({heading:heading.querySelector('strong')?.textContent||`Homepage section ${index+1}`,nodes:[heading,...nodes]});
+      });
+      // Each group is moved into a modal. The existing single Supabase save routine remains the source of truth.
+      groups.forEach((group,index)=>{
+        const card=document.createElement('article');card.className='builder-launch-card';
+        card.innerHTML=`<div><strong>${escapeHtml(group.heading)}</strong><small>Edit this homepage area independently.</small></div><button type="button" class="btn btn-outline btn-small" data-open-builder-dialog="${index}">Edit</button>`;
+        host.appendChild(card);
+        const dialog=document.createElement('dialog');dialog.className='builder-edit-dialog';dialog.dataset.builderDialog=String(index);
+        const body=document.createElement('div');body.className='builder-dialog-body';
+        group.nodes.forEach(el=>body.appendChild(el));
+        dialog.innerHTML=`<div class="builder-dialog-head"><div><span class="eyebrow">HOMEPAGE BUILDER</span><h2>${escapeHtml(group.heading)}</h2></div><button type="button" class="builder-dialog-close" data-dialog-cancel aria-label="Close">×</button></div>`;
+        dialog.appendChild(body);
+        const actions=document.createElement('div');actions.className='builder-dialog-actions';
+        actions.innerHTML='<p class="form-message" aria-live="polite"></p><button type="button" class="btn btn-secondary" data-dialog-cancel>Cancel</button><button type="submit" class="btn btn-primary">Save changes</button>';
+        dialog.appendChild(actions);settingsForm.appendChild(dialog);
+        dialog.addEventListener('cancel',event=>event.preventDefault());
+      });
+      const oldActions=$('.builder-form-actions',settingsForm);if(oldActions)oldActions.remove();
+      settingsForm.addEventListener('submit',()=>{
+        const active=settingsForm.querySelector('dialog[open]');if(!active)return;
+        const started=Date.now();
+        const waitForSave=()=>{
+          const message=$('#homepageSettingsMessage')?.textContent||'';
+          if(/saved successfully/i.test(message)){if(active.open)active.close();return;}
+          if(/could not save|invalid navigation|must start with/i.test(message))return;
+          if(Date.now()-started<30000)setTimeout(waitForSave,250);
+        };
+        setTimeout(waitForSave,250);
+      });
+    }
+    // Convert the information-page list into launch cards; the old inline editor is now inside a modal.
+    const pageSection=$('#contentPageForm')?.closest('.homepage-builder-card');
+    if(pageSection && !pageSection.dataset.dialogised){
+      pageSection.dataset.dialogised='true';
+      const shortcuts=$('.builder-page-shortcuts',pageSection);
+      if(shortcuts){shortcuts.classList.add('builder-launch-card-grid');shortcuts.innerHTML=[['about','About Us'],['contact','Contact Us'],['privacy','Privacy Policy'],['terms','Terms & Conditions'],['disclaimer','Disclaimer'],['dmca','DMCA']].map(([slug,label])=>`<article class="builder-launch-card"><div><strong>${label}</strong><small>Edit page title, introduction and content blocks.</small></div><button type="button" class="btn btn-outline btn-small" data-open-content-page="${slug}">Edit</button></article>`).join('');}
+      const form=$('#contentPageForm');const dialog=$('#contentPageDialog');
+      if(form&&dialog){
+        dialog.appendChild(form);
+        const oldShortcuts=shortcuts;
+        dialog.addEventListener('cancel',event=>event.preventDefault());
+        pageSection.appendChild(dialog);
+        pageSection.querySelectorAll('[data-open-content-page]').forEach(button=>button.addEventListener('click',async()=>{
+          const slug=button.dataset.openContentPage;$('#contentPageSlug').value=slug;$('#contentPageDialogTitle').textContent=`Edit ${button.textContent.trim()} page`;
+          await loadContentPage(slug);dialog.showModal();
+        }));
+        dialog.querySelectorAll('[data-dialog-cancel]').forEach(button=>button.addEventListener('click',()=>dialog.close()));
+        form.addEventListener('submit',()=>{
+          const started=Date.now();const waitForPageSave=()=>{
+            const message=$('#contentPageMessage')?.textContent||'';
+            if(/Information page saved/i.test(message)){if(dialog.open)dialog.close();return;}
+            if(/Could not save|Every information block/i.test(message))return;
+            if(Date.now()-started<30000)setTimeout(waitForPageSave,250);
+          };setTimeout(waitForPageSave,250);
+        });
+      }
+    }
+    document.querySelectorAll('[data-open-builder-dialog]').forEach(button=>button.addEventListener('click',()=>{
+      const dialog=document.querySelector(`dialog[data-builder-dialog="${button.dataset.openBuilderDialog}"]`);if(dialog)dialog.showModal();
+    }));
+    document.querySelectorAll('dialog.builder-edit-dialog [data-dialog-cancel]').forEach(button=>button.addEventListener('click',()=>button.closest('dialog').close()));
+  }
+  initialiseHomepageBuilderDialogs();
+
   // Startup.
   (async () => {
     if (!client) { showLogin('Supabase client did not load. Check the Supabase scripts and refresh.', true); return; }

@@ -149,3 +149,19 @@
 .builder-page-shortcuts button{min-height:42px;padding:9px 12px;border:1px solid #dedaf4;border-radius:10px;background:#f7f5ff;color:#5844a8;font:700 12px Poppins,Arial,sans-serif;cursor:pointer;text-align:left;transition:background .2s,border-color .2s,transform .2s}
 .builder-page-shortcuts button:hover{background:#eeeaff;border-color:#9b8ae8;transform:translateY(-1px)}
 @media(max-width:760px){.builder-page-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Independent Homepage Builder edit cards and safe modal editors */
+.builder-launch-card-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:12px 0 18px}
+.builder-launch-card{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:66px;padding:14px 16px;border:1px solid #e5e2f0;border-radius:13px;background:#fff}
+.builder-launch-card>div{display:grid;gap:5px}.builder-launch-card strong{font:800 13px Manrope,sans-serif;color:#302d46}.builder-launch-card small{font:500 10px "DM Sans",sans-serif;color:#8c879d}
+.builder-edit-dialog{width:min(900px,calc(100vw - 28px));max-width:900px;max-height:min(88vh,900px);padding:0;border:1px solid #e7e3f2;border-radius:18px;background:#fff;color:#302d46;box-shadow:0 24px 80px #17152d44;overflow:auto}
+.builder-edit-dialog::backdrop{background:#17152d88;backdrop-filter:blur(5px)}
+.builder-dialog-head{position:sticky;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 22px;border-bottom:1px solid #ebe8f2;background:#fff}
+.builder-dialog-head h2{margin:4px 0 0;font:800 19px Manrope,sans-serif;color:#302d46}
+.builder-dialog-close{width:34px;height:34px;border:1px solid #e5e1ef;border-radius:10px;background:#fff;color:#6554bd;font-size:22px;cursor:pointer}
+.builder-dialog-body{display:grid;gap:15px;padding:20px 22px}.builder-dialog-body>.builder-settings-subhead:first-child{display:none}
+.builder-dialog-actions{position:sticky;bottom:0;z-index:3;display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:13px 22px;border-top:1px solid #ebe8f2;background:#fff}
+.builder-dialog-actions .form-message{margin-right:auto}.builder-dialog-actions .btn{min-width:100px}
+#contentPageDialog{overflow:visible}#contentPageDialog .builder-settings-form{padding:18px 22px;max-height:calc(88vh - 150px);overflow:auto}#contentPageDialog .builder-dialog-actions{border-radius:0 0 18px 18px}
+#contentPageDialog .builder-dialog-head{border-radius:18px 18px 0 0}
+@media(max-width:600px){.builder-launch-card{padding:12px;gap:8px}.builder-dialog-head{padding:14px}.builder-dialog-body{padding:14px}.builder-dialog-actions{padding:12px;flex-wrap:wrap}.builder-dialog-actions .form-message{flex-basis:100%}#contentPageDialog .builder-settings-form{padding:14px;max-height:calc(88vh - 170px)}}

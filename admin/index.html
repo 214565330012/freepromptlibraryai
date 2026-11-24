@@ -158,7 +158,7 @@
                 <label>Facebook URL<input id="homeSocialFacebook" type="url" placeholder="https://facebook.com/…"></label>
                 <label>Threads URL<input id="homeSocialThreads" type="url" placeholder="https://www.threads.net/@…"></label>
               </div>
-              <div class="builder-form-actions"><p id="homepageSettingsMessage" class="form-message" role="status" aria-live="polite"></p><button class="btn btn-primary" type="submit" id="saveHomepageSettingsBtn">Save homepage controls</button></div>
+              <div class="builder-form-actions"><p id="homepageSettingsMessage" class="form-message" role="status" aria-live="polite"></p><button class="btn btn-primary" type="submit" id="saveHomepageSettingsBtn" hidden>Save</button></div>
             </form>
           </section>
 
@@ -167,13 +167,13 @@
             <div class="builder-page-shortcuts" aria-label="Edit information pages">
               <button type="button" data-content-page="about">Edit About Us</button><button type="button" data-content-page="contact">Edit Contact Us</button><button type="button" data-content-page="privacy">Edit Privacy Policy</button><button type="button" data-content-page="terms">Edit Terms &amp; Conditions</button><button type="button" data-content-page="disclaimer">Edit Disclaimer</button><button type="button" data-content-page="dmca">Edit DMCA</button>
             </div>
-            <form id="contentPageForm" class="builder-settings-form">
+            <dialog id="contentPageDialog" class="builder-edit-dialog"><div class="builder-dialog-head"><div><span class="eyebrow">INFORMATION PAGE EDITOR</span><h2 id="contentPageDialogTitle">Edit information page</h2></div><button type="button" class="builder-dialog-close" data-dialog-cancel aria-label="Close">×</button></div><form id="contentPageForm" class="builder-settings-form">
               <div class="form-grid"><label>Choose page<select id="contentPageSlug"><option value="about">About Us</option><option value="contact">Contact Us</option><option value="privacy">Privacy Policy</option><option value="terms">Terms &amp; Conditions</option><option value="disclaimer">Disclaimer</option><option value="dmca">DMCA</option></select></label><label>Page title<input id="contentPageTitle" required maxlength="160"></label><label class="full-span">Short introduction<input id="contentPageIntro" maxlength="500" placeholder="Short description under the page heading"></label></div>
               <div class="builder-subhead"><div><h3>Page content</h3><p>Each block has one heading and its description. Add them in the order you want.</p></div><button class="btn btn-outline btn-small" type="button" id="addContentPageSectionBtn">＋ Add heading and description</button></div>
               <div id="contentPageSectionList" class="page-content-section-list"></div>
               <div class="form-grid form-grid-small"><label>Page visibility<select id="contentPagePublished"><option value="true">Published</option><option value="false">Draft</option></select></label></div>
               <div class="builder-form-actions"><p id="contentPageMessage" class="form-message" role="status" aria-live="polite"></p><button class="btn btn-primary" type="submit" id="saveContentPageBtn">Save information page</button></div>
-            </form>
+            </form><div class="builder-dialog-actions"><p id="contentPageDialogStatus" class="form-message" role="status" aria-live="polite"></p><button type="button" class="btn btn-secondary" data-dialog-cancel>Cancel</button><button type="submit" form="contentPageForm" class="btn btn-primary">Save page</button></div></dialog>
           </section>
 
           <section class="content-card homepage-builder-card">
