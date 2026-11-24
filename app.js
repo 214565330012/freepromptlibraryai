@@ -9,24 +9,40 @@ let activeSpecialFilter = 'All';
 let PROMPT_DATA = window.PROMPTS || [];
 const supabaseClient = window.supabaseClient || null;
 
-// Preserve the exact homepage scroll position across prompt/info pages and browser Back.
-// Save synchronously (not in requestAnimationFrame) so navigation cannot race the save.
+// Preserve homepage position exactly when visitors open a prompt/information page and return.
+// The site uses smooth scrolling globally, so restoration must explicitly disable it.
 (() => {
   const key = 'fpl-home-scroll-position';
+  const root = document.documentElement;
   let restoring = false;
   let restoreTimer = 0;
   let restoreObserver = null;
-  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (_) {}
+  let resizeObserver = null;
+  let lastSavedY = 0;
+  try { history.scrollRestoration = 'manual'; } catch (_) {}
 
+  const readY = () => Math.max(0, window.scrollY || window.pageYOffset || root.scrollTop || 0);
   const save = () => {
     if (restoring) return;
-    try { sessionStorage.setItem(key, String(Math.max(0, window.scrollY || window.pageYOffset || 0))); } catch (_) {}
+    lastSavedY = readY();
+    try {
+      sessionStorage.setItem(key, String(lastSavedY));
+      sessionStorage.setItem(key + ':time', String(Date.now()));
+    } catch (_) {}
+  };
+  const instantScroll = (y) => {
+    root.style.setProperty('scroll-behavior', 'auto', 'important');
+    if (document.body) document.body.style.setProperty('scroll-behavior', 'auto', 'important');
+    try { window.scrollTo({ left: 0, top: y, behavior: 'instant' }); }
+    catch (_) { window.scrollTo(0, y); }
+    root.scrollTop = y;
+    if (document.body) document.body.scrollTop = y;
   };
   window.addEventListener('scroll', save, { passive: true });
   window.addEventListener('pagehide', save);
   window.addEventListener('beforeunload', save);
 
-  // Capture the position before any same-tab navigation starts.
+  // Save before every same-tab internal navigation, including prompt cards and footer links.
   document.addEventListener('click', (event) => {
     const link = event.target && event.target.closest ? event.target.closest('a[href]') : null;
     if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
@@ -36,7 +52,7 @@ const supabaseClient = window.supabaseClient || null;
     } catch (_) {}
   }, true);
 
-  const shouldRestore = () => {
+  const isReturnNavigation = () => {
     const navType = performance.getEntriesByType('navigation')[0]?.type;
     if (navType === 'back_forward') return true;
     try { return !!document.referrer && new URL(document.referrer).origin === location.origin && !location.hash; }
@@ -44,50 +60,74 @@ const supabaseClient = window.supabaseClient || null;
   };
 
   const restore = () => {
-    let y = 0;
+    let y;
     try {
       const stored = sessionStorage.getItem(key);
       if (stored === null) return;
       y = Number(stored);
     } catch (_) { return; }
-    if (!Number.isFinite(y) || y < 0) y = 0;
+    if (!Number.isFinite(y) || y < 0) return;
 
     restoring = true;
+    root.classList.add('fpl-restoring-scroll');
     if (restoreObserver) restoreObserver.disconnect();
+    if (resizeObserver) resizeObserver.disconnect();
     if (restoreTimer) clearTimeout(restoreTimer);
+
     const started = Date.now();
     let stableFrames = 0;
     let previousHeight = -1;
     const apply = () => {
-      window.scrollTo(0, y);
-      const height = document.documentElement.scrollHeight;
+      instantScroll(y);
+      const height = Math.max(root.scrollHeight, document.body?.scrollHeight || 0);
       stableFrames = height === previousHeight ? stableFrames + 1 : 0;
       previousHeight = height;
-      // Keep restoring while asynchronously loaded prompt cards/images change page height.
-      if (Date.now() - started < 6000 && (height < y + window.innerHeight || stableFrames < 4)) {
+      // Keep the saved position while async prompt data, fonts and images settle.
+      if (Date.now() - started < 12000 && (height < y + window.innerHeight || stableFrames < 8)) {
         requestAnimationFrame(apply);
       } else {
-        window.scrollTo(0, y);
-        restoring = false;
-        if (restoreObserver) restoreObserver.disconnect();
+        instantScroll(y);
+        // Keep scroll events caused by the final instant jump from overwriting the saved value.
+        setTimeout(() => {
+          restoring = false;
+          root.classList.remove('fpl-restoring-scroll');
+          root.style.removeProperty('scroll-behavior');
+          if (document.body) document.body.style.removeProperty('scroll-behavior');
+          if (restoreObserver) restoreObserver.disconnect();
+          if (resizeObserver) resizeObserver.disconnect();
+        }, 180);
       }
     };
     requestAnimationFrame(apply);
     restoreObserver = new MutationObserver(() => {
-      if (Date.now() - started < 6000) window.scrollTo(0, y);
+      if (Date.now() - started < 12000) instantScroll(y);
     });
     if (document.body) restoreObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
+    if ('ResizeObserver' in window) {
+      resizeObserver = new ResizeObserver(() => {
+        if (Date.now() - started < 12000) instantScroll(y);
+      });
+      resizeObserver.observe(document.body || root);
+    }
+    // Re-apply after images finish loading (their intrinsic dimensions can change page height).
+    document.addEventListener('load', (event) => {
+      if (event.target && event.target.tagName === 'IMG' && Date.now() - started < 12000) instantScroll(y);
+    }, true);
     restoreTimer = setTimeout(() => {
-      window.scrollTo(0, y);
+      instantScroll(y);
       restoring = false;
+      root.classList.remove('fpl-restoring-scroll');
+      root.style.removeProperty('scroll-behavior');
+      if (document.body) document.body.style.removeProperty('scroll-behavior');
       if (restoreObserver) restoreObserver.disconnect();
-    }, 6100);
+      if (resizeObserver) resizeObserver.disconnect();
+    }, 12200);
   };
 
   window.addEventListener('pageshow', (event) => {
-    if (event.persisted || shouldRestore()) restore();
+    if (event.persisted || isReturnNavigation()) restore();
   });
-  if (shouldRestore()) restore();
+  if (isReturnNavigation()) restore();
 })();
 
 function escapeText(value) {
