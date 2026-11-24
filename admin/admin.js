@@ -900,6 +900,9 @@
         dialog.addEventListener('cancel',event=>event.preventDefault());
       });
       const oldActions=$('.builder-form-actions',settingsForm);if(oldActions)oldActions.remove();
+      // The settings form is now only a submit container for its dialogs. Hide any
+      // leftover inline controls so fields appear only after the matching Edit click.
+      settingsForm.querySelectorAll(':scope > :not(dialog)').forEach(el=>el.remove());
       settingsForm.addEventListener('submit',()=>{
         const active=settingsForm.querySelector('dialog[open]');if(!active)return;
         const started=Date.now();
@@ -917,7 +920,13 @@
     if(pageSection && !pageSection.dataset.dialogised){
       pageSection.dataset.dialogised='true';
       const shortcuts=$('.builder-page-shortcuts',pageSection);
-      if(shortcuts){shortcuts.classList.add('builder-launch-card-grid');shortcuts.innerHTML=[['about','About Us'],['contact','Contact Us'],['privacy','Privacy Policy'],['terms','Terms & Conditions'],['disclaimer','Disclaimer'],['dmca','DMCA']].map(([slug,label])=>`<article class="builder-launch-card"><div><strong>${label}</strong><small>Edit page title, introduction and content blocks.</small></div><button type="button" class="btn btn-outline btn-small" data-open-content-page="${slug}">Edit</button></article>`).join('');}
+      if(shortcuts){
+        shortcuts.classList.add('builder-launch-card-grid');
+        shortcuts.innerHTML=[['about','About Us'],['contact','Contact Us'],['privacy','Privacy Policy'],['terms','Terms & Conditions'],['disclaimer','Disclaimer'],['dmca','DMCA']].map(([slug,label])=>`<article class="builder-launch-card"><div><strong>${label}</strong><small>Edit page title, introduction and content blocks.</small></div><button type="button" class="btn btn-outline btn-small" data-open-content-page="${slug}">Edit</button></article>`).join('');
+        // Follow Us belongs with the information-page cards, not the header controls.
+        const followCard=[...host.querySelectorAll('.builder-launch-card')].find(card=>card.querySelector('strong')?.textContent.trim()==='Follow Us');
+        if(followCard)shortcuts.appendChild(followCard);
+      }
       const form=$('#contentPageForm');const dialog=$('#contentPageDialog');
       if(form&&dialog){
         dialog.appendChild(form);

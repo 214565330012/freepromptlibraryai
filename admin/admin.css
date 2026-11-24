@@ -165,3 +165,7 @@
 #contentPageDialog{overflow:visible}#contentPageDialog .builder-settings-form{padding:18px 22px;max-height:calc(88vh - 150px);overflow:auto}#contentPageDialog .builder-dialog-actions{border-radius:0 0 18px 18px}
 #contentPageDialog .builder-dialog-head{border-radius:18px 18px 0 0}
 @media(max-width:600px){.builder-launch-card{padding:12px;gap:8px}.builder-dialog-head{padding:14px}.builder-dialog-body{padding:14px}.builder-dialog-actions{padding:12px;flex-wrap:wrap}.builder-dialog-actions .form-message{flex-basis:100%}#contentPageDialog .builder-settings-form{padding:14px;max-height:calc(88vh - 170px)}}
+
+/* Homepage builder: controls live only inside their individual Edit dialogs. */
+#homepageSettingsForm > :not(dialog){display:none!important}
+#homepageSettingsForm{display:block}
