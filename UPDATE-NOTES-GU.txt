@@ -7,3 +7,4 @@ FreePromptLibraryAI – Edit Button + Admin Session Fix
 4. 30 મિનિટ inactivity નો સમય localStorage માં જળવાય છે; refresh કરવાથી inactivity timer ફરીથી શૂન્ય થતો નથી.
 
 Deploy કર્યા પછી hard refresh (Ctrl+Shift+R) કરો. Edit buttons અને Save ને Supabase સાથે live test કરવાનું બાકી છે; પહેલાં એક વિભાગમાં ફેરફાર કરી Save ચકાસો.
+\nHomepage card layout update: desktop prompt grids now show 4 columns. Main content sections widened to 1120px so prompt cards keep a similar readable width. Medium screens show 3 columns, mobile remains 2 columns (1 column on very narrow screens). Card image height, typography, and internal card sizing are unchanged.\n
