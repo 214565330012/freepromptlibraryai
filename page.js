@@ -6,16 +6,7 @@
   const slug = (params.get('slug') || 'about').toLowerCase().replace(/[^a-z0-9-]/g, '');
   const pageTitles = {about:'About Us',contact:'Contact Us',privacy:'Privacy Policy',terms:'Terms & Conditions',disclaimer:'Disclaimer',dmca:'DMCA'};
   const esc = (value) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function linkifyPolicyTerms(value){
-    let text=esc(value);
-    const links=[['Terms & Conditions','terms'],['Privacy Policy','privacy'],['Disclaimer','disclaimer']];
-    for(const [label,target] of links){
-      const escaped=label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-      const re=new RegExp('(^|[^A-Za-z0-9_/-])('+escaped+')(?![A-Za-z0-9_])','gi');
-      text=text.replace(re,(match,prefix,matched)=>`${prefix}<a href="page.html?slug=${target}">${matched}</a>`);
-    }
-    return text;
-  }
+  function linkifyPolicyTerms(value){let text=esc(value);const links=[['Terms & Conditions','terms'],['Privacy Policy','privacy'],['Disclaimer','disclaimer']];for(const [label,slug] of links){const re=new RegExp('(?<![\w\-/])('+label.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')(?![\w])','gi');text=text.replace(re,match=>`<a href="page.html?slug=${slug}">${match}</a>`);}return text;}
   function setStatus(message, error=false){const p=$('#complaintStatus');p.textContent=message;p.classList.toggle('error',error);}
   function setupTheme(){
     const saved=localStorage.getItem('fpl-theme')||'light';document.documentElement.dataset.theme=saved;

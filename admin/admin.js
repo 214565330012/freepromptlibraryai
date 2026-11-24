@@ -86,6 +86,36 @@
     state.user = user;
   }
 
+  // Automatically sign out an administrator after 30 minutes without activity.
+  const ADMIN_IDLE_LIMIT_MS = 30 * 60 * 1000;
+  const ADMIN_ACTIVITY_KEY = 'fpl-admin-last-activity';
+  let adminIdleTimer = null;
+  let adminIdleStarted = false;
+  function clearAdminIdleTimeout() {
+    if (adminIdleTimer) clearTimeout(adminIdleTimer);
+    adminIdleTimer = null;
+    adminIdleStarted = false;
+    try { localStorage.removeItem(ADMIN_ACTIVITY_KEY); } catch (_) {}
+  }
+  function startAdminIdleTimeout() {
+    if (adminIdleStarted || !state.user) return;
+    adminIdleStarted = true;
+    const markActivity = () => {
+      if (!state.user) return;
+      try { localStorage.setItem(ADMIN_ACTIVITY_KEY, String(Date.now())); } catch (_) {}
+      if (adminIdleTimer) clearTimeout(adminIdleTimer);
+      adminIdleTimer = setTimeout(async () => {
+        state.user = null;
+        clearAdminIdleTimeout();
+        try { await client.auth.signOut(); } finally { showLogin('You were signed out after 30 minutes of inactivity. Please sign in again.', false); }
+      }, ADMIN_IDLE_LIMIT_MS);
+    };
+    ['pointerdown', 'keydown', 'input', 'change', 'touchstart', 'scroll'].forEach((name) => {
+      document.addEventListener(name, markActivity, { passive: true });
+    });
+    markActivity();
+  }
+
   function showDashboard() {
     $('#loginView').hidden = true;
     $('#recoveryView').hidden = true;
@@ -94,6 +124,7 @@
     $('#profileEmail').textContent = email;
     $('#profileInitials').textContent = email.slice(0, 1).toUpperCase();
     $('#dashboardView').setAttribute('aria-label', `Signed in as ${email}`);
+    startAdminIdleTimeout();
     loadPrompts();
   }
 
@@ -205,6 +236,7 @@
       await verifyAdmin(user);
       const { error } = await client.auth.updateUser({ password });
       if (error) throw error;
+      clearAdminIdleTimeout();
       await client.auth.signOut();
       state.user = null;
       $('#loginEmail').value = state.recoveryEmail || user.email || '';
@@ -246,7 +278,7 @@
   }
   $$('.nav-item, [data-view]').forEach((button) => button.addEventListener('click', () => switchView(button.dataset.view)));
   $('#mobileMenuButton').addEventListener('click', () => $('#sidebar').classList.toggle('open'));
-  $('#signOutBtn').addEventListener('click', async () => { await client.auth.signOut(); state.user = null; showLogin('You have signed out.', false); });
+  $('#signOutBtn').addEventListener('click', async () => { clearAdminIdleTimeout(); await client.auth.signOut(); state.user = null; showLogin('You have signed out.', false); });
 
   function updateMetrics() {
     const prompts = state.prompts;
@@ -525,7 +557,15 @@
   $('#closeEditorBtn').addEventListener('click', () => closeEditor(false));
   $('#cancelBtn').addEventListener('click', () => closeEditor(false));
   // The editor never closes by clicking outside or pressing Escape; explicit close asks before discarding.
-  $('#editorModal').addEventListener('click', (event) => { if (event.target === $('#editorModal')) event.preventDefault(); });
+  $('#editorModal').addEventListener('click', (event) => { if (event.target === $('#editorModal')) { event.preventDefault(); event.stopPropagation(); } });
+  $('#homeSectionModal').addEventListener('click', (event) => { if (event.target === $('#homeSectionModal')) { event.preventDefault(); event.stopPropagation(); } });
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (!$('#editorModal').hidden || !$('#homeSectionModal').hidden) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, true);
   $('#promptForm').addEventListener('input', () => { $('#promptForm').dataset.dirty = 'true'; });
   $('#promptForm').addEventListener('change', () => { $('#promptForm').dataset.dirty = 'true'; });
   $('#promptForm').addEventListener('submit', async (event) => {
@@ -565,57 +605,6 @@
       await loadPrompts(); toast(`Prompt #${id} deleted.`);
     } catch (error) { toast(error.message || 'Could not delete prompt.', true); }
   }
-
-  // Present every homepage control as an independent edit card and modal.
-  function setupHomepageBuilderModals(){
-    const panel=$('[data-panel="homepage"]');
-    const settingsCard=panel?.querySelector('.homepage-builder-card');
-    const settingsForm=$('#homepageSettingsForm');
-    if(settingsCard && settingsForm && !$('#homepageControlCards')){
-      const groups=[];let current=null;
-      [...settingsForm.children].forEach(node=>{
-        if(node.classList?.contains('builder-settings-subhead')){
-          current={title:node.querySelector('strong')?.textContent||'Homepage settings',hint:node.querySelector('span')?.textContent||'',nodes:[node]};groups.push(current);
-        } else if(current && !node.classList?.contains('builder-form-actions')) current.nodes.push(node);
-      });
-      const titles=['Header text and typography','Search box and complaint shortcut','Navigation buttons','Footer appearance','Contact email and social media'];
-      const cards=document.createElement('div');cards.id='homepageControlCards';cards.className='homepage-control-cards';
-      groups.forEach((group,index)=>{
-        const card=document.createElement('article');card.className='homepage-control-card';
-        card.innerHTML=`<div><strong>${escapeHtml(titles[index]||group.title)}</strong><small>${escapeHtml(group.hint)}</small></div><button type="button" class="btn btn-outline" data-open-home-control="${index}">Edit</button>`;cards.appendChild(card);
-        const wrap=document.createElement('div');wrap.className='home-control-group';wrap.dataset.homeControlGroup=String(index);group.nodes.forEach(n=>wrap.appendChild(n));group.wrap=wrap;
-      });
-      const modal=document.createElement('div');modal.id='homeControlModal';modal.className='modal-backdrop home-control-backdrop';modal.hidden=true;
-      modal.innerHTML='<section class="editor-modal home-control-modal" role="dialog" aria-modal="true"><header class="modal-header"><div><div class="eyebrow">HOMEPAGE BUILDER</div><h2 id="homeControlModalTitle">Edit homepage section</h2><p>Changes are saved to the live website.</p></div><button type="button" class="modal-close" data-close-home-control aria-label="Close">×</button></header><div class="home-control-modal-body"></div><footer class="home-control-modal-footer"><p id="homeControlModalMessage" class="form-message" role="status"></p><button type="button" class="btn btn-secondary" data-close-home-control>Cancel</button><button type="button" class="btn btn-primary" id="saveHomeControlModal">Save this section</button></footer></section>';
-      document.body.appendChild(modal);
-      const body=$('.home-control-modal-body',modal);body.appendChild(settingsForm);groups.forEach(g=>{g.wrap.hidden=true;settingsForm.appendChild(g.wrap)});
-      settingsForm.querySelector('.builder-form-actions')?.classList.add('builder-actions-in-modal');settingsForm.hidden=false;settingsCard.appendChild(cards);
-      const close=()=>{modal.hidden=true;document.body.classList.remove('modal-open');};
-      cards.addEventListener('click',e=>{const btn=e.target.closest('[data-open-home-control]');if(!btn)return;const idx=Number(btn.dataset.openHomeControl);groups.forEach((g,i)=>g.wrap.hidden=i!==idx);$('#homeControlModalTitle').textContent=titles[idx]||'Edit homepage section';$('#homeControlModalMessage').textContent='';modal.hidden=false;document.body.classList.add('modal-open');});
-      modal.querySelectorAll('[data-close-home-control]').forEach(b=>b.addEventListener('click',close));
-      modal.addEventListener('click',e=>{if(e.target===modal)close()});
-      $('#saveHomeControlModal').addEventListener('click',async()=>{
-        const button=$('#saveHomeControlModal');button.disabled=true;
-        try{$('#homeControlModalMessage').textContent='Saving…';settingsForm.requestSubmit();}
-        finally{setTimeout(()=>button.disabled=false,500)}
-      });
-    }
-    const pageCard=panel?.querySelectorAll('.homepage-builder-card')[1];
-    const pageForm=$('#contentPageForm');
-    if(pageCard && pageForm && !$('#contentPageModal')){
-      const shortcuts=$$('.builder-page-shortcuts button',pageCard);
-      const modal=document.createElement('div');modal.id='contentPageModal';modal.className='modal-backdrop home-control-backdrop';modal.hidden=true;
-      modal.innerHTML='<section class="editor-modal content-page-modal" role="dialog" aria-modal="true"><header class="modal-header"><div><div class="eyebrow">INFORMATION PAGE EDITOR</div><h2 id="contentPageModalTitle">Edit information page</h2><p>Update this page and save it independently.</p></div><button type="button" class="modal-close" data-close-content-page>×</button></header><div class="content-page-modal-body"></div><footer class="home-control-modal-footer"><p id="contentPageModalMessage" class="form-message" role="status"></p><button type="button" class="btn btn-secondary" data-close-content-page>Cancel</button><button type="submit" form="contentPageForm" class="btn btn-primary">Save this page</button></footer></section>';
-      document.body.appendChild(modal);$('.content-page-modal-body',modal).appendChild(pageForm);const pageActions=pageForm.querySelector('.builder-form-actions');const pageMessage=$('#contentPageMessage');if(pageMessage)modal.querySelector('.home-control-modal-footer').prepend(pageMessage);pageActions?.classList.add('builder-actions-in-modal');
-      const close=()=>{modal.hidden=true;document.body.classList.remove('modal-open')};
-      shortcuts.forEach(btn=>btn.addEventListener('click',()=>{const slug=btn.dataset.contentPage;$('#contentPageSlug').value=slug;loadContentPage(slug);$('#contentPageModalTitle').textContent=`Edit ${btn.textContent.replace(/^Edit\s*/,'')}`;$('#contentPageModalMessage').textContent='';modal.hidden=false;document.body.classList.add('modal-open')}));
-      modal.querySelectorAll('[data-close-content-page]').forEach(b=>b.addEventListener('click',close));modal.addEventListener('click',e=>{if(e.target===modal)close()});
-      // The original inline form message remains the authoritative save status.
-      const save=pageForm.querySelector('#saveContentPageBtn'); if(save) save.hidden=true;
-      pageForm.addEventListener('submit',()=>setTimeout(()=>{const msg=$('#contentPageMessage')?.textContent||'';$('#contentPageModalMessage').textContent=msg;if(msg.includes('saved'))setTimeout(close,500)},250));
-    }
-  }
-  setupHomepageBuilderModals();
 
   // Homepage-wide settings, information pages and visitor complaint inbox.
   const defaultHomepageSettings = {
@@ -682,8 +671,8 @@
       };
       for(const social of settings.socials){if(social.url&&!/^https?:\/\//i.test(social.url))throw new Error(`${social.platform} link must start with https:// or http://.`);}
       const {error}=await client.from('site_settings').upsert({id:1,settings,updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;
-      state.siteSettings=settings;setMessage($('#homepageSettingsMessage'),'Homepage controls saved successfully.');if($('#homeControlModalMessage'))$('#homeControlModalMessage').textContent='Saved successfully.';toast('Homepage controls saved.');
-    }catch(error){setMessage($('#homepageSettingsMessage'),error.message||'Could not save homepage controls.',true);if($('#homeControlModalMessage'))$('#homeControlModalMessage').textContent=error.message||'Could not save this section.';}finally{button.disabled=false;}
+      state.siteSettings=settings;setMessage($('#homepageSettingsMessage'),'Homepage controls saved successfully.');toast('Homepage controls saved.');
+    }catch(error){setMessage($('#homepageSettingsMessage'),error.message||'Could not save homepage controls.',true);}finally{button.disabled=false;}
   });
 
   function addContentPageSection(data={}){
@@ -774,7 +763,6 @@
   $('#addHomeSectionBtn').addEventListener('click', () => openHomeSectionEditor());
   $('#closeHomeModalBtn').addEventListener('click', closeHomeSectionEditor);
   $('#cancelHomeBtn').addEventListener('click', closeHomeSectionEditor);
-  $('#homeSectionModal').addEventListener('click', (event) => { if (event.target === $('#homeSectionModal')) event.preventDefault(); });
   async function collectHomeCards() {
     const items = [];
     for (const wrap of $$('.home-card-editor', $('#homeCardList'))) {

@@ -126,7 +126,7 @@ byId('copyPrompt').addEventListener('click',copyCurrentPrompt);
 byId('detailYear').textContent=new Date().getFullYear();
 const DETAIL_UI = {
   en: {
-    home:'Home', prompts:'Prompts', back:'← Back to prompts', about:'About this prompt', aboutEyebrow:'ABOUT', readyEyebrow:'READY TO COPY', howEyebrow:'HOW TO USE', collectionEyebrow:'SAME COLLECTION', relatedEyebrow:'KEEP EXPLORING',
+    home:'Home', prompts:'Prompts', back:'← Back to Home', about:'About this prompt', aboutEyebrow:'ABOUT', readyEyebrow:'READY TO COPY', howEyebrow:'HOW TO USE', collectionEyebrow:'SAME COLLECTION', relatedEyebrow:'KEEP EXPLORING',
     prompt:'Prompt', defaultFormat:'Default', how:'How to use this prompt', relatedCollection:'More prompts in this collection',
     related:'Related prompts', viewAll:'View all prompts →', copy:'Copy Prompt',
     copied:'Copied successfully.', selectCopy:'Select the prompt text and copy it.',
@@ -142,7 +142,7 @@ const DETAIL_UI = {
     footerDescription:'Free AI photo and video prompts.'
   },
   hi: {
-    home:'होम', prompts:'प्रॉम्प्ट', back:'← सभी प्रॉम्प्ट देखें', about:'इस प्रॉम्प्ट के बारे में', aboutEyebrow:'जानकारी', readyEyebrow:'कॉपी के लिए तैयार', howEyebrow:'उपयोग कैसे करें', collectionEyebrow:'इसी संग्रह में', relatedEyebrow:'और प्रॉम्प्ट देखें',
+    home:'होम', prompts:'प्रॉम्प्ट', back:'← होम पेज पर जाएँ', about:'इस प्रॉम्प्ट के बारे में', aboutEyebrow:'जानकारी', readyEyebrow:'कॉपी के लिए तैयार', howEyebrow:'उपयोग कैसे करें', collectionEyebrow:'इसी संग्रह में', relatedEyebrow:'और प्रॉम्प्ट देखें',
     prompt:'प्रॉम्प्ट', defaultFormat:'डिफ़ॉल्ट', how:'इस प्रॉम्प्ट का उपयोग कैसे करें', relatedCollection:'इस संग्रह के अन्य प्रॉम्प्ट',
     related:'संबंधित प्रॉम्प्ट', viewAll:'सभी प्रॉम्प्ट देखें →', copy:'प्रॉम्प्ट कॉपी करें',
     copied:'सफलतापूर्वक कॉपी हुआ।', selectCopy:'प्रॉम्प्ट चुनें और कॉपी करें।',

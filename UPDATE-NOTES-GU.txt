@@ -1,13 +1,7 @@
-નવી અપડેટ — Homepage Builder અને Page Navigation
+નવી અપડેટ:
+1) Admin Panel માં 30 મિનિટ સુધી કોઈ activity ન હોય તો આપમેળે sign out થાય છે.
+2) Prompt editor અને Homepage Builder modal બહાર ક્લિક કરવાથી અથવા Escape દબાવવાથી બંધ નહીં થાય. Save, Cancel અથવા સ્પષ્ટ Close action જ વાપરો.
+3) Prompt detail પેજ પર Back to Home લખાશે.
+4) Homepage નો scroll position સાચવીને Prompt અથવા Information પેજ પરથી પાછા આવતાં એ જ જગ્યાએ restore કરવાનો પ્રયાસ થાય છે.
 
-1. Homepage Builder ના Hero, Search, Navigation, Footer અને Contact/Social વિભાગો હવે અલગ Edit cards દ્વારા modal માં ખુલશે.
-2. દરેક વિભાગના ફેરફારો માટે modal ની અંદર અલગ Save this section બટન છે. જૂનું બહાર દેખાતું Save homepage controls બટન દૂર કરાયું છે.
-3. Information Pages ના About, Contact, Privacy Policy, Terms & Conditions, Disclaimer અને DMCA cards ક્લિક કરતાં અલગ editor modal ખૂલે છે. જૂનું નીચેનું inline editor દૂર કરાયું છે.
-4. Policy text linkify કરતી વખતે થતી JavaScript regular-expression ભૂલ સુધારાઈ છે.
-5. Homepage પરથી માહિતી પેજ પર જઈ પાછા આવતાં homepage નું અગાઉનું scroll સ્થાન restore કરવાનો પ્રયાસ ઉમેર્યો છે.
-6. Footer/Disclaimer markup અને Supabase schema/records બદલ્યા નથી.
-
-Deploy:
-- ZIP extract કરો અને GitHub main branch માં files upload/replace કરો.
-- Supabase માં કોઈ SQL ફરીથી ચલાવવાની જરૂર નથી.
-- Deploy થયા પછી Homepage Builder ના દરેક Edit modal અને Save test કરો.
+નોંધ: 30 મિનિટનો સમય inactivity માટે છે; mouse, keyboard, touch, scroll અથવા form input activity timer ફરી શરૂ કરે છે.

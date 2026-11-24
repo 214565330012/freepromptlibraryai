@@ -1,20 +1,3 @@
-// Preserve homepage scroll position while navigating to an information/detail page and back.
-(() => {
-  try {
-    const key='fpl-home-scroll-y';
-    if(sessionStorage.getItem('fpl-restore-home-scroll')==='1'){
-      const y=Number(sessionStorage.getItem(key)||0);sessionStorage.removeItem('fpl-restore-home-scroll');
-      window.addEventListener('load',()=>requestAnimationFrame(()=>window.scrollTo(0,y)),{once:true});
-    }
-    document.addEventListener('click',event=>{
-      const a=event.target.closest('a[href]');if(!a)return;
-      const href=a.getAttribute('href')||'';
-      if(/^(?:page\.html|prompt\.html|detail\.html)/i.test(href)||/page\.html\?slug=/i.test(href)){
-        sessionStorage.setItem(key,String(window.scrollY));sessionStorage.setItem('fpl-restore-home-scroll','1');
-      }
-    },true);
-  }catch(_){/* storage may be unavailable; navigation remains functional */}
-})();
 const $ = (selector) => document.querySelector(selector);
 
 const PAGE_SIZE = 18;
@@ -25,6 +8,35 @@ let appliedSearchTerm = '';
 let activeSpecialFilter = 'All';
 let PROMPT_DATA = window.PROMPTS || [];
 const supabaseClient = window.supabaseClient || null;
+
+// Preserve the exact homepage scroll position when opening a prompt or information page
+// and returning to Home. Manual restoration prevents the browser from jumping elsewhere.
+(() => {
+  const key = 'fpl-home-scroll-position';
+  try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (_) {}
+  let saveFrame = 0;
+  const save = () => {
+    if (saveFrame) cancelAnimationFrame(saveFrame);
+    saveFrame = requestAnimationFrame(() => {
+      try { sessionStorage.setItem(key, String(window.scrollY || window.pageYOffset || 0)); } catch (_) {}
+      saveFrame = 0;
+    });
+  };
+  window.addEventListener('scroll', save, { passive: true });
+  window.addEventListener('pagehide', save);
+  window.addEventListener('beforeunload', save);
+  const restore = () => {
+    let y = 0;
+    try { y = Number(sessionStorage.getItem(key) || 0); } catch (_) {}
+    if (!Number.isFinite(y) || y < 0) y = 0;
+    requestAnimationFrame(() => window.scrollTo(0, y));
+    [120, 350, 800, 1400].forEach((delay) => setTimeout(() => window.scrollTo(0, y), delay));
+  };
+  window.addEventListener('pageshow', (event) => { if (event.persisted || performance.getEntriesByType('navigation')[0]?.type === 'back_forward') restore(); });
+  if (performance.getEntriesByType('navigation')[0]?.type === 'back_forward') restore();
+  // Also restore on direct Home links from the site's detail and information pages.
+  if (document.referrer && new URL(document.referrer).origin === location.origin && !location.hash) restore();
+})();
 
 function escapeText(value) {
   return String(value ?? '').replace(/[&<>\"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;', "'":'&#39;'}[char]));
@@ -460,7 +472,6 @@ document.querySelectorAll('[data-cat]').forEach((link) => {
 $('#mobileMenu').addEventListener('click', () => $('#nav').classList.toggle('open'));
 $('#year').textContent = new Date().getFullYear();
 render();
-try{if(sessionStorage.getItem('fpl-restore-home-scroll')==='1'){const y=Number(sessionStorage.getItem('fpl-home-scroll-y')||0);sessionStorage.removeItem('fpl-restore-home-scroll');setTimeout(()=>window.scrollTo(0,y),180);}}catch(_){}
 loadCustomHomepageSections();
 loadPublicSiteSettings();
 
