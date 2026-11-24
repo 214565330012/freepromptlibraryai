@@ -9,33 +9,85 @@ let activeSpecialFilter = 'All';
 let PROMPT_DATA = window.PROMPTS || [];
 const supabaseClient = window.supabaseClient || null;
 
-// Preserve the exact homepage scroll position when opening a prompt or information page
-// and returning to Home. Manual restoration prevents the browser from jumping elsewhere.
+// Preserve the exact homepage scroll position across prompt/info pages and browser Back.
+// Save synchronously (not in requestAnimationFrame) so navigation cannot race the save.
 (() => {
   const key = 'fpl-home-scroll-position';
+  let restoring = false;
+  let restoreTimer = 0;
+  let restoreObserver = null;
   try { if ('scrollRestoration' in history) history.scrollRestoration = 'manual'; } catch (_) {}
-  let saveFrame = 0;
+
   const save = () => {
-    if (saveFrame) cancelAnimationFrame(saveFrame);
-    saveFrame = requestAnimationFrame(() => {
-      try { sessionStorage.setItem(key, String(window.scrollY || window.pageYOffset || 0)); } catch (_) {}
-      saveFrame = 0;
-    });
+    if (restoring) return;
+    try { sessionStorage.setItem(key, String(Math.max(0, window.scrollY || window.pageYOffset || 0))); } catch (_) {}
   };
   window.addEventListener('scroll', save, { passive: true });
   window.addEventListener('pagehide', save);
   window.addEventListener('beforeunload', save);
+
+  // Capture the position before any same-tab navigation starts.
+  document.addEventListener('click', (event) => {
+    const link = event.target && event.target.closest ? event.target.closest('a[href]') : null;
+    if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || link.target === '_blank') return;
+    try {
+      const url = new URL(link.href, location.href);
+      if (url.origin === location.origin && !link.hasAttribute('download')) save();
+    } catch (_) {}
+  }, true);
+
+  const shouldRestore = () => {
+    const navType = performance.getEntriesByType('navigation')[0]?.type;
+    if (navType === 'back_forward') return true;
+    try { return !!document.referrer && new URL(document.referrer).origin === location.origin && !location.hash; }
+    catch (_) { return false; }
+  };
+
   const restore = () => {
     let y = 0;
-    try { y = Number(sessionStorage.getItem(key) || 0); } catch (_) {}
+    try {
+      const stored = sessionStorage.getItem(key);
+      if (stored === null) return;
+      y = Number(stored);
+    } catch (_) { return; }
     if (!Number.isFinite(y) || y < 0) y = 0;
-    requestAnimationFrame(() => window.scrollTo(0, y));
-    [120, 350, 800, 1400].forEach((delay) => setTimeout(() => window.scrollTo(0, y), delay));
+
+    restoring = true;
+    if (restoreObserver) restoreObserver.disconnect();
+    if (restoreTimer) clearTimeout(restoreTimer);
+    const started = Date.now();
+    let stableFrames = 0;
+    let previousHeight = -1;
+    const apply = () => {
+      window.scrollTo(0, y);
+      const height = document.documentElement.scrollHeight;
+      stableFrames = height === previousHeight ? stableFrames + 1 : 0;
+      previousHeight = height;
+      // Keep restoring while asynchronously loaded prompt cards/images change page height.
+      if (Date.now() - started < 6000 && (height < y + window.innerHeight || stableFrames < 4)) {
+        requestAnimationFrame(apply);
+      } else {
+        window.scrollTo(0, y);
+        restoring = false;
+        if (restoreObserver) restoreObserver.disconnect();
+      }
+    };
+    requestAnimationFrame(apply);
+    restoreObserver = new MutationObserver(() => {
+      if (Date.now() - started < 6000) window.scrollTo(0, y);
+    });
+    if (document.body) restoreObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
+    restoreTimer = setTimeout(() => {
+      window.scrollTo(0, y);
+      restoring = false;
+      if (restoreObserver) restoreObserver.disconnect();
+    }, 6100);
   };
-  window.addEventListener('pageshow', (event) => { if (event.persisted || performance.getEntriesByType('navigation')[0]?.type === 'back_forward') restore(); });
-  if (performance.getEntriesByType('navigation')[0]?.type === 'back_forward') restore();
-  // Also restore on direct Home links from the site's detail and information pages.
-  if (document.referrer && new URL(document.referrer).origin === location.origin && !location.hash) restore();
+
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted || shouldRestore()) restore();
+  });
+  if (shouldRestore()) restore();
 })();
 
 function escapeText(value) {
