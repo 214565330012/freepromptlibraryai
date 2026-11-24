@@ -892,7 +892,7 @@
         const dialog=document.createElement('dialog');dialog.className='builder-edit-dialog';dialog.dataset.builderDialog=String(index);
         const body=document.createElement('div');body.className='builder-dialog-body';
         group.nodes.forEach(el=>body.appendChild(el));
-        dialog.innerHTML=`<div class="builder-dialog-head"><div><span class="eyebrow">HOMEPAGE BUILDER</span><h2>${escapeHtml(group.heading)}</h2></div><button type="button" class="builder-dialog-close" data-dialog-cancel aria-label="Close">×</button></div>`;
+        dialog.innerHTML=`<div class="builder-dialog-head"><div><span class="eyebrow">HOMEPAGE BUILDER</span><h2>${escapeHtml(group.heading)}</h2></div><button type="button" class="builder-dialog-close builder-page-back" data-dialog-cancel aria-label="Back to Homepage Builder">← Back to Homepage Builder</button></div>`;
         dialog.appendChild(body);
         const actions=document.createElement('div');actions.className='builder-dialog-actions';
         actions.innerHTML='<p class="form-message" aria-live="polite"></p><button type="button" class="btn btn-secondary" data-dialog-cancel>Cancel</button><button type="submit" class="btn btn-primary">Save changes</button>';
