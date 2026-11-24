@@ -445,6 +445,7 @@ document.querySelectorAll('[data-trend-action]').forEach((card) => {
     if (action === 'video') activeFilter = 'Video';
     if (action === 'all') activeSpecialFilter = 'trending';
     if (action === 'celebration') activeSpecialFilter = 'celebration';
+    if (action === 'photo') activeFilter = 'Photo';
     currentPage = 1;
     render();
     $('#latest').scrollIntoView({behavior:'smooth', block:'start'});

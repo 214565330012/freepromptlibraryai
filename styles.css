@@ -172,7 +172,7 @@ footer{margin-top:25px;background:#17172c;color:#e9e8f2;padding:32px max(5%,calc
 }
 .trending-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
 }
 .trending-card {

@@ -889,9 +889,16 @@
       const headings=$$('.builder-settings-subhead',settingsForm);
       const groups=[];
       headings.forEach((heading,index)=>{
-        const nodes=[];let node=heading;
-        while(node){const next=node.nextElementSibling;if(node.classList?.contains('builder-settings-subhead')||node.classList?.contains('builder-form-actions'))break;nodes.push(node);node=next;}
-        groups.push({heading:heading.querySelector('strong')?.textContent||`Homepage section ${index+1}`,nodes:[heading,...nodes]});
+        // Start with the heading, then collect its following fields up to the next heading.
+        // The previous loop checked the current heading first and exited immediately,
+        // which created empty editors for all four homepage control cards.
+        const nodes=[heading];
+        let node=heading.nextElementSibling;
+        while(node && !node.classList?.contains('builder-settings-subhead') && !node.classList?.contains('builder-form-actions')){
+          nodes.push(node);
+          node=node.nextElementSibling;
+        }
+        groups.push({heading:heading.querySelector('strong')?.textContent||`Homepage section ${index+1}`,nodes});
       });
       // Each group is moved into a modal. The existing single Supabase save routine remains the source of truth.
       groups.forEach((group,index)=>{
