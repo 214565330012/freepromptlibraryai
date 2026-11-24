@@ -6,7 +6,8 @@ window.SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_4fKPJL2HrWg0-TI90Y2uLw_VyM5xtH
 if (window.supabase && typeof window.supabase.createClient === 'function') {
   window.supabaseClient = window.supabaseClient || window.supabase.createClient(
     window.SUPABASE_URL,
-    window.SUPABASE_PUBLISHABLE_KEY
+    window.SUPABASE_PUBLISHABLE_KEY,
+    { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storage: window.localStorage } }
   );
 } else {
   console.error('Supabase JavaScript SDK did not load. Check the CDN script request.');

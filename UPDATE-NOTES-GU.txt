@@ -1,7 +1,9 @@
-નવી અપડેટ:
-1) Admin Panel માં 30 મિનિટ સુધી કોઈ activity ન હોય તો આપમેળે sign out થાય છે.
-2) Prompt editor અને Homepage Builder modal બહાર ક્લિક કરવાથી અથવા Escape દબાવવાથી બંધ નહીં થાય. Save, Cancel અથવા સ્પષ્ટ Close action જ વાપરો.
-3) Prompt detail પેજ પર Back to Home લખાશે.
-4) Homepage નો scroll position સાચવીને Prompt અથવા Information પેજ પરથી પાછા આવતાં એ જ જગ્યાએ restore કરવાનો પ્રયાસ થાય છે.
+FreePromptLibraryAI – Edit Button + Admin Session Fix
 
-નોંધ: 30 મિનિટનો સમય inactivity માટે છે; mouse, keyboard, touch, scroll અથવા form input activity timer ફરી શરૂ કરે છે.
+આ અપડેટમાં:
+1. Homepage Builder initialization દરમિયાન Follow Us card ખસેડતી વખતે થતી JavaScript scope error સુધારી છે. આ error ના કારણે Edit click handlers સુધી કોડ પહોંચતો નહોતો.
+2. Homepage Builder ના દરેક Edit button માટે dialog launch handlers હવે initialize થઈ શકે છે. Dialog હાલ full-screen editor તરીકે દેખાય છે.
+3. Supabase Auth માં persistSession અને autoRefreshToken સ્પષ્ટ રીતે ચાલુ રાખ્યા છે જેથી refresh પછી login session જળવાય.
+4. 30 મિનિટ inactivity નો સમય localStorage માં જળવાય છે; refresh કરવાથી inactivity timer ફરીથી શૂન્ય થતો નથી.
+
+Deploy કર્યા પછી hard refresh (Ctrl+Shift+R) કરો. Edit buttons અને Save ને Supabase સાથે live test કરવાનું બાકી છે; પહેલાં એક વિભાગમાં ફેરફાર કરી Save ચકાસો.

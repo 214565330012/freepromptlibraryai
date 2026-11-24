@@ -100,15 +100,24 @@
   function startAdminIdleTimeout() {
     if (adminIdleStarted || !state.user) return;
     adminIdleStarted = true;
+    const expireAdminSession = async () => {
+      state.user = null;
+      clearAdminIdleTimeout();
+      try { await client.auth.signOut(); } finally { showLogin('You were signed out after 30 minutes of inactivity. Please sign in again.', false); }
+    };
+    // Do not erase or reset the inactivity clock on a browser refresh.
+    try {
+      const lastActivity = Number(localStorage.getItem(ADMIN_ACTIVITY_KEY) || 0);
+      if (lastActivity && Date.now() - lastActivity >= ADMIN_IDLE_LIMIT_MS) {
+        void expireAdminSession();
+        return;
+      }
+    } catch (_) {}
     const markActivity = () => {
       if (!state.user) return;
       try { localStorage.setItem(ADMIN_ACTIVITY_KEY, String(Date.now())); } catch (_) {}
       if (adminIdleTimer) clearTimeout(adminIdleTimer);
-      adminIdleTimer = setTimeout(async () => {
-        state.user = null;
-        clearAdminIdleTimeout();
-        try { await client.auth.signOut(); } finally { showLogin('You were signed out after 30 minutes of inactivity. Please sign in again.', false); }
-      }, ADMIN_IDLE_LIMIT_MS);
+      adminIdleTimer = setTimeout(expireAdminSession, ADMIN_IDLE_LIMIT_MS);
     };
     ['pointerdown', 'keydown', 'input', 'change', 'touchstart', 'scroll'].forEach((name) => {
       document.addEventListener(name, markActivity, { passive: true });
@@ -924,7 +933,8 @@
         shortcuts.classList.add('builder-launch-card-grid');
         shortcuts.innerHTML=[['about','About Us'],['contact','Contact Us'],['privacy','Privacy Policy'],['terms','Terms & Conditions'],['disclaimer','Disclaimer'],['dmca','DMCA']].map(([slug,label])=>`<article class="builder-launch-card"><div><strong>${label}</strong><small>Edit page title, introduction and content blocks.</small></div><button type="button" class="btn btn-outline btn-small" data-open-content-page="${slug}">Edit</button></article>`).join('');
         // Follow Us belongs with the information-page cards, not the header controls.
-        const followCard=[...host.querySelectorAll('.builder-launch-card')].find(card=>card.querySelector('strong')?.textContent.trim()==='Follow Us');
+        const homepageControlCards=$('#homepageControlCards');
+        const followCard=[...(homepageControlCards?.querySelectorAll('.builder-launch-card') || [])].find(card=>card.querySelector('strong')?.textContent.trim()==='Follow Us');
         if(followCard)shortcuts.appendChild(followCard);
       }
       const form=$('#contentPageForm');const dialog=$('#contentPageDialog');
