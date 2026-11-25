@@ -8,3 +8,5 @@ FreePromptLibraryAI – Edit Button + Admin Session Fix
 
 Deploy કર્યા પછી hard refresh (Ctrl+Shift+R) કરો. Edit buttons અને Save ને Supabase સાથે live test કરવાનું બાકી છે; પહેલાં એક વિભાગમાં ફેરફાર કરી Save ચકાસો.
 \nHomepage card layout update: desktop prompt grids now show 4 columns. Main content sections widened to 1120px so prompt cards keep a similar readable width. Medium screens show 3 columns, mobile remains 2 columns (1 column on very narrow screens). Card image height, typography, and internal card sizing are unchanged.\n
+
+Update 2026-11-25: Added separate About and How to Use fields to Portrait/Story and Instagram variants. Prompt detail now renders Landscape image -> About -> Prompt (Copy above prompt) -> How to Use, followed by Portrait/Story and Instagram side-by-side image/prompt cards. Existing Add Section prompt layout selector retains Landscape/Portrait/Instagram options. No database migration required; values are stored in the existing prompt_variants JSON field.

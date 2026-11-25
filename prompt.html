@@ -38,26 +38,26 @@
           <span class="preview-name" id="previewName"></span>
         </div>
         <p class="preview-note" id="previewNote">Illustrative category preview. A sample image can be added from the Admin Panel.</p>
-        <div class="quick-facts" id="quickFacts"></div>
+        <div class="quick-facts" id="quickFacts" hidden></div>
       </aside>
 
       <div class="detail-content-column">
-        <section class="prompt-panel">
-          <div class="panel-heading"><div><span class="section-eyebrow">READY TO COPY</span><h2>Prompt</h2></div></div>
-          <div id="variantPicker" class="variant-picker" hidden></div>
-          <div class="prompt-actions"><button type="button" id="copyPrompt" class="copy-action">Copy Prompt</button><span id="copyFeedback" class="copy-feedback" aria-live="polite"></span></div>
-          <pre id="promptText" class="prompt-text"></pre>
-        </section>
         <section class="info-panel">
           <div class="panel-heading"><div><span class="section-eyebrow">ABOUT</span><h2>About this prompt</h2></div></div>
           <div class="single-info-box"><p id="aboutContent"></p></div>
         </section>
+        <section class="prompt-panel">
+          <div class="panel-heading"><div><span class="section-eyebrow">READY TO COPY</span><h2>Prompt · Landscape</h2></div></div>
+          <div class="prompt-actions"><button type="button" id="copyPrompt" class="copy-action">Copy Prompt</button><span id="copyFeedback" class="copy-feedback" aria-live="polite"></span></div>
+          <pre id="promptText" class="prompt-text"></pre>
+        </section>
+        <section class="how-to-panel"><div class="panel-heading"><div><span class="section-eyebrow">HOW TO USE</span><h2>How to use this prompt</h2></div></div><div class="single-info-box"><p id="howToUseContent"></p></div></section>
       </div>
     </section>
 
+    <section class="format-variants" id="formatVariants" hidden aria-label="Additional prompt formats"></section>
     <section class="extra-sections" id="extraSections" hidden aria-label="More prompt information"></section>
     <section class="related-collection" id="relatedCollection" hidden><div class="panel-heading"><div><span class="section-eyebrow">SAME COLLECTION</span><h2>More prompts in this collection</h2></div></div><div id="relatedPromptDetails" class="related-prompt-details"></div></section>
-    <section class="how-to-panel"><div class="panel-heading"><div><span class="section-eyebrow">HOW TO USE</span><h2>How to use this prompt</h2></div></div><div class="single-info-box"><p id="howToUseContent"></p></div></section>
     <section class="content-blocks" id="contentBlocks" hidden aria-label="Additional prompt and information sections"></section>
     <section class="related-section" id="relatedSection"><div class="panel-heading"><div><span class="section-eyebrow">KEEP EXPLORING</span><h2>Related prompts</h2></div><a href="index.html#latest" class="view-all">View all prompts →</a></div><div id="relatedGrid" class="related-grid"></div></section>
   </div>

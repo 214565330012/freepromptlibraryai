@@ -10,7 +10,7 @@
     view: 'overview', imageUrl: '', sectionCount: 0, variantCount: 0,
     relatedCount: 0, homeCardCount: 0, recoveryEmail: '', resendTimer: null,
     otpVerificationInProgress: false, recoveryLinkInProgress: false, analytics: null, editingPrompt: null, contentBlockCount: 0,
-    siteSettings: null, complaints: [], currentPageSlug: 'about'
+    siteSettings: null, complaints: [], currentPageSlug: 'about', variantImageUrls: { portrait: '', instagram: '' }, legacyPromptVariants: []
   };
 
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
@@ -425,14 +425,34 @@
     $('#promptForm').dataset.dirty = 'false';
     $('#promptId').value = '';
     state.imageUrl = '';
+    state.variantImageUrls = { portrait: '', instagram: '' };
+    state.legacyPromptVariants = [];
     state.contentBlockCount = 0;
     state.editingPrompt = null;
     $('#contentBlockList').innerHTML = '';
     $('#sectionChooser').hidden = true;
     $('#imageFile').value = '';
-    showCurrentImage('');
+    $('#portraitImageFile').value = ''; $('#instagramImageFile').value = '';
+    $('#portraitAspectRatio').value = '9:16'; $('#instagramAspectRatio').value = '4:5';
+    $('#portraitDuration').value = ''; $('#instagramDuration').value = '';
+    $('#portraitPromptText').value = ''; $('#instagramPromptText').value = '';
+    $('#portraitAboutText').value = ''; $('#portraitHowToUse').value = '';
+    $('#instagramAboutText').value = ''; $('#instagramHowToUse').value = '';
+    showCurrentImage(''); showVariantImage('portrait', ''); showVariantImage('instagram', '');
     setMessage($('#saveMessage'));
     refreshContentBlockNumbers();
+  }
+  function findPromptFormatVariant(variants, key) {
+    const terms = key === 'portrait' ? ['portrait', 'story'] : ['instagram', 'insta'];
+    return (Array.isArray(variants) ? variants : []).find((variant) => {
+      const marker = `${variant?.format_key || ''} ${variant?.name || ''} ${variant?.layout || ''}`.toLowerCase();
+      return terms.some((term) => marker.includes(term));
+    }) || null;
+  }
+  function showVariantImage(key, url) {
+    const line = $(`#${key}CurrentImage`);
+    if (!line) return;
+    line.innerHTML = url ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener">Current sample image · Open preview ↗</a>` : 'No image selected.';
   }
   function openEditor(prompt = null) {
     resetEditorForm();
@@ -449,13 +469,36 @@
       $('#aboutText').value = prompt.about_text || '';
       $('#promptEn').value = prompt.content_text || prompt.prompt_en || '';
       $('#howToUse').value = prompt.how_to_use || '';
-      $('#aspectRatio').value = prompt.aspect_ratio || '';
+      $('#aspectRatio').value = prompt.aspect_ratio || '16:9';
       $('#duration').value = prompt.duration || '';
       $('#status').value = prompt.status || 'draft';
       $('#isTrending').checked = !!prompt.is_trending;
       state.imageUrl = prompt.image_url || '';
       showCurrentImage(state.imageUrl);
+      const storedVariants = Array.isArray(prompt.prompt_variants) ? prompt.prompt_variants : [];
+      const portrait = findPromptFormatVariant(storedVariants, 'portrait');
+      const instagram = findPromptFormatVariant(storedVariants, 'instagram');
+      state.variantImageUrls = { portrait: portrait?.image_url || '', instagram: instagram?.image_url || '' };
+      state.legacyPromptVariants = storedVariants.filter((variant) => variant !== portrait && variant !== instagram);
+      if (portrait) {
+        $('#portraitAspectRatio').value = portrait.aspect_ratio || '9:16';
+        $('#portraitDuration').value = portrait.duration || '';
+        $('#portraitPromptText').value = portrait.prompt_text || '';
+        $('#portraitAboutText').value = portrait.about_text || prompt.about_text || '';
+        $('#portraitHowToUse').value = portrait.how_to_use || prompt.how_to_use || '';
+        showVariantImage('portrait', state.variantImageUrls.portrait);
+      }
+      if (instagram) {
+        $('#instagramAspectRatio').value = instagram.aspect_ratio || '4:5';
+        $('#instagramDuration').value = instagram.duration || '';
+        $('#instagramPromptText').value = instagram.prompt_text || '';
+        $('#instagramAboutText').value = instagram.about_text || prompt.about_text || '';
+        $('#instagramHowToUse').value = instagram.how_to_use || prompt.how_to_use || '';
+        showVariantImage('instagram', state.variantImageUrls.instagram);
+      }
       (Array.isArray(prompt.content_blocks) ? prompt.content_blocks : []).forEach((block) => addContentBlock(block.type === 'about' ? 'about' : 'prompt', block));
+    } else {
+      $('#aspectRatio').value = '16:9';
     }
     $('#promptForm').dataset.dirty = 'false';
     setTimeout(() => $('#title').focus(), 40);
@@ -490,6 +533,7 @@
         <div class="form-grid">
           <label>Prompt title<input class="block-title" required maxlength="180" value="${escapeHtml(data.title || '')}" placeholder="e.g. Birthday Couple Portrait"></label>
           <label>Prompt type<select class="block-prompt-type"><option value="Photo" ${data.prompt_type === 'Video' ? '' : 'selected'}>Photo</option><option value="Video" ${data.prompt_type === 'Video' ? 'selected' : ''}>Video</option></select></label>
+          <div class="full-span block-format-chooser"><strong>Choose prompt format</strong><div class="block-format-options"><label class="block-format-option"><input type="radio" class="block-layout" name="block-layout-${state.contentBlockCount}" value="landscape" ${!data.layout || data.layout === 'landscape' ? 'checked' : ''}><span><b>Landscape</b><small>Image above prompt</small></span></label><label class="block-format-option"><input type="radio" class="block-layout" name="block-layout-${state.contentBlockCount}" value="portrait" ${data.layout === 'portrait' ? 'checked' : ''}><span><b>Portrait / Story</b><small>Image beside prompt</small></span></label><label class="block-format-option"><input type="radio" class="block-layout" name="block-layout-${state.contentBlockCount}" value="instagram" ${data.layout === 'instagram' ? 'checked' : ''}><span><b>Instagram Post</b><small>Image beside prompt</small></span></label></div></div>
           <label class="full-span">Category<input class="block-category" maxlength="80" list="categorySuggestions" value="${escapeHtml(data.category || '')}" placeholder="e.g. Birthday, Portrait"></label>
           <label class="full-span">About this prompt<textarea class="block-about" rows="2" placeholder="Write a short description in any language…">${escapeHtml(data.about_text || '')}</textarea></label>
           <label class="full-span">Prompt<textarea class="block-prompt-text" rows="5" required placeholder="Write the complete prompt in any language…">${escapeHtml(data.prompt_text || '')}</textarea></label>
@@ -537,7 +581,7 @@
         if (file) image_url = await uploadPublicImage(file);
         if (!title || !prompt_text) throw new Error('Each added prompt section needs a title and prompt text.');
         blocks.push({
-          type: 'prompt', title, prompt_type: $('.block-prompt-type', wrap).value,
+          type: 'prompt', title, prompt_type: $('.block-prompt-type', wrap).value, layout: $('.block-layout:checked', wrap).value,
           category: $('.block-category', wrap).value.trim() || 'General',
           about_text: $('.block-about', wrap).value.trim(), prompt_text,
           how_to_use: $('.block-how-to-use', wrap).value.trim(),
@@ -577,6 +621,42 @@
   }, true);
   $('#promptForm').addEventListener('input', () => { $('#promptForm').dataset.dirty = 'true'; });
   $('#promptForm').addEventListener('change', () => { $('#promptForm').dataset.dirty = 'true'; });
+  async function collectPromptFormatVariants(oldPrompt = {}) {
+    const variants = [];
+    const definitions = [
+      { key: 'portrait', name: 'Portrait / Story', layout: 'portrait', ratio: '#portraitAspectRatio', duration: '#portraitDuration', about: '#portraitAboutText', prompt: '#portraitPromptText', how: '#portraitHowToUse', file: '#portraitImageFile' },
+      { key: 'instagram', name: 'Instagram Post', layout: 'instagram', ratio: '#instagramAspectRatio', duration: '#instagramDuration', about: '#instagramAboutText', prompt: '#instagramPromptText', how: '#instagramHowToUse', file: '#instagramImageFile' }
+    ];
+    for (const definition of definitions) {
+      const prompt_text = $(definition.prompt).value.trim();
+      const file = $(definition.file).files[0];
+      let image_url = state.variantImageUrls[definition.key] || '';
+      if (file) image_url = await uploadPublicImage(file);
+      if (prompt_text || image_url) {
+        variants.push({
+          format_key: definition.key,
+          name: definition.name,
+          layout: definition.layout,
+          aspect_ratio: $(definition.ratio).value.trim() || (definition.key === 'portrait' ? '9:16' : '4:5'),
+          duration: $(definition.duration).value.trim(),
+          about_text: $(definition.about).value.trim(),
+          prompt_text,
+          how_to_use: $(definition.how).value.trim(),
+          image_url
+        });
+      }
+    }
+    // Preserve any older custom prompt variants that do not correspond to the two fixed formats.
+    return [...variants, ...(state.legacyPromptVariants || [])];
+  }
+  ['portrait','instagram'].forEach((key) => {
+    const fileInput = $(`#${key}ImageFile`);
+    fileInput?.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file) $(`#${key}CurrentImage`).textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB · Will upload when you save`;
+    });
+  });
+
   $('#promptForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = $('#saveBtn'); button.disabled = true; setMessage($('#saveMessage'), 'Saving prompt and ordered sections…');
@@ -584,13 +664,14 @@
       const file = $('#imageFile').files[0];
       if (file) state.imageUrl = await uploadPublicImage(file);
       const contentBlocks = await collectContentBlocks();
+      const promptVariants = await collectPromptFormatVariants(state.editingPrompt || {});
       const promptText = $('#promptEn').value.trim();
       const oldPrompt = state.editingPrompt || {};
       const payload = {
         title: $('#title').value.trim(), title_hi: '', type: $('#type').value, category: $('#category').value.trim() || 'General',
         prompt_en: promptText, prompt_hi: '', content_text: promptText, about_text: $('#aboutText').value.trim(), how_to_use: $('#howToUse').value.trim(),
         // Preserve legacy arrays for prompts created before the ordered section builder existed.
-        prompt_variants: Array.isArray(oldPrompt.prompt_variants) ? oldPrompt.prompt_variants : [],
+        prompt_variants: promptVariants,
         related_prompts: Array.isArray(oldPrompt.related_prompts) ? oldPrompt.related_prompts : [],
         extra_sections: Array.isArray(oldPrompt.extra_sections) ? oldPrompt.extra_sections : [],
         content_blocks: contentBlocks,

@@ -259,3 +259,30 @@
   .builder-dialog-actions { flex-wrap: wrap; }
   .builder-dialog-actions .form-message { flex-basis: 100%; }
 }
+
+/* Explicit image/prompt format editors for the three public prompt sizes. */
+.format-editor-card{margin:0 0 20px;padding:18px;border:1px solid #e4e1f2;border-radius:14px;background:#fbfaff}
+.format-editor-card.format-editor-landscape{border-left:4px solid #6688ea}
+.format-editor-card.format-editor-side{border-left:4px solid #805bd3}
+.format-editor-label{margin:0 0 14px;color:#7058c6;font-size:10px;font-weight:800;letter-spacing:1.2px}
+.format-editor-card .form-grid{margin:0}
+.format-editor-card textarea{min-height:112px}
+.content-block-editor .block-layout{font-weight:700}
+.content-block-editor .form-grid>label:has(.block-layout){grid-column:span 2}
+@media(max-width:700px){.format-editor-card{padding:13px}.content-block-editor .form-grid>label:has(.block-layout){grid-column:1/-1}}
+
+
+/* Clear three-format selector and variant editor fields. */
+.content-block-editor .block-layout{border-color:#c9c2f2;background:linear-gradient(180deg,#fff,#f8f7ff);font-weight:700}
+.format-editor-card .form-grid textarea{min-height:68px}
+.format-editor-side{border-left:3px solid #7462dc}
+.format-editor-side .form-grid label.full-span{grid-column:1/-1}
+
+.block-format-chooser{display:grid;gap:8px;padding:13px;border:1px solid #e7e3f3;border-radius:11px;background:#fbfaff}
+.block-format-chooser>strong{color:#4b4764;font-size:10px}
+.block-format-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.block-format-option{display:flex!important;align-items:center;gap:8px;padding:10px;border:1px solid #e4e0f0;border-radius:9px;background:#fff;cursor:pointer}
+.block-format-option:has(input:checked){border-color:#7663dc;background:linear-gradient(135deg,#f1efff,#fff);box-shadow:0 0 0 2px #7663dc16}
+.block-format-option input{width:15px;height:15px;accent-color:#7663dc;flex:0 0 auto}
+.block-format-option span{display:grid;gap:3px}.block-format-option b{font-size:10px;color:#45415d}.block-format-option small{font-size:8px;color:#928ea5;font-weight:500}
+@media(max-width:560px){.block-format-options{grid-template-columns:1fr}.block-format-option{padding:9px}}

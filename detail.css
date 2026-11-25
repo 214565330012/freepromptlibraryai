@@ -155,3 +155,96 @@ a{color:inherit;text-decoration:none}
 .preview-art.has-sample-image:after{content:none}
 .preview-column:has(.has-sample-image){background:#fff}
 @media(max-width:760px){.sample-image{max-height:680px;width:auto;max-width:100%}.detail-content-column{width:100%}.prompt-panel,.info-panel{padding:16px}.prompt-text{min-height:220px;max-height:560px;font-size:11px;line-height:1.85}}
+
+/* Three-format prompt presentation: landscape first, then portrait and Instagram. */
+.format-variants{display:grid;gap:20px;margin:24px 0}
+.format-variant-card{display:grid;grid-template-columns:minmax(280px,42%) minmax(0,1fr);align-items:stretch;overflow:hidden;background:#fff;border:1px solid #e4e5ef;border-radius:16px;box-shadow:0 5px 18px #2930520b;min-width:0}
+.format-variant-image{display:flex;align-items:center;justify-content:center;min-width:0;min-height:360px;padding:14px;background:#f7f5fc;overflow:hidden}
+.format-variant-image img{display:block;max-width:100%;width:auto;height:auto;max-height:680px;object-fit:contain;object-position:center;border-radius:10px}
+.format-variant-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;min-height:320px;border:1px dashed #cfc8e8;border-radius:12px;background:linear-gradient(135deg,#f0edff,#f9f6ff);color:#806dc7}
+.format-variant-placeholder span{font-size:42px}.format-variant-placeholder small{font-size:11px;font-weight:700}
+.format-variant-body{display:flex;flex-direction:column;min-width:0;padding:clamp(18px,2.6vw,28px)}
+.format-variant-kicker{margin:0 0 8px;color:#7058c6;font-size:9px;font-weight:800;letter-spacing:1.4px}
+.format-variant-body h2{margin:0 0 9px;color:#25233d;font:800 clamp(18px,2.2vw,24px)/1.3 Manrope,Poppins,sans-serif}
+.format-variant-meta{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.format-variant-meta span{padding:5px 9px;border-radius:20px;background:#f1efff;color:#6856bd;font-size:10px;font-weight:700}
+.format-variant-prompt-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 10px}
+.format-variant-prompt-heading h3{margin:0;color:#2b2943;font-size:15px;font-weight:800}
+.format-variant-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.copy-format-prompt{border:0;border-radius:9px;padding:10px 16px;background:linear-gradient(115deg,#6688ea,#874bb0);color:#fff;font:700 11px Poppins,sans-serif;cursor:pointer;box-shadow:0 3px 9px #4f4eae24}
+.format-variant-copy-feedback{font-size:10px;color:#16845f}
+.format-variant-prompt-text{margin:0;padding:17px;border:1px solid #e5e5ef;border-radius:10px;background:#f8f8fc;color:#33334b;font:12px/1.9 Poppins,Arial,sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;min-height:210px;max-height:620px;overflow:auto}
+:root[data-theme="dark"] .format-variant-card{background:#1c1b2b;border-color:#343149}
+:root[data-theme="dark"] .format-variant-image{background:#242238}
+:root[data-theme="dark"] .format-variant-body h2,:root[data-theme="dark"] .format-variant-prompt-heading h3{color:#f1efff}
+:root[data-theme="dark"] .format-variant-prompt-text{background:#242238;border-color:#39354f;color:#e2dff1}
+:root[data-theme="dark"] .format-variant-placeholder{background:#242238;border-color:#514a70;color:#b4a5f0}
+
+/* Added prompt blocks follow their selected format: Landscape stacks; Portrait/Instagram split. */
+.content-block-prompt.content-block-layout-portrait,
+.content-block-prompt.content-block-layout-instagram{display:grid;grid-template-columns:minmax(240px,38%) minmax(0,1fr);align-items:stretch}
+.content-block-layout-portrait .content-block-image,
+.content-block-layout-instagram .content-block-image{min-height:300px;max-height:none;height:100%;padding:12px}
+.content-block-layout-portrait .content-block-image img,
+.content-block-layout-instagram .content-block-image img{width:auto;max-width:100%;height:auto;max-height:650px;object-fit:contain}
+.content-block-layout-portrait .content-block-body,
+.content-block-layout-instagram .content-block-body{min-width:0}
+.content-block-image-empty{display:grid;place-items:center;color:#8574c7;font-size:40px}
+@media(max-width:760px){
+ .format-variant-card{grid-template-columns:1fr}
+ .format-variant-image{min-height:0;max-height:none;padding:10px}
+ .format-variant-image img{max-height:620px;max-width:100%}
+ .format-variant-body{padding:16px}
+ .format-variant-prompt-heading{align-items:flex-start;flex-direction:column}
+ .content-block-prompt.content-block-layout-portrait,
+ .content-block-prompt.content-block-layout-instagram{grid-template-columns:1fr}
+ .content-block-layout-portrait .content-block-image,
+ .content-block-layout-instagram .content-block-image{min-height:0;max-height:620px}
+}
+
+
+/* Three-format collection detail flow: landscape first, then side-by-side portrait and Instagram. */
+#quickFacts[hidden]{display:none!important}
+.preview-column:has(.has-sample-image){width:min(100%,1120px);padding:12px}
+.preview-art.has-sample-image .sample-image{width:100%;max-width:100%;max-height:780px;height:auto;object-fit:contain;object-position:center}
+.detail-content-column{width:min(100%,1120px)}
+.format-variants{width:min(100%,1120px);margin:22px auto 26px}
+.format-variant-card.format-variant-side{grid-template-columns:minmax(280px,40%) minmax(0,1fr)}
+.format-variant-image{min-height:380px;max-height:none;align-self:stretch}
+.format-variant-image img{width:auto;max-width:100%;height:auto;max-height:760px;object-fit:contain}
+.format-variant-about{margin:2px 0 15px;padding:13px 15px;border:1px solid #e9e7f2;border-radius:11px;background:#fbfaff}
+.format-variant-about h3,.format-variant-how h3{margin:4px 0 7px;color:#302d49;font-size:14px;font-weight:800}
+.format-variant-about p,.format-variant-how p{margin:0;color:#646278;font-size:12px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.format-variant-how{margin-top:17px;padding:13px 15px;border-radius:11px;background:#f7f6fc}
+.format-variant-how h3{font-size:13px}
+.format-variant-prompt-heading{margin-top:6px}
+.format-variant-actions .copy-format-prompt{padding:9px 14px;border:0;border-radius:8px;background:linear-gradient(110deg,#6688ea,#874bb0);color:#fff;font:700 10px Poppins,sans-serif;cursor:pointer}
+:root[data-theme="dark"] .format-variant-about{background:#242238;border-color:#39354f}
+:root[data-theme="dark"] .format-variant-about h3,:root[data-theme="dark"] .format-variant-how h3{color:#f1efff}
+:root[data-theme="dark"] .format-variant-about p,:root[data-theme="dark"] .format-variant-how p{color:#c6c2d8}
+@media(max-width:760px){
+  .format-variant-card.format-variant-side{grid-template-columns:1fr}
+  .format-variant-image{min-height:0;max-height:640px;padding:10px}
+  .format-variant-image img{max-height:640px}
+  .format-variant-body{padding:16px}
+}
+
+/* Match the supplied reference: prompt/content on the left, portrait image on the right. */
+.format-variant-card.format-variant-side{grid-template-columns:minmax(0,1fr) minmax(260px,40%)}
+.format-variant-card.format-variant-side .format-variant-body{grid-column:1;grid-row:1}
+.format-variant-card.format-variant-side .format-variant-image{grid-column:2;grid-row:1}
+.content-block-prompt.content-block-layout-portrait,
+.content-block-prompt.content-block-layout-instagram{grid-template-columns:minmax(0,1fr) minmax(250px,38%)}
+.content-block-layout-portrait .content-block-body,
+.content-block-layout-instagram .content-block-body{grid-column:1;grid-row:1}
+.content-block-layout-portrait .content-block-image,
+.content-block-layout-instagram .content-block-image{grid-column:2;grid-row:1}
+@media(max-width:760px){
+  .format-variant-card.format-variant-side{grid-template-columns:1fr}
+  .format-variant-card.format-variant-side .format-variant-image,
+  .content-block-layout-portrait .content-block-image,
+  .content-block-layout-instagram .content-block-image{grid-column:1;grid-row:1}
+  .format-variant-card.format-variant-side .format-variant-body,
+  .content-block-layout-portrait .content-block-body,
+  .content-block-layout-instagram .content-block-body{grid-column:1;grid-row:2}
+}

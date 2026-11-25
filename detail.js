@@ -27,21 +27,45 @@ function setActivePrompt(text, ratio=''){
   byId('copyFeedback').textContent='';
 }
 function renderVariants(item){
-  const host=byId('variantPicker');
-  const alternatives=Array.isArray(item.prompt_variants)?item.prompt_variants.filter(v=>v&&v.prompt_text):[];
-  const baseText=getMainPromptText(item);
-  if(!alternatives.length){host.hidden=true;setActivePrompt(baseText,item.aspect_ratio||'');return;}
-  const variants=[
-    {name:detailText('defaultFormat'),aspect_ratio:item.aspect_ratio||'',prompt_text:baseText},
-    ...alternatives
-  ].filter(v=>v.prompt_text);
-  host.hidden=false;
-  host.innerHTML=variants.map((variant,index)=>`<button type="button" class="variant-chip ${index===0?'active':''}" data-variant-index="${index}">${escapeHtml(variant.name||`Format ${index}`)}${variant.aspect_ratio?` · ${escapeHtml(variant.aspect_ratio)}`:''}</button>`).join('');
-  host.querySelectorAll('[data-variant-index]').forEach(button=>button.addEventListener('click',()=>{
-    host.querySelectorAll('.variant-chip').forEach(b=>b.classList.toggle('active',b===button));
-    const variant=variants[Number(button.dataset.variantIndex)];setActivePrompt(variant.prompt_text,variant.aspect_ratio||'');
+  const host=byId('formatVariants');
+  if(!host)return;
+  const alternatives=Array.isArray(item.prompt_variants)?item.prompt_variants.filter(v=>v&&String(v.prompt_text||'').trim()):[];
+  const normalized=alternatives.map((variant,index)=>{
+    const marker=`${variant.format_key||''} ${variant.name||''} ${variant.layout||''}`.toLowerCase();
+    const key=marker.includes('instagram')||marker.includes('insta')?'instagram':marker.includes('portrait')||marker.includes('story')?'portrait':(variant.format_key||`custom-${index+1}`);
+    return {...variant,format_key:key,layout:variant.layout||(key==='landscape'?'landscape':'side'),name:variant.name||(key==='instagram'?'Instagram Post':key==='portrait'?'Portrait / Story':`Format ${index+1}`)};
+  }).filter(variant=>variant.format_key!=='landscape');
+  const order={portrait:0,instagram:1};
+  normalized.sort((a,b)=>(order[a.format_key]??2)-(order[b.format_key]??2));
+  host.innerHTML=normalized.map((variant,index)=>{
+    const sideLayout=variant.layout!=='landscape';
+    const image=variant.image_url?`<img src="${escapeHtml(variant.image_url)}" alt="${escapeHtml(variant.name)} sample image" loading="lazy">`:'<div class="format-variant-placeholder"><span>✦</span><small>Sample image</small></div>';
+    const label=variant.format_key==='portrait'?'PORTRAIT / STORY FORMAT':variant.format_key==='instagram'?'INSTAGRAM POST FORMAT':String(variant.name).toUpperCase();
+    const about=variant.about_text||item.about_text||item.about||detailText('defaultAbout');
+    const how=variant.how_to_use||item.how_to_use||detailText('defaultHowTo');
+    return `<article class="format-variant-card ${sideLayout?'format-variant-side':'format-variant-landscape'}" data-format-variant="${escapeHtml(variant.format_key)}">
+      <div class="format-variant-image">${image}</div>
+      <div class="format-variant-body">
+        <div class="format-variant-kicker">${escapeHtml(label)}</div>
+        <h2>${escapeHtml(item.title||'Prompt')} · ${escapeHtml(variant.name)}</h2>
+        <div class="format-variant-meta">${variant.aspect_ratio?`<span>${detailText('aspectPrefix')} ${escapeHtml(variant.aspect_ratio)}</span>`:''}${variant.duration?`<span>${escapeHtml(variant.duration)}</span>`:''}</div>
+        <section class="format-variant-about"><span class="section-eyebrow">ABOUT</span><h3>About this prompt</h3><p>${escapeHtml(about)}</p></section>
+        <div class="format-variant-prompt-heading"><h3>Prompt</h3><div class="format-variant-actions"><button type="button" class="copy-format-prompt" data-copy-format-prompt="${index}">Copy Prompt</button><span class="format-variant-copy-feedback" aria-live="polite"></span></div></div>
+        <pre class="format-variant-prompt-text">${escapeHtml(variant.prompt_text||'')}</pre>
+        <section class="format-variant-how"><span class="section-eyebrow">HOW TO USE</span><h3>How to use this prompt</h3><p>${escapeHtml(how)}</p></section>
+      </div>
+    </article>`;
+  }).join('');
+  host.hidden=!normalized.length;
+  host.querySelectorAll('[data-copy-format-prompt]').forEach(button=>button.addEventListener('click',async()=>{
+    const variant=normalized[Number(button.dataset.copyFormatPrompt)];
+    const feedback=button.parentElement.querySelector('.format-variant-copy-feedback');
+    try{
+      if(navigator.clipboard&&window.isSecureContext) await navigator.clipboard.writeText(variant.prompt_text||'');
+      else{const field=document.createElement('textarea');field.value=variant.prompt_text||'';field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.select();const ok=document.execCommand('copy');field.remove();if(!ok)throw new Error('Copy unavailable');}
+      feedback.textContent=detailText('copied');
+    }catch{feedback.textContent=detailText('selectCopy');}
   }));
-  setActivePrompt(variants[0].prompt_text,variants[0].aspect_ratio||'');
 }
 async function copyCurrentPrompt(){
   try{
@@ -64,13 +88,15 @@ function renderContentBlocks(blocks){
   const valid=Array.isArray(blocks)?blocks.filter(block=>block&&((block.type==='about'&&block.heading)||(block.type==='prompt'&&block.title&&block.prompt_text))):[];
   if(!host)return;
   host.innerHTML=valid.map((block,index)=>{
-    const image=block.image_url?`<div class="content-block-image"><img src="${escapeHtml(block.image_url)}" alt="${escapeHtml(block.heading||block.title||'Section image')}" loading="lazy"></div>`:'';
+    const image=block.image_url?`<div class="content-block-image"><img src="${escapeHtml(block.image_url)}" alt="${escapeHtml(block.heading||block.title||'Section image')}" loading="lazy"></div>`:`<div class="content-block-image content-block-image-empty"><span>✦</span></div>`;
     if(block.type==='about'){
       const safeUrl=/^https?:\/\//i.test(block.url||'')?block.url:'';
-      return `<article class="content-block-card content-block-about">${image}<div class="content-block-body"><span class="content-block-kicker">INFORMATION</span><h2>${escapeHtml(block.heading||'')}</h2>${block.content?`<p>${escapeHtml(block.content)}</p>`:''}${safeUrl?`<a class="content-block-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">Visit link ↗</a>`:''}</div></article>`;
+      return `<article class="content-block-card content-block-about">${block.image_url?image:''}<div class="content-block-body"><span class="content-block-kicker">INFORMATION</span><h2>${escapeHtml(block.heading||'')}</h2>${block.content?`<p>${escapeHtml(block.content)}</p>`:''}${safeUrl?`<a class="content-block-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">Visit link ↗</a>`:''}</div></article>`;
     }
     const type=block.prompt_type||'Photo';
-    return `<article class="content-block-card content-block-prompt">${image}<div class="content-block-body"><div class="content-block-meta"><span>${escapeHtml(type)}</span>${block.category?`<span>${escapeHtml(block.category)}</span>`:''}${block.aspect_ratio?`<span>${escapeHtml(block.aspect_ratio)}</span>`:''}${block.duration?`<span>${escapeHtml(block.duration)}</span>`:''}</div><h2>${escapeHtml(block.title||'')}</h2>${block.about_text?`<p>${escapeHtml(block.about_text)}</p>`:''}<pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre><div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div>${block.how_to_use?`<div class="content-block-how"><strong>How to use</strong><p>${escapeHtml(block.how_to_use)}</p></div>`:''}</div></article>`;
+    const layout=['portrait','instagram'].includes(block.layout)?block.layout:'landscape';
+    const imageMarkup=block.image_url?image:'<div class="content-block-image content-block-image-empty"><span>✦</span></div>';
+    return `<article class="content-block-card content-block-prompt content-block-layout-${layout}">${imageMarkup}<div class="content-block-body"><div class="content-block-kicker">${layout==='portrait'?'PORTRAIT / STORY':layout==='instagram'?'INSTAGRAM POST':'LANDSCAPE'} PROMPT</div><div class="content-block-meta"><span>${escapeHtml(type)}</span>${block.category?`<span>${escapeHtml(block.category)}</span>`:''}${block.aspect_ratio?`<span>${escapeHtml(block.aspect_ratio)}</span>`:''}${block.duration?`<span>${escapeHtml(block.duration)}</span>`:''}</div><h2>${escapeHtml(block.title||'')}</h2>${block.about_text?`<p>${escapeHtml(block.about_text)}</p>`:''}<div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div><pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre>${block.how_to_use?`<div class="content-block-how"><strong>How to use</strong><p>${escapeHtml(block.how_to_use)}</p></div>`:''}</div></article>`;
   }).join('');
   host.hidden=!valid.length;
   host.querySelectorAll('[data-copy-content-block]').forEach(button=>button.addEventListener('click',async()=>{
@@ -79,8 +105,8 @@ function renderContentBlocks(blocks){
     try{
       if(navigator.clipboard&&window.isSecureContext) await navigator.clipboard.writeText(block.prompt_text||'');
       else{const field=document.createElement('textarea');field.value=block.prompt_text||'';field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.select();const ok=document.execCommand('copy');field.remove();if(!ok)throw new Error('Copy unavailable');}
-      feedback.textContent='Copied successfully.';
-    }catch{feedback.textContent='Select the prompt text and copy it.';}
+      feedback.textContent=detailText('copied');
+    }catch{feedback.textContent=detailText('selectCopy');}
   }));
 }
 function renderRelatedCollection(item){
@@ -105,14 +131,14 @@ function renderDetail(item){
   promptItem=item;const isVideo=item.type==='Video';const colors=paletteByCategory[item.category]||['#8d82d5','#c58bb5'];
   byId('detailKicker').textContent=isVideo?detailText('videoKicker'):detailText('photoKicker');
   byId('detailTitle').textContent=getDisplayTitle(item);byId('crumbTitle').textContent=getDisplayTitle(item)||'Prompt details';
-  byId('detailTags').innerHTML=`<span>${escapeHtml(item.type)}</span><span>${escapeHtml(item.category)}</span>`;
+  byId('detailTags').innerHTML=`<span>${escapeHtml(item.type)}</span><span>${escapeHtml(item.category)}</span>${item.aspect_ratio?`<span>${escapeHtml(item.aspect_ratio)}</span>`:''}`;
   byId('previewArt').style.setProperty('--preview-a',colors[0]);byId('previewArt').style.setProperty('--preview-b',colors[1]);
   const sample=byId('sampleImage');
-  if(item.image_url){sample.src=item.image_url;sample.hidden=false;byId('previewArt').classList.add('has-sample-image');byId('previewNote').textContent='';byId('previewIcon').hidden=true;byId('previewCategory').hidden=true;byId('previewName').hidden=true;byId('previewLabel').hidden=true;}
-  else{sample.hidden=true;sample.removeAttribute('src');byId('previewArt').classList.remove('has-sample-image');byId('previewNote').textContent=detailText('previewNote');byId('previewIcon').hidden=false;byId('previewCategory').hidden=false;byId('previewName').hidden=false;byId('previewLabel').hidden=false;byId('previewIcon').textContent='✦';byId('previewCategory').textContent=`${String(item.category||'').toUpperCase()} ${isVideo?'VIDEO':'PHOTO'} PROMPT`;byId('previewName').textContent=getDisplayTitle(item);}
+  if(item.image_url){sample.src=item.image_url;sample.hidden=false;byId('previewArt').classList.add('has-sample-image');byId('previewNote').hidden=true;byId('previewNote').textContent='';byId('previewIcon').hidden=true;byId('previewCategory').hidden=true;byId('previewName').hidden=true;byId('previewLabel').hidden=true;}
+  else{sample.hidden=true;sample.removeAttribute('src');byId('previewArt').classList.remove('has-sample-image');byId('previewNote').hidden=false;byId('previewNote').textContent=detailText('previewNote');byId('previewIcon').hidden=false;byId('previewCategory').hidden=false;byId('previewName').hidden=false;byId('previewLabel').hidden=false;byId('previewIcon').textContent='✦';byId('previewCategory').textContent=`${String(item.category||'').toUpperCase()} ${isVideo?'VIDEO':'PHOTO'} PROMPT`;byId('previewName').textContent=getDisplayTitle(item);}
   byId('aboutContent').textContent=item.about_text||item.about||detailText('defaultAbout');
   const facts=[[detailText('type'),item.type],[detailText('category'),item.category],[detailText('aspect'),item.aspect_ratio||detailText('notSpecified')]];if(isVideo&&item.duration)facts.push([detailText('duration'),item.duration]);
-  byId('quickFacts').innerHTML=facts.map(([label,value])=>`<div class="fact-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
+  byId('quickFacts').innerHTML=facts.map(([label,value])=>`<div class="fact-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');byId('quickFacts').hidden=true;
   setActivePrompt(getMainPromptText(item),item.aspect_ratio||'');renderVariants(item);
   byId('howToUseContent').textContent=getHowToUse(item);
   renderExtraSections(item.extra_sections);renderRelatedCollection(item);renderContentBlocks(item.content_blocks);byId('detailContent').hidden=false;byId('notFound').hidden=true;
