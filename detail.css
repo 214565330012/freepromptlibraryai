@@ -373,74 +373,120 @@ a{color:inherit;text-decoration:none}
 }
 
 
-/* V9 FINAL OVERRIDE — Story / Instagram format card layout.
-   Desktop: image left; prompt right; how-to directly under image;
-   About spans the full width beneath both columns. */
-.format-variant-card.format-variant-fixed-layout{
+
+
+/* V10 VERIFIED LAYOUT
+   Main detail: photo + How to Use on left; About then Prompt on right.
+   Story/Instagram: photo left, Prompt right, How to Use under photo,
+   About full-width below both columns. */
+.detail-layout{
   display:grid !important;
   grid-template-columns:minmax(280px,42%) minmax(0,1fr) !important;
-  grid-auto-flow:row !important;
   align-items:start !important;
   gap:14px !important;
 }
-.format-variant-card.format-variant-fixed-layout > .format-variant-heading{
-  grid-column:1 / -1 !important;
+.detail-layout > .preview-column{
+  grid-column:1 !important;
   grid-row:1 !important;
   min-width:0 !important;
 }
-.format-variant-card.format-variant-fixed-layout > .format-variant-image{
-  grid-column:1 !important;
-  grid-row:2 !important;
-  align-self:start !important;
+.detail-layout > .detail-content-column{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  display:flex !important;
+  flex-direction:column !important;
   min-width:0 !important;
+}
+.detail-content-column > .info-panel{order:1 !important}
+.detail-content-column > .prompt-panel{order:2 !important}
+
+/* Story / Instagram cards — explicit grid areas prevent older rules
+   from placing About beside the image or How-to under the prompt. */
+.format-variant-card.format-variant-fixed-layout{
+  display:grid !important;
+  grid-template-columns:minmax(260px,42%) minmax(0,1fr) !important;
+  grid-template-rows:auto auto auto auto !important;
+  grid-template-areas:
+    "heading heading"
+    "image prompt"
+    "how prompt"
+    "about about" !important;
+  grid-auto-flow:row !important;
+  align-items:start !important;
+  gap:14px !important;
+  padding:16px !important;
+  min-width:0 !important;
+}
+.format-variant-card.format-variant-fixed-layout > .format-variant-heading{
+  grid-area:heading !important;
+  min-width:0 !important;
+}
+.format-variant-card.format-variant-fixed-layout > .format-variant-image{
+  grid-area:image !important;
+  min-width:0 !important;
+  min-height:0 !important;
   max-height:none !important;
   padding:8px !important;
+  align-self:start !important;
 }
 .format-variant-card.format-variant-fixed-layout > .format-variant-image img{
   display:block !important;
   width:auto !important;
-  max-width:100% !important;
   height:auto !important;
-  max-height:440px !important;
+  max-width:100% !important;
+  max-height:460px !important;
   object-fit:contain !important;
+  object-position:center !important;
   margin:0 auto !important;
 }
 .format-variant-card.format-variant-fixed-layout > .format-variant-prompt{
-  grid-column:2 !important;
-  grid-row:2 / span 2 !important;
+  grid-area:prompt !important;
   align-self:stretch !important;
   min-width:0 !important;
+  margin:0 !important;
 }
 .format-variant-card.format-variant-fixed-layout > .format-variant-how{
-  grid-column:1 !important;
-  grid-row:3 !important;
+  grid-area:how !important;
   align-self:start !important;
   min-width:0 !important;
   margin:0 !important;
 }
 .format-variant-card.format-variant-fixed-layout > .format-variant-about{
-  grid-column:1 / -1 !important;
-  grid-row:4 !important;
+  grid-area:about !important;
   align-self:stretch !important;
   min-width:0 !important;
   height:auto !important;
   margin:0 !important;
 }
+
+/* Narrow screens: keep every block readable in a single column. */
 @media(max-width:760px){
-  .format-variant-card.format-variant-fixed-layout{
+  .detail-layout{
     grid-template-columns:minmax(0,1fr) !important;
     gap:12px !important;
   }
-  .format-variant-card.format-variant-fixed-layout > .format-variant-heading,
-  .format-variant-card.format-variant-fixed-layout > .format-variant-image,
-  .format-variant-card.format-variant-fixed-layout > .format-variant-how,
-  .format-variant-card.format-variant-fixed-layout > .format-variant-prompt,
-  .format-variant-card.format-variant-fixed-layout > .format-variant-about{
+  .detail-layout > .preview-column,
+  .detail-layout > .detail-content-column{
     grid-column:1 !important;
     grid-row:auto !important;
   }
+  .format-variant-card.format-variant-fixed-layout{
+    grid-template-columns:minmax(0,1fr) !important;
+    grid-template-rows:auto !important;
+    grid-template-areas:
+      "heading"
+      "image"
+      "how"
+      "prompt"
+      "about" !important;
+    gap:12px !important;
+    padding:12px !important;
+  }
+  .format-variant-card.format-variant-fixed-layout > .format-variant-image{
+    padding:8px !important;
+  }
   .format-variant-card.format-variant-fixed-layout > .format-variant-image img{
-    max-height:440px !important;
+    max-height:460px !important;
     max-width:100% !important;
   }
 }

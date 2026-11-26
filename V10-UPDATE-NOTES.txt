@@ -1,0 +1,19 @@
+FreePromptLibraryAI V10 — Layout correction
+Desktop main detail:
+- Photo and How to Use remain in the left column.
+- About appears at the top of the right column.
+- Prompt appears below About in the right column.
+
+Desktop Story / Instagram format cards:
+- Heading spans full width.
+- Photo is in the left column.
+- Prompt is in the right column, spanning the height of the image and How to Use.
+- How to Use is directly below the photo.
+- About spans full width below both columns.
+
+Mobile:
+- Main detail: Photo, How to Use, About, Prompt.
+- Story / Instagram: Heading, Photo, How to Use, Prompt, About.
+
+Cache-busting:
+- prompt.html loads detail.css?v=10.
