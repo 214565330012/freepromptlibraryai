@@ -1,0 +1,26 @@
+FREEPROMPTLIBRARYAI — V12 ROOT UPDATE
+
+IMPORTANT:
+This ZIP contains the website files directly at the ZIP root.
+Do NOT upload the enclosing folder as a nested directory.
+
+HOW TO APPLY:
+1. Download and extract this ZIP.
+2. Open the extracted folder. You should immediately see index.html, prompt.html,
+   detail.js, detail.css, layout-v12.css, styles.css, and the other site files.
+3. Upload/replace these files in the ROOT of your existing GitHub repository.
+4. Keep existing Supabase settings and assets; this ZIP includes the current project files.
+5. Commit and let Cloudflare Pages deploy.
+6. Open the prompt detail page and hard-refresh (Ctrl+Shift+R).
+
+EXPECTED DESKTOP LAYOUT:
+- Main detail: Photo + How to Use on left; Copy Prompt + Prompt on right;
+  About full-width underneath.
+- Story and Instagram cards: Photo left; Copy Prompt + Prompt right;
+  How to Use immediately under Photo; About full-width underneath.
+
+EXPECTED MOBILE LAYOUT:
+- Main detail: Photo, How to Use, Prompt, About.
+- Story/Instagram: Heading, Photo, How to Use, Prompt, About.
+
+This update changes prompt.html, detail.js, and adds layout-v12.css.
