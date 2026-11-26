@@ -332,3 +332,42 @@ a{color:inherit;text-decoration:none}
   .format-variant-fixed-layout>.format-variant-image{max-height:460px}
   .format-variant-fixed-layout>.format-variant-image img{max-height:440px}
 }
+
+
+/* V8: Correct Story / Instagram layout requested by the user.
+   Desktop: photo left + prompt right; How to Use directly under photo;
+   About replaces the old full-width prompt position below the two columns.
+   Mobile: photo, How to Use, prompt, then About. */
+.format-variant-card.format-variant-fixed-layout{
+  display:grid !important;
+  grid-template-columns:minmax(0,42%) minmax(0,1fr) !important;
+  grid-template-areas:
+    "heading heading"
+    "image prompt"
+    "how ."
+    "about about";
+  align-items:start;
+  gap:14px;
+  padding:16px;
+}
+.format-variant-card.format-variant-fixed-layout > .format-variant-heading{grid-area:heading;min-width:0}
+.format-variant-card.format-variant-fixed-layout > .format-variant-image{grid-area:image;min-width:0;min-height:0;max-height:none;padding:10px}
+.format-variant-card.format-variant-fixed-layout > .format-variant-image img{display:block;width:auto;max-width:100%;height:auto;max-height:780px;object-fit:contain;object-position:center;margin:0 auto}
+.format-variant-card.format-variant-fixed-layout > .format-variant-prompt{grid-area:prompt;min-width:0}
+.format-variant-card.format-variant-fixed-layout > .format-variant-how{grid-area:how;min-width:0;margin:0}
+.format-variant-card.format-variant-fixed-layout > .format-variant-about{grid-area:about;min-width:0;margin:0}
+@media(max-width:760px){
+  .format-variant-card.format-variant-fixed-layout{
+    grid-template-columns:minmax(0,1fr) !important;
+    grid-template-areas:
+      "heading"
+      "image"
+      "how"
+      "prompt"
+      "about";
+    gap:12px;
+    padding:12px;
+  }
+  .format-variant-card.format-variant-fixed-layout > .format-variant-image{padding:8px}
+  .format-variant-card.format-variant-fixed-layout > .format-variant-image img{max-height:680px;max-width:100%}
+}
