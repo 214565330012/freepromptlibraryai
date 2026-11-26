@@ -15,6 +15,8 @@ const paletteByCategory = {
   Automotive:['#667eab','#5b4a8b']
 };
 function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function setupLongTextToggle(node, limit=620){if(!node)return;const button=node.parentElement?.querySelector(`[data-expand-id="${node.id}"]`);if(!button)return;const long=String(node.textContent||'').trim().length>limit;node.classList.toggle('is-collapsed',long);node.classList.remove('is-expanded');button.hidden=!long;button.textContent='See More';button.onclick=()=>{const expanded=node.classList.toggle('is-expanded');node.classList.toggle('is-collapsed',!expanded);button.textContent=expanded?'See Less':'See More';};}
+function setupContentBlockToggles(host){host.querySelectorAll('.content-block-prompt-text').forEach((node,index)=>{node.id=`contentPromptText${index}`;const long=node.textContent.trim().length>620;if(!long)return;node.classList.add('is-collapsed');const button=document.createElement('button');button.type='button';button.className='detail-see-more';button.textContent='See More';button.addEventListener('click',()=>{const expanded=node.classList.toggle('is-expanded');node.classList.toggle('is-collapsed',!expanded);button.textContent=expanded?'See Less':'See More';});node.insertAdjacentElement('afterend',button);});}
 function showNotFound(){byId('notFound').hidden=false;byId('detailContent').hidden=true;document.title=`${detailText('notFound')} | FreePromptLibraryAI`;}
 function getDisplayTitle(item){return currentDetailLanguage === 'hi' && item.title_hi ? item.title_hi : (item.title || '');}
 function getMainPromptText(item){return currentDetailLanguage === 'hi' && item.prompt_hi ? item.prompt_hi : (item.content_text || item.prompt_en || '');}
@@ -22,6 +24,7 @@ function getHowToUse(item){return item.how_to_use || detailText('defaultHowTo');
 function setActivePrompt(text, ratio=''){
   activePromptText=text||'';
   byId('promptText').textContent=activePromptText;
+  setupLongTextToggle(byId('promptText'), 620);
   const fact=byId('activeFormatFact');
   if(fact) fact.textContent=ratio?`${detailText('selectedFormat')} ${ratio}`:'';
   byId('copyFeedback').textContent='';
@@ -43,28 +46,20 @@ function renderVariants(item){
     const label=variant.format_key==='portrait'?'PORTRAIT / STORY FORMAT':variant.format_key==='instagram'?'INSTAGRAM POST FORMAT':String(variant.name).toUpperCase();
     const about=variant.about_text||item.about_text||item.about||detailText('defaultAbout');
     const how=variant.how_to_use||item.how_to_use||detailText('defaultHowTo');
-    return `<article class="format-variant-card ${sideLayout?'format-variant-side':'format-variant-landscape'}" data-format-variant="${escapeHtml(variant.format_key)}">
+    return `<article class="format-variant-card format-variant-fixed-layout" data-format-variant="${escapeHtml(variant.format_key)}">
+      <header class="format-variant-heading"><div class="format-variant-kicker">${escapeHtml(label)}</div><h2>${escapeHtml(item.title||'Prompt')} · ${escapeHtml(variant.name)}</h2><div class="format-variant-meta">${variant.aspect_ratio?`<span>${detailText('aspectPrefix')} ${escapeHtml(variant.aspect_ratio)}</span>`:''}${variant.duration?`<span>${escapeHtml(variant.duration)}</span>`:''}</div></header>
       <div class="format-variant-image">${image}</div>
-      <section class="format-variant-about"><span class="section-eyebrow">ABOUT</span><h3>About this prompt</h3><p>${escapeHtml(about)}</p></section>
-      <div class="format-variant-prompt-area">
-        <div class="format-variant-kicker">${escapeHtml(label)}</div>
-        <h2>${escapeHtml(item.title||'Prompt')} · ${escapeHtml(variant.name)}</h2>
-        <div class="format-variant-meta">${variant.aspect_ratio?`<span>${detailText('aspectPrefix')} ${escapeHtml(variant.aspect_ratio)}</span>`:''}${variant.duration?`<span>${escapeHtml(variant.duration)}</span>`:''}</div>
-        <div class="format-variant-prompt-heading"><h3>Prompt</h3><div class="format-variant-actions"><button type="button" class="copy-format-prompt" data-copy-format-prompt="${index}">Copy Prompt</button><span class="format-variant-copy-feedback" aria-live="polite"></span></div></div>
-        <pre class="format-variant-prompt-text">${escapeHtml(variant.prompt_text||'')}</pre>
-        <button type="button" class="format-variant-see-more" aria-expanded="false">See More</button>
-      </div>
+      <section class="format-variant-about"><span class="section-eyebrow">ABOUT</span><h3>About this prompt</h3><p class="format-variant-about-copy is-collapsed">${escapeHtml(about)}</p><button type="button" class="format-see-more" data-expand-target="about">See More</button></section>
+      <section class="format-variant-prompt"><div class="format-variant-prompt-heading"><h3>Prompt</h3><div class="format-variant-actions"><button type="button" class="copy-format-prompt" data-copy-format-prompt="${index}">Copy Prompt</button><span class="format-variant-copy-feedback" aria-live="polite"></span></div></div><pre class="format-variant-prompt-text is-collapsed">${escapeHtml(variant.prompt_text||'')}</pre><button type="button" class="format-see-more" data-expand-target="prompt">See More</button></section>
       <section class="format-variant-how"><span class="section-eyebrow">HOW TO USE</span><h3>How to use this prompt</h3><p>${escapeHtml(how)}</p></section>
     </article>`;
   }).join('');
   host.hidden=!normalized.length;
-  host.querySelectorAll('.format-variant-see-more').forEach(button=>button.addEventListener('click',()=>{
-    const card=button.closest('.format-variant-card');
-    const text=button.previousElementSibling;
-    const expanded=button.getAttribute('aria-expanded')==='true';
-    text.classList.toggle('is-expanded',!expanded);
-    button.setAttribute('aria-expanded',String(!expanded));
-    button.textContent=expanded?'See More':'See Less';
+  host.querySelectorAll('.format-see-more').forEach(button=>button.addEventListener('click',()=>{
+    const section=button.closest(button.dataset.expandTarget==='about'?'.format-variant-about':'.format-variant-prompt');
+    const content=section?.querySelector(button.dataset.expandTarget==='about'?'.format-variant-about-copy':'.format-variant-prompt-text');
+    if(!content)return;
+    const expanded=content.classList.toggle('is-expanded');content.classList.toggle('is-collapsed',!expanded);button.textContent=expanded?'See Less':'See More';
   }));
   host.querySelectorAll('[data-copy-format-prompt]').forEach(button=>button.addEventListener('click',async()=>{
     const variant=normalized[Number(button.dataset.copyFormatPrompt)];
@@ -105,19 +100,9 @@ function renderContentBlocks(blocks){
     const type=block.prompt_type||'Photo';
     const layout=['portrait','instagram'].includes(block.layout)?block.layout:'landscape';
     const imageMarkup=block.image_url?image:'<div class="content-block-image content-block-image-empty"><span>✦</span></div>';
-    const aboutMarkup=block.about_text?`<section class="content-block-about-text"><strong>About</strong><p>${escapeHtml(block.about_text)}</p></section>`:'';
-    const promptMarkup=`<div class="content-block-prompt-area"><div class="content-block-kicker">${layout==='portrait'?'PORTRAIT / STORY':layout==='instagram'?'INSTAGRAM POST':'LANDSCAPE'} PROMPT</div><div class="content-block-meta"><span>${escapeHtml(type)}</span>${block.category?`<span>${escapeHtml(block.category)}</span>`:''}${block.aspect_ratio?`<span>${escapeHtml(block.aspect_ratio)}</span>`:''}${block.duration?`<span>${escapeHtml(block.duration)}</span>`:''}</div><h2>${escapeHtml(block.title||'')}</h2><div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div><pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre><button type="button" class="content-block-see-more" aria-expanded="false">See More</button></div>`;
-    const howMarkup=block.how_to_use?`<div class="content-block-how"><strong>How to use</strong><p>${escapeHtml(block.how_to_use)}</p></div>`:'';
-    return `<article class="content-block-card content-block-prompt content-block-layout-${layout}">${imageMarkup}${aboutMarkup}${promptMarkup}${howMarkup}</article>`;
+    return `<article class="content-block-card content-block-prompt content-block-layout-${layout}">${imageMarkup}<div class="content-block-body"><div class="content-block-kicker">${layout==='portrait'?'PORTRAIT / STORY':layout==='instagram'?'INSTAGRAM POST':'LANDSCAPE'} PROMPT</div><div class="content-block-meta"><span>${escapeHtml(type)}</span>${block.category?`<span>${escapeHtml(block.category)}</span>`:''}${block.aspect_ratio?`<span>${escapeHtml(block.aspect_ratio)}</span>`:''}${block.duration?`<span>${escapeHtml(block.duration)}</span>`:''}</div><h2>${escapeHtml(block.title||'')}</h2>${block.about_text?`<p>${escapeHtml(block.about_text)}</p>`:''}<div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div><pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre>${block.how_to_use?`<div class="content-block-how"><strong>How to use</strong><p>${escapeHtml(block.how_to_use)}</p></div>`:''}</div></article>`;
   }).join('');
-  host.hidden=!valid.length;
-  host.querySelectorAll('.content-block-see-more').forEach(button=>button.addEventListener('click',()=>{
-    const text=button.previousElementSibling;
-    const expanded=button.getAttribute('aria-expanded')==='true';
-    text.classList.toggle('is-expanded',!expanded);
-    button.setAttribute('aria-expanded',String(!expanded));
-    button.textContent=expanded?'See More':'See Less';
-  }));
+  host.hidden=!valid.length;setupContentBlockToggles(host);
   host.querySelectorAll('[data-copy-content-block]').forEach(button=>button.addEventListener('click',async()=>{
     const block=valid[Number(button.dataset.copyContentBlock)];
     const feedback=button.parentElement.querySelector('.content-block-copy-feedback');

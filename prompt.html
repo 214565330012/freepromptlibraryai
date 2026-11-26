@@ -49,7 +49,7 @@
         <section class="prompt-panel">
           <div class="panel-heading"><div><span class="section-eyebrow">READY TO COPY</span><h2>Prompt · Landscape</h2></div></div>
           <div class="prompt-actions"><button type="button" id="copyPrompt" class="copy-action">Copy Prompt</button><span id="copyFeedback" class="copy-feedback" aria-live="polite"></span></div>
-          <pre id="promptText" class="prompt-text"></pre>
+          <pre id="promptText" class="prompt-text is-collapsed"></pre><button type="button" class="detail-see-more" data-expand-id="promptText" hidden>See More</button>
         </section>
         <section class="how-to-panel"><div class="panel-heading"><div><span class="section-eyebrow">HOW TO USE</span><h2>How to use this prompt</h2></div></div><div class="single-info-box"><p id="howToUseContent"></p></div></section>
       </div>
@@ -62,7 +62,15 @@
     <section class="related-section" id="relatedSection"><div class="panel-heading"><div><span class="section-eyebrow">KEEP EXPLORING</span><h2>Related prompts</h2></div><a href="index.html#latest" class="view-all">View all prompts →</a></div><div id="relatedGrid" class="related-grid"></div></section>
   </div>
 </main>
-<footer class="detail-footer"><a href="index.html">FreePrompt<span>LibraryAI</span></a><p>Free AI photo and video prompts.</p><small>© <span id="detailYear"></span> FreePromptLibraryAI</small></footer>
+<footer id="detailFooter" class="detail-footer site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand-column"><a class="footer-logo" href="index.html">FreePrompt<span>LibraryAI</span></a><p>Free AI photo editing and video prompts.</p></div>
+    <div class="footer-info-column"><h3>Information</h3><div id="footerInfoLinks"><a href="page.html?slug=about">About Us</a><a href="page.html?slug=contact">Contact Us</a><a href="page.html?slug=privacy">Privacy Policy</a><a href="page.html?slug=terms">Terms &amp; Conditions</a></div></div>
+    <div class="footer-support-column"><h3>Support</h3><div id="footerSupportLinks"><a href="page.html?slug=disclaimer">Disclaimer</a><a href="page.html?slug=dmca">DMCA</a><a href="page.html?slug=contact#complaint">Complaint / Suggestion</a><a href="page.html?slug=contact">Contact Us</a></div><a id="footerEmailLink" class="footer-email-link" href="page.html?slug=contact">Email us</a></div>
+    <div class="footer-follow-column"><h3>Follow Us</h3><div id="footerSocialLinks"><span class="footer-social-empty">Social links will appear here.</span></div></div>
+  </div>
+  <div class="copyright">© <span id="detailYear"></span> FreePromptLibraryAI. All rights reserved. · <a href="/admin/" style="color:inherit">Admin</a></div>
+</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="prompts.js"></script>
 <script src="detail.js"></script>
 </body>
