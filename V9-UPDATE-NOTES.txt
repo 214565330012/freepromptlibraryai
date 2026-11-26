@@ -1,0 +1,6 @@
+FreePromptLibraryAI V9 – Layout Fix
+- Story and Instagram variant cards now use explicit grid coordinates.
+- Desktop: Photo left, Prompt right, How to Use directly under Photo, About full-width below.
+- Mobile: Photo, How to Use, Prompt, About.
+- Added detail.css?v=9 cache-busting to prompt.html so browsers fetch the updated stylesheet.
+- Existing content and other project files are preserved.
