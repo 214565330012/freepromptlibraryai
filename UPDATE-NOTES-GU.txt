@@ -16,3 +16,9 @@ Update 2026-11-25: Added separate About and How to Use fields to Portrait/Story 
 - Removed all See More / See Less controls from detail pages and format cards.
 - Prompt, About, and content-block text now display fully without truncation.
 - Kept the existing footer markup and card layout unchanged.
+
+V5 layout update:
+- Moved the main prompt detail page's How to Use panel directly below the preview image in the left column.
+- Moved Story and Instagram format cards' How to Use panel directly below their respective sample images.
+- Kept About in the right column and the full prompt section below the image/How-to-Use and About row.
+- Responsive mobile order: image, How to Use, About, then Prompt.
