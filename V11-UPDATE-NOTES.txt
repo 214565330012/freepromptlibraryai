@@ -1,0 +1,21 @@
+V11 exact requested layout
+Main prompt detail page (desktop):
+- Photo and How to Use stay together in left column.
+- Copy Prompt control is above the prompt text in right column.
+- About is moved out of the right column and spans full width below both columns.
+
+Story and Instagram variant cards (desktop):
+- Photo in left column.
+- Copy Prompt control above prompt text in right column.
+- How to Use directly below Photo.
+- About spans full width below both columns.
+
+Mobile:
+- Main page: Photo, How to Use, Copy Prompt + Prompt, About.
+- Story/Instagram: Heading, Photo, How to Use, Copy Prompt + Prompt, About.
+
+Technical:
+- prompt.html now links to a NEW stylesheet file: detail-layout-v11.css.
+  This avoids relying on a browser's cached detail.css.
+- detail.js variant markup now renders Copy Prompt in a distinct bar above the prompt text.
+- The existing About content and prompt content are retained.
