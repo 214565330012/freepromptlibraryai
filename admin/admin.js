@@ -4,6 +4,7 @@
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
   const client = window.supabaseClient || null;
+  const DEFAULT_HOW_TO_USE = `1. Copy the prompt.\n2. Open your preferred AI image or video generator.\n3. Upload your reference photo if the prompt requires one.\n4. Paste the prompt and generate your result.\n5. Adjust details if needed and generate again.`;
   const PAGE_SIZE = 18;
   const state = {
     user: null, prompts: [], homeSections: [], page: 1, pageSize: PAGE_SIZE,
@@ -422,6 +423,8 @@
   // -------- Prompt editor: ordered prompt and about content blocks. --------
   function resetEditorForm() {
     $('#promptForm').reset();
+    $('#howToUse').value = DEFAULT_HOW_TO_USE;
+    $('#showHowToUse').checked = true;
     $('#promptForm').dataset.dirty = 'false';
     $('#promptId').value = '';
     state.imageUrl = '';
@@ -436,8 +439,8 @@
     $('#portraitAspectRatio').value = '9:16'; $('#instagramAspectRatio').value = '4:5';
     $('#portraitDuration').value = ''; $('#instagramDuration').value = '';
     $('#portraitPromptText').value = ''; $('#instagramPromptText').value = '';
-    $('#portraitAboutText').value = ''; $('#portraitHowToUse').value = '';
-    $('#instagramAboutText').value = ''; $('#instagramHowToUse').value = '';
+    $('#portraitAboutText').value = '';
+    $('#instagramAboutText').value = '';
     showCurrentImage(''); showVariantImage('portrait', ''); showVariantImage('instagram', '');
     setMessage($('#saveMessage'));
     refreshContentBlockNumbers();
@@ -468,7 +471,8 @@
       $('#category').value = prompt.category || '';
       $('#aboutText').value = prompt.about_text || '';
       $('#promptEn').value = prompt.content_text || prompt.prompt_en || '';
-      $('#howToUse').value = prompt.how_to_use || '';
+      $('#howToUse').value = prompt.how_to_use || DEFAULT_HOW_TO_USE;
+      $('#showHowToUse').checked = prompt.show_how_to_use !== false;
       $('#aspectRatio').value = prompt.aspect_ratio || '16:9';
       $('#duration').value = prompt.duration || '';
       $('#status').value = prompt.status || 'draft';
@@ -485,7 +489,6 @@
         $('#portraitDuration').value = portrait.duration || '';
         $('#portraitPromptText').value = portrait.prompt_text || '';
         $('#portraitAboutText').value = portrait.about_text || prompt.about_text || '';
-        $('#portraitHowToUse').value = portrait.how_to_use || prompt.how_to_use || '';
         showVariantImage('portrait', state.variantImageUrls.portrait);
       }
       if (instagram) {
@@ -493,7 +496,6 @@
         $('#instagramDuration').value = instagram.duration || '';
         $('#instagramPromptText').value = instagram.prompt_text || '';
         $('#instagramAboutText').value = instagram.about_text || prompt.about_text || '';
-        $('#instagramHowToUse').value = instagram.how_to_use || prompt.how_to_use || '';
         showVariantImage('instagram', state.variantImageUrls.instagram);
       }
       (Array.isArray(prompt.content_blocks) ? prompt.content_blocks : []).forEach((block) => addContentBlock(block.type === 'about' ? 'about' : 'prompt', block));
@@ -537,7 +539,7 @@
           <label class="full-span">Category<input class="block-category" maxlength="80" list="categorySuggestions" value="${escapeHtml(data.category || '')}" placeholder="e.g. Birthday, Portrait"></label>
           <label class="full-span">About this prompt<textarea class="block-about" rows="2" placeholder="Write a short description in any language…">${escapeHtml(data.about_text || '')}</textarea></label>
           <label class="full-span">Prompt<textarea class="block-prompt-text" rows="5" required placeholder="Write the complete prompt in any language…">${escapeHtml(data.prompt_text || '')}</textarea></label>
-          <label class="full-span">How to use<textarea class="block-how-to-use" rows="2" placeholder="Instructions in any language…">${escapeHtml(data.how_to_use || '')}</textarea></label>
+          
           <label>Aspect ratio<input class="block-aspect-ratio" value="${escapeHtml(data.aspect_ratio || '')}" placeholder="e.g. 4:5, 16:9, 1:1"></label>
           <label>Duration<input class="block-duration" value="${escapeHtml(data.duration || '')}" placeholder="e.g. 10 seconds"></label>
           <label class="full-span">Sample image <span class="field-hint">JPG, PNG, WebP or AVIF · Maximum 5 MB</span><input class="block-image-file" type="file" accept="image/jpeg,image/png,image/webp,image/avif"><span class="block-image-note image-preview-line">${data.image_url ? `Current image: ${escapeHtml(data.image_url)}` : 'No image selected.'}</span><input type="hidden" class="block-image-url" value="${escapeHtml(data.image_url || '')}"></label>
@@ -584,7 +586,6 @@
           type: 'prompt', title, prompt_type: $('.block-prompt-type', wrap).value, layout: $('.block-layout:checked', wrap).value,
           category: $('.block-category', wrap).value.trim() || 'General',
           about_text: $('.block-about', wrap).value.trim(), prompt_text,
-          how_to_use: $('.block-how-to-use', wrap).value.trim(),
           aspect_ratio: $('.block-aspect-ratio', wrap).value.trim(),
           duration: $('.block-duration', wrap).value.trim(), image_url
         });
@@ -624,8 +625,8 @@
   async function collectPromptFormatVariants(oldPrompt = {}) {
     const variants = [];
     const definitions = [
-      { key: 'portrait', name: 'Portrait / Story', layout: 'portrait', ratio: '#portraitAspectRatio', duration: '#portraitDuration', about: '#portraitAboutText', prompt: '#portraitPromptText', how: '#portraitHowToUse', file: '#portraitImageFile' },
-      { key: 'instagram', name: 'Instagram Post', layout: 'instagram', ratio: '#instagramAspectRatio', duration: '#instagramDuration', about: '#instagramAboutText', prompt: '#instagramPromptText', how: '#instagramHowToUse', file: '#instagramImageFile' }
+      { key: 'portrait', name: 'Portrait / Story', layout: 'portrait', ratio: '#portraitAspectRatio', duration: '#portraitDuration', about: '#portraitAboutText', prompt: '#portraitPromptText', file: '#portraitImageFile' },
+      { key: 'instagram', name: 'Instagram Post', layout: 'instagram', ratio: '#instagramAspectRatio', duration: '#instagramDuration', about: '#instagramAboutText', prompt: '#instagramPromptText', file: '#instagramImageFile' }
     ];
     for (const definition of definitions) {
       const prompt_text = $(definition.prompt).value.trim();
@@ -641,7 +642,6 @@
           duration: $(definition.duration).value.trim(),
           about_text: $(definition.about).value.trim(),
           prompt_text,
-          how_to_use: $(definition.how).value.trim(),
           image_url
         });
       }
@@ -657,6 +657,8 @@
     });
   });
 
+  $('#showHowToUse').addEventListener('change', () => { $('#promptForm').dataset.dirty = 'true'; });
+
   $('#promptForm').addEventListener('submit', async (event) => {
     event.preventDefault();
     const button = $('#saveBtn'); button.disabled = true; setMessage($('#saveMessage'), 'Saving prompt and ordered sections…');
@@ -669,7 +671,7 @@
       const oldPrompt = state.editingPrompt || {};
       const payload = {
         title: $('#title').value.trim(), title_hi: '', type: $('#type').value, category: $('#category').value.trim() || 'General',
-        prompt_en: promptText, prompt_hi: '', content_text: promptText, about_text: $('#aboutText').value.trim(), how_to_use: $('#howToUse').value.trim(),
+        prompt_en: promptText, prompt_hi: '', content_text: promptText, about_text: $('#aboutText').value.trim(), how_to_use: $('#howToUse').value.trim() || DEFAULT_HOW_TO_USE, show_how_to_use: $('#showHowToUse').checked,
         // Preserve legacy arrays for prompts created before the ordered section builder existed.
         prompt_variants: promptVariants,
         related_prompts: Array.isArray(oldPrompt.related_prompts) ? oldPrompt.related_prompts : [],

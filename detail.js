@@ -39,15 +39,17 @@ function renderVariants(item){
   normalized.sort((a,b)=>(order[a.format_key]??2)-(order[b.format_key]??2));
   host.innerHTML=normalized.map((variant,index)=>{
     const sideLayout=variant.layout!=='landscape';
-    const image=variant.image_url?`<img src="${escapeHtml(variant.image_url)}" alt="${escapeHtml(variant.name)} sample image" loading="lazy">`:'<div class="format-variant-placeholder"><span>✦</span><small>Sample image</small></div>';
+    const variantImageUrl=variant.image_url||item.image_url||''; 
+    const image=variantImageUrl?`<img src="${escapeHtml(variantImageUrl)}" alt="${escapeHtml(variant.name)} sample image" loading="lazy">`:'<div class="format-variant-placeholder"><span>✦</span><small>Sample image</small></div>';
     const label=variant.format_key==='portrait'?'PORTRAIT / STORY FORMAT':variant.format_key==='instagram'?'INSTAGRAM POST FORMAT':String(variant.name).toUpperCase();
     const about=variant.about_text||item.about_text||item.about||detailText('defaultAbout');
-    const how=variant.how_to_use||item.how_to_use||detailText('defaultHowTo');
+    const how=item.how_to_use||detailText('defaultHowTo');
+    const showHow=item.show_how_to_use!==false;
     return `<article class="format-variant-card format-variant-fixed-layout" data-format-variant="${escapeHtml(variant.format_key)}">
       <header class="format-variant-heading"><div class="format-variant-kicker">${escapeHtml(label)}</div><h2>${escapeHtml(item.title||'Prompt')} · ${escapeHtml(variant.name)}</h2><div class="format-variant-meta">${variant.aspect_ratio?`<span>${detailText('aspectPrefix')} ${escapeHtml(variant.aspect_ratio)}</span>`:''}${variant.duration?`<span>${escapeHtml(variant.duration)}</span>`:''}</div></header>
       <div class="format-variant-image">${image}</div>
       <section class="format-variant-prompt"><div class="format-variant-prompt-heading"><h3>Prompt</h3></div><div class="format-variant-copy-bar"><button type="button" class="copy-format-prompt" data-copy-format-prompt="${index}">Copy Prompt</button><span class="format-variant-copy-feedback" aria-live="polite"></span></div><pre class="format-variant-prompt-text">${escapeHtml(variant.prompt_text||'')}</pre></section>
-      <section class="format-variant-how"><span class="section-eyebrow">HOW TO USE</span><h3>How to use this prompt</h3><p>${escapeHtml(how)}</p></section>
+      ${showHow?`<section class="format-variant-how"><span class="section-eyebrow">HOW TO USE</span><h3>How to use this prompt</h3><p>${escapeHtml(how)}</p></section>`:''}
       <section class="format-variant-about"><span class="section-eyebrow">ABOUT</span><h3>About this prompt</h3><p class="format-variant-about-copy">${escapeHtml(about)}</p></section>
     </article>`;
   }).join('');
@@ -78,20 +80,32 @@ function renderExtraSections(sections){
     return `<article class="extra-section-card">${image}<h2>${escapeHtml(heading)}</h2>${content?`<p>${escapeHtml(content)}</p>`:''}</article>`;
   }).join('');host.hidden=!valid.length;
 }
-function renderContentBlocks(blocks){
+function renderContentBlocks(blocks,item={}){
   const host=byId('contentBlocks');
   const valid=Array.isArray(blocks)?blocks.filter(block=>block&&((block.type==='about'&&block.heading)||(block.type==='prompt'&&block.title&&block.prompt_text))):[];
   if(!host)return;
+  const showHow=item.show_how_to_use!==false;
+  const sharedHow=item.how_to_use||detailText('defaultHowTo');
   host.innerHTML=valid.map((block,index)=>{
-    const image=block.image_url?`<div class="content-block-image"><img src="${escapeHtml(block.image_url)}" alt="${escapeHtml(block.heading||block.title||'Section image')}" loading="lazy"></div>`:`<div class="content-block-image content-block-image-empty"><span>✦</span></div>`;
+    const image=block.image_url?`<div class="content-block-image"><img src="${escapeHtml(block.image_url)}" alt="${escapeHtml(block.heading||block.title||'Section image')}" loading="lazy"></div>`:'';
     if(block.type==='about'){
       const safeUrl=/^https?:\/\//i.test(block.url||'')?block.url:'';
-      return `<article class="content-block-card content-block-about">${block.image_url?image:''}<div class="content-block-body"><span class="content-block-kicker">INFORMATION</span><h2>${escapeHtml(block.heading||'')}</h2>${block.content?`<p>${escapeHtml(block.content)}</p>`:''}${safeUrl?`<a class="content-block-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">Visit link ↗</a>`:''}</div></article>`;
+      return `<article class="content-block-card content-block-about">${image}<div class="content-block-body"><span class="content-block-kicker">INFORMATION</span><h2>${escapeHtml(block.heading||'')}</h2>${block.content?`<p>${escapeHtml(block.content)}</p>`:''}${safeUrl?`<a class="content-block-link" href="${escapeHtml(safeUrl)}" target="_blank" rel="noopener noreferrer">Visit link ↗</a>`:''}</div></article>`;
     }
     const type=block.prompt_type||'Photo';
     const layout=['portrait','instagram'].includes(block.layout)?block.layout:'landscape';
-    const imageMarkup=block.image_url?image:'<div class="content-block-image content-block-image-empty"><span>✦</span></div>';
-    return `<article class="content-block-card content-block-prompt content-block-layout-${layout}">${imageMarkup}<div class="content-block-body"><div class="content-block-kicker">${layout==='portrait'?'PORTRAIT / STORY':layout==='instagram'?'INSTAGRAM POST':'LANDSCAPE'} PROMPT</div><div class="content-block-meta"><span>${escapeHtml(type)}</span>${block.category?`<span>${escapeHtml(block.category)}</span>`:''}${block.aspect_ratio?`<span>${escapeHtml(block.aspect_ratio)}</span>`:''}${block.duration?`<span>${escapeHtml(block.duration)}</span>`:''}</div><h2>${escapeHtml(block.title||'')}</h2>${block.about_text?`<p>${escapeHtml(block.about_text)}</p>`:''}<div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div><pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre>${block.how_to_use?`<div class="content-block-how"><strong>How to use</strong><p>${escapeHtml(block.how_to_use)}</p></div>`:''}</div></article>`;
+    return `<article class="content-block-card content-block-prompt content-block-admin-vertical">
+      ${image}
+      <div class="content-block-body">
+        <div class="content-block-kicker">${layout==='portrait'?'PORTRAIT / STORY':layout==='instagram'?'INSTAGRAM POST':'ADDED PROMPT'} · ${escapeHtml(type).toUpperCase()}</div>
+        <div class="content-block-meta">${block.category?`<span>${escapeHtml(block.category)}</span>`:''}${block.aspect_ratio?`<span>${escapeHtml(block.aspect_ratio)}</span>`:''}${block.duration?`<span>${escapeHtml(block.duration)}</span>`:''}</div>
+        <h2>${escapeHtml(block.title||'')}</h2>
+        ${block.about_text?`<section class="content-block-about-copy"><span class="content-block-subheading">ABOUT</span><p>${escapeHtml(block.about_text)}</p></section>`:''}
+        <div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div>
+        <pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre>
+        ${showHow?`<div class="content-block-how"><strong>How to use</strong><p>${escapeHtml(sharedHow)}</p></div>`:''}
+      </div>
+    </article>`;
   }).join('');
   host.hidden=!valid.length;
   host.querySelectorAll('[data-copy-content-block]').forEach(button=>button.addEventListener('click',async()=>{
@@ -135,8 +149,8 @@ function renderDetail(item){
   const facts=[[detailText('type'),item.type],[detailText('category'),item.category],[detailText('aspect'),item.aspect_ratio||detailText('notSpecified')]];if(isVideo&&item.duration)facts.push([detailText('duration'),item.duration]);
   byId('quickFacts').innerHTML=facts.map(([label,value])=>`<div class="fact-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');byId('quickFacts').hidden=true;
   setActivePrompt(getMainPromptText(item),item.aspect_ratio||'');renderVariants(item);
-  byId('howToUseContent').textContent=getHowToUse(item);
-  renderExtraSections(item.extra_sections);renderRelatedCollection(item);renderContentBlocks(item.content_blocks);byId('detailContent').hidden=false;byId('notFound').hidden=true;
+  byId('howToUseContent').textContent=getHowToUse(item);byId('howToUseContent').closest('.how-to-panel').hidden=item.show_how_to_use===false;
+  renderExtraSections(item.extra_sections);renderRelatedCollection(item);renderContentBlocks(item.content_blocks,item);byId('detailContent').hidden=false;byId('notFound').hidden=true;
   document.title=`${item.title} ${item.type} Prompt | FreePromptLibraryAI`;
   const desc=`${item.title}: free ${String(item.type).toLowerCase()} prompt. Read details and copy the prompt.`;
   const meta=document.querySelector('meta[name="description"]');if(meta)meta.setAttribute('content',desc);

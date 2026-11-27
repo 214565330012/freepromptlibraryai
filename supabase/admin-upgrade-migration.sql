@@ -151,3 +151,7 @@ grant execute on function public.get_analytics_yearly() to authenticated;
 grant execute on function public.get_prompt_view_stats() to authenticated;
 
 -- Note: uploads continue using the existing public prompt-images bucket and its admin-only write policies.
+
+
+-- V14 shared How-to visibility toggle
+alter table public.prompts add column if not exists show_how_to_use boolean not null default true;

@@ -1,0 +1,14 @@
+FreePromptLibraryAI V14 — Add Section layout, shared How-to, typography
+
+- Add Section prompt blocks use a dedicated full-width vertical layout:
+  optional large image at top, About, Copy Prompt + Prompt, then How to Use.
+  No blank image placeholder is shown when no image is supplied.
+- How to Use is one shared editable Admin field, prefilled with a five-step guide.
+  Main prompt, Story, Instagram and Add Section prompt cards reuse this text.
+- Admin checkbox "Show How to Use on website" controls visibility everywhere.
+  Checked = visible; unchecked = hidden. It defaults to checked.
+- Prompt/About/How-to text is darker and heavier for readability.
+- Run supabase/how-to-use-visibility-migration.sql once in Supabase SQL Editor.
+  Existing prompts default to visible; no prompt content is deleted.
+
+Admin checkbox is displayed beside the shared How to Use text field on desktop and below it on narrow screens.

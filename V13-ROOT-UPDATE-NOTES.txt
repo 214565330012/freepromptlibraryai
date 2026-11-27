@@ -1,0 +1,22 @@
+V13 — Actual selector scope + variant image fallback
+
+ROOT CAUSE:
+The #formatVariants section is a sibling of #detailContent in prompt.html.
+V12's final CSS incorrectly prefixed Story/Instagram card selectors with
+#detailContent, so those rules never matched the Story/Instagram cards.
+
+FIX:
+- Corrected selectors to target #formatVariants .format-variant-card.
+- The mobile and desktop Story/Instagram grid rules now apply to the real
+  location of those cards.
+- Variant image now uses variant.image_url, falling back to the main prompt's
+  item.image_url when a separate Story/Instagram image has not been provided.
+- Kept About full-width below the two-column content.
+- Kept Copy Prompt bar above prompt text.
+- Kept How to Use directly below the photo on desktop; on mobile it follows
+  the photo before Prompt and About.
+- No new database migration is required.
+
+UPLOAD:
+Replace detail.js and layout-v12.css in the repository root with these files.
+Other project files are included unchanged in this full ZIP.

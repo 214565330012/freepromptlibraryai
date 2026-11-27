@@ -286,3 +286,16 @@
 .block-format-option input{width:15px;height:15px;accent-color:#7663dc;flex:0 0 auto}
 .block-format-option span{display:grid;gap:3px}.block-format-option b{font-size:10px;color:#45415d}.block-format-option small{font-size:8px;color:#928ea5;font-weight:500}
 @media(max-width:560px){.block-format-options{grid-template-columns:1fr}.block-format-option{padding:9px}}
+
+/* V14 shared How-to visibility control */
+.how-to-visibility-toggle{display:flex!important;align-items:flex-start!important;gap:11px!important;padding:13px 15px!important;border:1px solid #ded8f5!important;border-radius:10px!important;background:#f8f6ff!important;color:#28243f!important;cursor:pointer!important}
+.how-to-visibility-toggle input{width:18px!important;height:18px!important;margin:1px 0 0!important;accent-color:#7157d9!important;flex:0 0 auto!important}
+.how-to-visibility-toggle span{display:grid;gap:4px}
+.how-to-visibility-toggle strong{color:#27233f;font-size:12px;font-weight:900}
+.how-to-visibility-toggle small{color:#514d68;font-size:11px;font-weight:600;line-height:1.5}
+.how-to-editor-label{font-weight:800!important;color:#29253f!important}
+
+.how-to-shared-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(210px,270px);gap:14px;align-items:end}
+.how-to-shared-row>.how-to-editor-label{display:grid;gap:8px}
+.how-to-shared-row .how-to-visibility-toggle{min-height:74px}
+@media(max-width:700px){.how-to-shared-row{grid-template-columns:1fr}.how-to-shared-row .how-to-visibility-toggle{min-height:0}}

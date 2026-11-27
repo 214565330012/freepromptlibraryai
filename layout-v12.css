@@ -618,7 +618,7 @@ html body #detailContent .detail-content-column > .prompt-panel #promptText{disp
 
 /* Variant cards: photo left, copy bar + prompt right, how-to under photo,
    and About full width below. */
-html body #detailContent .format-variant-card.format-variant-fixed-layout{
+html body #formatVariants .format-variant-card.format-variant-fixed-layout{
   display:grid !important;
   grid-template-columns:minmax(240px,40%) minmax(0,1fr) !important;
   grid-template-areas:"heading heading" "image prompt" "how prompt" "about about" !important;
@@ -626,14 +626,14 @@ html body #detailContent .format-variant-card.format-variant-fixed-layout{
   align-items:start !important;
   gap:14px !important;
 }
-html body #detailContent .format-variant-card.format-variant-fixed-layout > .format-variant-heading{grid-area:heading !important}
-html body #detailContent .format-variant-card.format-variant-fixed-layout > .format-variant-image{grid-area:image !important;max-height:none !important;min-width:0 !important}
-html body #detailContent .format-variant-card.format-variant-fixed-layout > .format-variant-prompt{grid-area:prompt !important;min-width:0 !important}
-html body #detailContent .format-variant-card.format-variant-fixed-layout > .format-variant-how{grid-area:how !important;min-width:0 !important}
-html body #detailContent .format-variant-card.format-variant-fixed-layout > .format-variant-about{grid-area:about !important;width:100% !important;min-width:0 !important}
+html body #formatVariants .format-variant-card.format-variant-fixed-layout > .format-variant-heading{grid-area:heading !important}
+html body #formatVariants .format-variant-card.format-variant-fixed-layout > .format-variant-image{grid-area:image !important;max-height:none !important;min-width:0 !important}
+html body #formatVariants .format-variant-card.format-variant-fixed-layout > .format-variant-prompt{grid-area:prompt !important;min-width:0 !important}
+html body #formatVariants .format-variant-card.format-variant-fixed-layout > .format-variant-how{grid-area:how !important;min-width:0 !important}
+html body #formatVariants .format-variant-card.format-variant-fixed-layout > .format-variant-about{grid-area:about !important;width:100% !important;min-width:0 !important}
 @media(max-width:760px){
  html body #detailContent .detail-layout{grid-template-columns:minmax(0,1fr) !important;grid-template-areas:"preview" "content" "about" !important}
- html body #detailContent .format-variant-card.format-variant-fixed-layout{
+ html body #formatVariants .format-variant-card.format-variant-fixed-layout{
   grid-template-columns:minmax(0,1fr) !important;
   grid-template-areas:"heading" "image" "how" "prompt" "about" !important;
  }
