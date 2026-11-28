@@ -1,0 +1,113 @@
+/* V19 — MOBILE-ONLY layout correction. Desktop styles remain unchanged. */
+@media (max-width: 760px) {
+  html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  *, *::before, *::after { box-sizing: border-box !important; }
+
+  /* Put language and dark-mode controls on their own top row. */
+  body > .site-controls {
+    position: relative !important;
+    inset: auto !important;
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 38px !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin: 0 !important;
+    padding: 5px 12px !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+  }
+  .language-switch { flex: 0 0 auto !important; }
+  .language-option { min-height: 27px !important; font-size: 10px !important; }
+  .site-controls .theme-control {
+    flex: 0 0 32px !important;
+    width: 32px !important;
+    min-width: 32px !important;
+    height: 29px !important;
+    margin: 0 !important;
+  }
+
+  /* Compact full-width header: logo on the left, short Home link on the right. */
+  .detail-topbar {
+    display: flex !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    min-height: 56px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+  }
+  .detail-brand {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: calc(100% - 64px) !important;
+    gap: 7px !important;
+    font-size: 13px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+  }
+  .detail-brand > span:last-child {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  .brand-symbol {
+    flex: 0 0 31px !important;
+    width: 31px !important;
+    height: 31px !important;
+  }
+  .detail-brand small { font-size: 6.5px !important; letter-spacing: .8px !important; }
+  .back-link {
+    flex: 0 0 auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 48px !important;
+    min-height: 34px !important;
+    margin: 0 !important;
+    padding: 7px 10px !important;
+    font-size: 0 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+  }
+  .back-link::after {
+    content: "Home";
+    font-size: 11px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Ensure the page and every main section use the complete phone width. */
+  .detail-main, #detailMain, #detailContent, #formatVariants, #contentBlocks,
+  #detailFooter, .detail-layout, .detail-content-column, .preview-column {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+  .detail-main { padding: 12px 12px 34px !important; }
+  .detail-heading, .preview-column, .prompt-panel, .info-panel, .how-to-panel,
+  .format-variant-card, .content-block-card, .extra-section-card {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  img, pre, textarea, .prompt-text, .format-variant-prompt-text,
+  .content-block-prompt-text {
+    max-width: 100% !important;
+  }
+}

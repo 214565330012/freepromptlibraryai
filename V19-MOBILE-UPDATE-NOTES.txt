@@ -1,0 +1,13 @@
+FreePromptLibraryAI V19 — Mobile-only UI correction
+
+Only prompt.html and the new mobile-ui-v19.css are changed.
+All new layout rules are inside @media (max-width: 760px), so desktop/PC
+layout is not changed.
+
+Mobile changes:
+- Full viewport width, border-box sizing and horizontal overflow prevention.
+- Language and dark-mode controls move into a separate top row above the header.
+- Header becomes compact: brand left, short "Home" link right.
+- Main detail content, image, prompt, and sections are constrained to the full
+  available phone width without an artificial narrow column.
+- Existing prompt See More/See Less and no-inner-scroll behavior are preserved.
