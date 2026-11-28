@@ -40,7 +40,7 @@ function renderVariants(item){
   host.innerHTML=normalized.map((variant,index)=>{
     const sideLayout=variant.layout!=='landscape';
     const variantImageUrl=variant.image_url||item.image_url||''; 
-    const image=variantImageUrl?`<img src="${escapeHtml(variantImageUrl)}" alt="${escapeHtml(variant.name)} sample image" loading="lazy">`:'<div class="format-variant-placeholder"><span>✦</span><small>Sample image</small></div>';
+    const image=variantImageUrl?`<img src="${escapeHtml(variantImageUrl)}" alt="${escapeHtml(variant.name)} sample image" loading="lazy">`:'<div class="format-variant-placeholder"><span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg></span><small>Sample image</small></div>';
     const label=variant.format_key==='portrait'?'PORTRAIT / STORY FORMAT':variant.format_key==='instagram'?'INSTAGRAM POST FORMAT':String(variant.name).toUpperCase();
     const about=variant.about_text||item.about_text||item.about||detailText('defaultAbout');
     const how=item.how_to_use||detailText('defaultHowTo');
@@ -121,7 +121,7 @@ function renderContentBlocks(blocks,item={}){
 function renderRelatedCollection(item){
   const host=byId('relatedPromptDetails');
   const related=Array.isArray(item.related_prompts)?item.related_prompts:[];
-  host.innerHTML=related.map((entry,index)=>`<article class="related-prompt-detail"><div class="related-prompt-image">${entry.image_url?`<img src="${escapeHtml(entry.image_url)}" alt="${escapeHtml(entry.title||'Related prompt')}" loading="lazy">`:'<span>✦</span>'}</div><div class="related-prompt-body"><span class="related-index">PROMPT ${index+1}</span><h3>${escapeHtml(entry.title||'Related prompt')}</h3>${entry.aspect_ratio?`<small>${detailText('aspectPrefix')} ${escapeHtml(entry.aspect_ratio)}</small>`:''}<pre>${escapeHtml(entry.prompt_text||'')}</pre><button class="copy-related" type="button" data-copy-related="${index}">${detailText('copyRelated')}</button></div></article>`).join('');
+  host.innerHTML=related.map((entry,index)=>`<article class="related-prompt-detail"><div class="related-prompt-image">${entry.image_url?`<img src="${escapeHtml(entry.image_url)}" alt="${escapeHtml(entry.title||'Related prompt')}" loading="lazy">`:'<span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg></span>'}</div><div class="related-prompt-body"><span class="related-index">PROMPT ${index+1}</span><h3>${escapeHtml(entry.title||'Related prompt')}</h3>${entry.aspect_ratio?`<small>${detailText('aspectPrefix')} ${escapeHtml(entry.aspect_ratio)}</small>`:''}<pre>${escapeHtml(entry.prompt_text||'')}</pre><button class="copy-related" type="button" data-copy-related="${index}">${detailText('copyRelated')}</button></div></article>`).join('');
   byId('relatedCollection').hidden=!related.length;
   host.querySelectorAll('[data-copy-related]').forEach(button=>button.addEventListener('click',async()=>{
     const entry=related[Number(button.dataset.copyRelated)];
@@ -144,7 +144,7 @@ function renderDetail(item){
   byId('previewArt').style.setProperty('--preview-a',colors[0]);byId('previewArt').style.setProperty('--preview-b',colors[1]);
   const sample=byId('sampleImage');
   if(item.image_url){sample.src=item.image_url;sample.hidden=false;byId('previewArt').classList.add('has-sample-image');byId('previewNote').hidden=true;byId('previewNote').textContent='';byId('previewIcon').hidden=true;byId('previewCategory').hidden=true;byId('previewName').hidden=true;byId('previewLabel').hidden=true;}
-  else{sample.hidden=true;sample.removeAttribute('src');byId('previewArt').classList.remove('has-sample-image');byId('previewNote').hidden=false;byId('previewNote').textContent=detailText('previewNote');byId('previewIcon').hidden=false;byId('previewCategory').hidden=false;byId('previewName').hidden=false;byId('previewLabel').hidden=false;byId('previewIcon').textContent='✦';byId('previewCategory').textContent=`${String(item.category||'').toUpperCase()} ${isVideo?'VIDEO':'PHOTO'} PROMPT`;byId('previewName').textContent=getDisplayTitle(item);}
+  else{sample.hidden=true;sample.removeAttribute('src');byId('previewArt').classList.remove('has-sample-image');byId('previewNote').hidden=false;byId('previewNote').textContent=detailText('previewNote');byId('previewIcon').hidden=false;byId('previewCategory').hidden=false;byId('previewName').hidden=false;byId('previewLabel').hidden=false;byId('previewIcon').innerHTML=`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg>`;byId('previewCategory').textContent=`${String(item.category||'').toUpperCase()} ${isVideo?'VIDEO':'PHOTO'} PROMPT`;byId('previewName').textContent=getDisplayTitle(item);}
   byId('aboutContent').textContent=item.about_text||item.about||detailText('defaultAbout');
   const facts=[[detailText('type'),item.type],[detailText('category'),item.category],[detailText('aspect'),item.aspect_ratio||detailText('notSpecified')]];if(isVideo&&item.duration)facts.push([detailText('duration'),item.duration]);
   byId('quickFacts').innerHTML=facts.map(([label,value])=>`<div class="fact-row"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');byId('quickFacts').hidden=true;
@@ -227,13 +227,13 @@ function applyDetailLanguage(language) {
   document.documentElement.dataset.theme = theme;
   const toggle = byId('themeToggle');
   if (toggle) {
-    toggle.textContent = theme === 'dark' ? '☀' : '◐';
+    toggle.innerHTML = theme === 'dark' ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>` : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>`;
     toggle.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     toggle.addEventListener('click', () => {
       const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = next;
       localStorage.setItem('fpl-theme', next);
-      toggle.textContent = next === 'dark' ? '☀' : '◐';
+      toggle.innerHTML = next === 'dark' ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>` : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>`;
       toggle.setAttribute('aria-label', next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     });
   }

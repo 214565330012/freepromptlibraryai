@@ -170,7 +170,7 @@ function renderCard(prompt, newTag = false) {
   const displayPrompt = currentSiteLanguage === 'hi' && prompt.prompt_hi ? prompt.prompt_hi : (prompt.content_text || prompt.prompt_en || '');
   return `<a class="prompt-card" href="${detailUrl}" aria-label="Open ${escapeText(displayTitle)} prompt">
     <div class="card-image" style="--a:${colors[0]};--b:${colors[1]}">
-      ${prompt.image_url ? `<img class="card-sample-image" src="${escapeText(prompt.image_url)}" alt="${escapeText(prompt.title)} sample" loading="lazy">` : '<span class="card-image-placeholder" aria-hidden="true">✦</span>'}
+      ${prompt.image_url ? `<img class="card-sample-image" src="${escapeText(prompt.image_url)}" alt="${escapeText(prompt.title)} sample" loading="lazy">` : '<span class="card-image-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg></span>'}
       ${newTag ? `<span class="new-tag">${siteText('newBadge')}</span>` : ''}
     </div>
     <div class="card-body">
@@ -267,7 +267,7 @@ const SITE_UI = {
     footerTerms:'Terms & Conditions', footerDisclaimer:'Disclaimer', footerDmca:'DMCA', followUs:'Follow Us', complaint:'Complaint / Suggestion', emailUs:'Email us',
     footerCopyright:'All rights reserved.', navLatest:'New Prompts', navPhoto:'Photo Prompts',
     navVideo:'Video Prompts', navCategories:'Categories', navStory:'AI Story Prompt',
-    trendingTitle:'🔥 Trending Prompt 🔥', trendingAll:'All Trending Prompts',
+    trendingTitle:'Trending Prompts', trendingAll:'All Trending Prompts',
     trendingSapua:'Sapua Video Prompt', trendingCelebration:'All Celebration Prompt',
     trendingSubtitle:'Birthday, Wedding, Festival, Engagement, Mehendi, All Prompts',
     categoryNames:['Photo Editing','Gemini Photo','Couple','Wedding','Saree','Birthday','Festival','3D Cartoon','Video Generation','Photo to Video','Cinematic','YouTube Thumbnail','Family','Fashion','Travel','Nature','Product','Dance','Logo','Sports','Background']
@@ -289,7 +289,7 @@ const SITE_UI = {
     footerTerms:'नियम और शर्तें', footerDisclaimer:'अस्वीकरण', footerDmca:'DMCA', followUs:'हमें फ़ॉलो करें', complaint:'शिकायत / सुझाव', emailUs:'ईमेल करें',
     footerCopyright:'सर्वाधिकार सुरक्षित।', navLatest:'नए प्रॉम्प्ट', navPhoto:'फोटो प्रॉम्प्ट',
     navVideo:'वीडियो प्रॉम्प्ट', navCategories:'श्रेणियाँ', navStory:'AI स्टोरी प्रॉम्प्ट',
-    trendingTitle:'🔥 ट्रेंडिंग प्रॉम्प्ट 🔥', trendingAll:'सभी ट्रेंडिंग प्रॉम्प्ट',
+    trendingTitle:'ट्रेंडिंग प्रॉम्प्ट', trendingAll:'सभी ट्रेंडिंग प्रॉम्प्ट',
     trendingSapua:'सपुआ वीडियो प्रॉम्प्ट', trendingCelebration:'सभी समारोह प्रॉम्प्ट',
     trendingSubtitle:'जन्मदिन, शादी, त्योहार, सगाई, मेहंदी और सभी प्रॉम्प्ट',
     categoryNames:['फोटो एडिटिंग','Gemini फोटो','कपल','शादी','साड़ी','जन्मदिन','त्योहार','3D कार्टून','वीडियो जनरेशन','फोटो से वीडियो','सिनेमैटिक','YouTube थंबनेल','परिवार','फैशन','यात्रा','प्रकृति','प्रोडक्ट','डांस','लोगो','खेल','बैकग्राउंड']
@@ -359,13 +359,13 @@ function applySiteLanguage(language) {
   document.documentElement.dataset.theme = savedTheme;
   const themeButton = $('#themeToggle');
   if (themeButton) {
-    themeButton.textContent = savedTheme === 'dark' ? '☀' : '◐';
+    themeButton.innerHTML = savedTheme === 'dark' ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>` : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>`;
     themeButton.setAttribute('aria-label', savedTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     themeButton.addEventListener('click', () => {
       const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = next;
       localStorage.setItem('fpl-theme', next);
-      themeButton.textContent = next === 'dark' ? '☀' : '◐';
+      themeButton.innerHTML = next === 'dark' ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>` : `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13A9 9 0 0 1 11 3.1 9 9 0 1 0 20.9 13Z"/></svg>`;
       themeButton.setAttribute('aria-label', next === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     });
   }

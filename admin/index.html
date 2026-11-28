@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin.css">
+<link rel="stylesheet" href="../design-system-v15.css">
 </head>
 <body>
   <section class="auth-screen" id="loginView">
@@ -68,7 +69,7 @@
         <button class="nav-item" type="button" data-view="categories"><span class="nav-icon">◇</span><span>Categories</span></button>
         <button class="nav-item" type="button" data-view="media"><span class="nav-icon">▧</span><span>Media library</span></button>
         <button class="nav-item" type="button" data-view="homepage"><span class="nav-icon">▦</span><span>Homepage builder</span></button>
-        <button class="nav-item" type="button" data-view="complaints"><span class="nav-icon">✉</span><span>Complaints</span><span class="nav-count" id="navComplaintCount">0</span></button>
+        <button class="nav-item" type="button" data-view="complaints"><span class="nav-icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg></span><span>Complaints</span><span class="nav-count" id="navComplaintCount">0</span></button>
         <button class="nav-item" type="button" data-view="analytics"><span class="nav-icon">⌁</span><span>Analytics</span></button>
       </nav>
       <div class="sidebar-bottom">
@@ -79,7 +80,7 @@
 
     <div class="main-column">
       <header class="topbar">
-        <button class="mobile-menu-btn" id="mobileMenuButton" type="button" aria-label="Open navigation">☰</button>
+        <button class="mobile-menu-btn" id="mobileMenuButton" type="button" aria-label="Open navigation"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg></button>
         <div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="breadcrumbTitle">Dashboard</strong></div>
         <div class="topbar-actions"><span class="live-indicator"><i></i> Connected</span><a class="topbar-site" href="../index.html" target="_blank" rel="noopener">View website ↗</a></div>
       </header>
@@ -91,7 +92,7 @@
             <button class="metric-card metric-main metric-click" type="button" data-metric-filter="all"><div class="metric-top"><span class="metric-icon purple">▤</span><span class="metric-label">TOTAL PROMPTS</span></div><strong id="totalCount">—</strong><small>Open all prompts</small></button>
             <button class="metric-card metric-click" type="button" data-metric-filter="published"><div class="metric-top"><span class="metric-icon green">✓</span><span class="metric-label">PUBLISHED</span></div><strong id="publishedCount">—</strong><small>Open published prompts</small></button>
             <button class="metric-card metric-click" type="button" data-metric-filter="draft"><div class="metric-top"><span class="metric-icon amber">◷</span><span class="metric-label">DRAFTS</span></div><strong id="draftCount">—</strong><small>Open draft prompts</small></button>
-            <button class="metric-card metric-click" type="button" data-metric-filter="trending"><div class="metric-top"><span class="metric-icon blue">✦</span><span class="metric-label">TRENDING</span></div><strong id="trendingCount">—</strong><small>Open trending prompts</small></button>
+            <button class="metric-card metric-click" type="button" data-metric-filter="trending"><div class="metric-top"><span class="metric-icon blue"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg></span><span class="metric-label">TRENDING</span></div><strong id="trendingCount">—</strong><small>Open trending prompts</small></button>
           </div>
           <section class="content-card sequence-card"><div class="card-heading"><div><h2>Prompt sequence</h2><p>Same ascending order as the public library: 1, 2, 3 …</p></div><button class="btn btn-quiet" type="button" data-action="view-prompts">View all prompts <span>→</span></button></div><div class="sequence-list" id="sequencePreview"><div class="loading-row">Loading your prompt sequence…</div></div></section>
           <div class="overview-bottom">

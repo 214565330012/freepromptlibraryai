@@ -1,0 +1,17 @@
+FreePromptLibraryAI V15 — Quiet UI Redesign
+
+Applied the requested 7 design rules:
+1. Neutral #f4f5f8 / white surfaces with one dark accent (#26364d); decorative gradients and glow/shadows neutralized.
+2. Replaced emoji-style decorative icons in public prompt/trending/theme/admin placeholders with inline Lucide-compatible line SVGs (18px, 1.75px stroke).
+3. Removed non-actionable NEW/HOT/AI/PRO/Beta badge display.
+4. Flattened nested info surfaces; in particular How to Use text now sits directly inside its main section without an inner card/border.
+5. Added consistent section spacing and compact label/value spacing.
+6. Standardized card/control radii and nested surfaces.
+7. Disabled looping decorative animation and limited interaction transitions to 180ms ease-out.
+
+Files changed:
+- Added design-system-v15.css
+- Linked it after existing CSS on index.html, prompt.html, page.html, admin/index.html
+- Updated icon markup/logic in index.html, prompt.html, app.js, detail.js, admin/index.html, admin/admin.js
+
+Existing prompt data, Supabase config, Admin How-to controls, and migrations are preserved.

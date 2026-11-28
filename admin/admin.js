@@ -352,7 +352,7 @@
     host.innerHTML = pageItems.length ? pageItems.map((prompt) => `
       <article class="admin-prompt-card">
         <a class="admin-prompt-thumb" href="../prompt.html?id=${encodeURIComponent(prompt.id)}" target="_blank" rel="noopener" aria-label="Preview ${escapeHtml(prompt.title)}">
-          ${prompt.image_url ? `<img src="${escapeHtml(prompt.image_url)}" alt="${escapeHtml(prompt.title)}" loading="lazy">` : '<span class="thumb-placeholder" aria-hidden="true">✦</span>'}
+          ${prompt.image_url ? `<img src="${escapeHtml(prompt.image_url)}" alt="${escapeHtml(prompt.title)}" loading="lazy">` : '<span class="thumb-placeholder" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg></span>'}
         </a>
         <div class="admin-prompt-card-body"><div class="admin-prompt-card-top"><span class="prompt-no">#${escapeHtml(prompt.id)}</span><span class="type-pill ${prompt.type === 'Video' ? 'video' : ''}">${escapeHtml(prompt.type)}</span></div>
           <h3>${escapeHtml(prompt.title)}</h3><p>${escapeHtml(prompt.category || 'General')} · ${escapeHtml(prompt.status)}</p>
@@ -403,7 +403,7 @@
     } else renderPromptList();
   }));
   function renderPromptCardCompact(prompt) {
-    return `<article class="admin-prompt-card"><a class="admin-prompt-thumb" href="../prompt.html?id=${encodeURIComponent(prompt.id)}" target="_blank">${prompt.image_url ? `<img src="${escapeHtml(prompt.image_url)}" alt="${escapeHtml(prompt.title)}">` : '<span class="thumb-placeholder">✦</span>'}</a><div class="admin-prompt-card-body"><div class="admin-prompt-card-top"><span class="prompt-no">#${escapeHtml(prompt.id)}</span><span class="type-pill">${escapeHtml(prompt.type)}</span></div><h3>${escapeHtml(prompt.title)}</h3><p>${escapeHtml(prompt.category)}</p><div class="admin-prompt-actions"><button data-edit-prompt="${escapeHtml(prompt.id)}">Edit</button><button class="delete-btn" data-delete-prompt="${escapeHtml(prompt.id)}">Delete</button></div></div></article>`;
+    return `<article class="admin-prompt-card"><a class="admin-prompt-thumb" href="../prompt.html?id=${encodeURIComponent(prompt.id)}" target="_blank">${prompt.image_url ? `<img src="${escapeHtml(prompt.image_url)}" alt="${escapeHtml(prompt.title)}">` : '<span class="thumb-placeholder"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-1.9-5.8L4 11l6.1-2.2L12 3Z"/><path d="m19 14 1 2.5 2.5 1-2.5 1L19 21l-1-2.5-2.5-1 2.5-1L19 14Z"/></svg></span>'}</a><div class="admin-prompt-card-body"><div class="admin-prompt-card-top"><span class="prompt-no">#${escapeHtml(prompt.id)}</span><span class="type-pill">${escapeHtml(prompt.type)}</span></div><h3>${escapeHtml(prompt.title)}</h3><p>${escapeHtml(prompt.category)}</p><div class="admin-prompt-actions"><button data-edit-prompt="${escapeHtml(prompt.id)}">Edit</button><button class="delete-btn" data-delete-prompt="${escapeHtml(prompt.id)}">Delete</button></div></div></article>`;
   }
 
   // Upload images to the public prompt-images bucket. Only admin users can write there (RLS).
