@@ -1,0 +1,182 @@
+/* V17 — remove the inner box inside How to Use and strengthen text */
+:root{
+  --detail-strong-text:#202938;
+  --detail-inner-border:#dce1e8;
+}
+
+/* Main How to Use: keep only the outer section surface. */
+#detailContent .preview-column > .preview-how-to-panel > .single-info-box,
+#detailContent .preview-column > .preview-how-to-panel .single-info-box,
+#detailContent .how-to-panel .single-info-box{
+  display:block!important;
+  width:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+#detailContent .preview-column > .preview-how-to-panel .single-info-box p,
+#detailContent .how-to-panel .single-info-box p,
+#detailContent .info-panel .single-info-box p{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--detail-strong-text)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  line-height:1.85!important;
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Other How-to/About sections: no secondary inset panel. */
+#detailContent .format-variant-how,
+#detailContent .format-variant-about,
+#detailContent .content-block-how,
+#detailContent .content-block-about-copy{
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+#detailContent .format-variant-how p,
+#detailContent .format-variant-about p,
+#detailContent .content-block-how p,
+#detailContent .content-block-about-copy p,
+#detailContent .content-block-body > p,
+#detailContent .extra-section-card > p{
+  margin-top:6px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--detail-strong-text)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  line-height:1.85!important;
+}
+
+/* Prompt text should also be darker and heavier, while retaining its useful prompt area. */
+#detailContent #promptText,
+#detailContent .prompt-text,
+#detailContent .format-variant-prompt-text,
+#detailContent .content-block-prompt-text{
+  color:var(--detail-strong-text)!important;
+  font-weight:650!important;
+  line-height:1.85!important;
+}
+
+/* Strong, readable headings without adding decorative inner cards. */
+#detailContent .panel-heading h2,
+#detailContent .format-variant-how h3,
+#detailContent .format-variant-about h3,
+#detailContent .content-block-body h2,
+#detailContent .content-block-subheading{
+  color:#182235!important;
+  font-weight:800!important;
+}
+
+
+/* V18: remove internal scroll boxes across prompt detail content. */
+#detailContent pre,
+#detailContent .single-info-box,
+#detailContent .content-block-how,
+#detailContent .format-variant-how,
+#detailContent .format-variant-about,
+#detailContent .extra-section-card,
+#detailContent .related-prompt-details,
+#detailContent .related-prompt-body{
+  max-height:none!important;
+  height:auto!important;
+  overflow:visible!important;
+  overflow-y:visible!important;
+  overflow-x:visible!important;
+  scrollbar-width:none!important;
+}
+#detailContent pre::-webkit-scrollbar,
+#detailContent .single-info-box::-webkit-scrollbar,
+#detailContent .content-block-how::-webkit-scrollbar,
+#detailContent .related-prompt-body::-webkit-scrollbar{
+  display:none!important;
+  width:0!important;
+  height:0!important;
+}
+
+/* Prompt text sits directly on the parent section surface, without another box. */
+#detailContent .prompt-text,
+#detailContent .format-variant-prompt-text,
+#detailContent .content-block-prompt-text,
+#detailContent .related-prompt-body pre{
+  display:block!important;
+  min-height:0!important;
+  max-height:none!important;
+  height:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+  overflow-y:visible!important;
+  color:#202938!important;
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+  font-weight:700!important;
+  line-height:1.8!important;
+}
+
+/* Long prompts collapse without an inner scrollbar. */
+#detailContent .prompt-text.prompt-is-collapsed,
+#detailContent .format-variant-prompt-text.prompt-is-collapsed,
+#detailContent .content-block-prompt-text.prompt-is-collapsed,
+#detailContent .related-prompt-body pre.prompt-is-collapsed{
+  max-height:360px!important;
+  height:auto!important;
+  overflow:hidden!important;
+}
+#detailContent .prompt-text.prompt-is-expanded,
+#detailContent .format-variant-prompt-text.prompt-is-expanded,
+#detailContent .content-block-prompt-text.prompt-is-expanded,
+#detailContent .related-prompt-body pre.prompt-is-expanded{
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* Centered See more / See less button below the prompt. */
+#detailContent .prompt-see-more{
+  display:block!important;
+  width:max-content!important;
+  min-width:112px;
+  margin:14px auto 4px!important;
+  padding:9px 22px!important;
+  border:1px solid #26364d!important;
+  border-radius:8px!important;
+  background:#26364d!important;
+  background-image:none!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  font-size:13px!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+  cursor:pointer;
+  transition:background-color .18s ease-out,border-color .18s ease-out,transform .18s ease-out;
+}
+#detailContent .prompt-see-more:hover{
+  background:#1d2b40!important;
+  border-color:#1d2b40!important;
+  transform:translateY(-1px);
+}

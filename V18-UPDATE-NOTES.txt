@@ -1,0 +1,8 @@
+FreePromptLibraryAI V18 — No inner scrollbars + centered See more
+
+- Removed internal scrolling from prompt/detail text sections.
+- Prompt text no longer appears inside a second bordered/background box.
+- Long prompts show an initial 360px preview with no scrollbar.
+- A centered See more button appears directly below long prompts; clicking expands the full text and toggles to See less.
+- Applied to main prompt, Story/Instagram prompt variants, Admin-added prompt blocks, and related prompt previews.
+- Copy Prompt functionality and existing project/database files are preserved.

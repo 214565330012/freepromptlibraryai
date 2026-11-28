@@ -19,9 +19,39 @@ function showNotFound(){byId('notFound').hidden=false;byId('detailContent').hidd
 function getDisplayTitle(item){return currentDetailLanguage === 'hi' && item.title_hi ? item.title_hi : (item.title || '');}
 function getMainPromptText(item){return currentDetailLanguage === 'hi' && item.prompt_hi ? item.prompt_hi : (item.content_text || item.prompt_en || '');}
 function getHowToUse(item){return item.how_to_use || detailText('defaultHowTo');}
+
+function attachPromptSeeMore(preNode, limit=360){
+  if(!preNode)return;
+  const previous=preNode.nextElementSibling;
+  if(previous&&previous.classList.contains('prompt-see-more'))previous.remove();
+  preNode.classList.remove('prompt-is-collapsed','prompt-is-expanded');
+  // Measure the full natural content before applying the collapsed height.
+  preNode.style.maxHeight='none';
+  preNode.style.overflow='visible';
+  if(preNode.scrollHeight<=limit+8)return;
+  preNode.classList.add('prompt-is-collapsed');
+  const button=document.createElement('button');
+  button.type='button';
+  button.className='prompt-see-more';
+  button.textContent=currentDetailLanguage==='hi'?'और देखें':'See more';
+  button.setAttribute('aria-expanded','false');
+  button.addEventListener('click',()=>{
+    const expanded=preNode.classList.toggle('prompt-is-expanded');
+    preNode.classList.toggle('prompt-is-collapsed',!expanded);
+    button.textContent=expanded
+      ?(currentDetailLanguage==='hi'?'कम देखें':'See less')
+      :(currentDetailLanguage==='hi'?'और देखें':'See more');
+    button.setAttribute('aria-expanded',String(expanded));
+  });
+  preNode.insertAdjacentElement('afterend',button);
+}
+function refreshPromptSeeMore(root=document){
+  root.querySelectorAll('#promptText,.format-variant-prompt-text,.content-block-prompt-text,.related-prompt-body pre').forEach(node=>attachPromptSeeMore(node));
+}
+
 function setActivePrompt(text, ratio=''){
   activePromptText=text||'';
-  byId('promptText').textContent=activePromptText;
+  byId('promptText').textContent=activePromptText;attachPromptSeeMore(byId('promptText'));
   const fact=byId('activeFormatFact');
   if(fact) fact.textContent=ratio?`${detailText('selectedFormat')} ${ratio}`:'';
   byId('copyFeedback').textContent='';
@@ -54,6 +84,7 @@ function renderVariants(item){
     </article>`;
   }).join('');
   host.hidden=!normalized.length;
+  refreshPromptSeeMore(host);
   host.querySelectorAll('[data-copy-format-prompt]').forEach(button=>button.addEventListener('click',async()=>{
     const variant=normalized[Number(button.dataset.copyFormatPrompt)];
     const feedback=button.parentElement.querySelector('.format-variant-copy-feedback');
@@ -108,6 +139,7 @@ function renderContentBlocks(blocks,item={}){
     </article>`;
   }).join('');
   host.hidden=!valid.length;
+  refreshPromptSeeMore(host);
   host.querySelectorAll('[data-copy-content-block]').forEach(button=>button.addEventListener('click',async()=>{
     const block=valid[Number(button.dataset.copyContentBlock)];
     const feedback=button.parentElement.querySelector('.content-block-copy-feedback');
@@ -123,6 +155,7 @@ function renderRelatedCollection(item){
   const related=Array.isArray(item.related_prompts)?item.related_prompts:[];
   host.innerHTML=related.map((entry,index)=>`<article class="related-prompt-detail"><div class="related-prompt-image">${entry.image_url?`<img src="${escapeHtml(entry.image_url)}" alt="${escapeHtml(entry.title||'Related prompt')}" loading="lazy">`:'<span>✦</span>'}</div><div class="related-prompt-body"><span class="related-index">PROMPT ${index+1}</span><h3>${escapeHtml(entry.title||'Related prompt')}</h3>${entry.aspect_ratio?`<small>${detailText('aspectPrefix')} ${escapeHtml(entry.aspect_ratio)}</small>`:''}<pre>${escapeHtml(entry.prompt_text||'')}</pre><button class="copy-related" type="button" data-copy-related="${index}">${detailText('copyRelated')}</button></div></article>`).join('');
   byId('relatedCollection').hidden=!related.length;
+  refreshPromptSeeMore(host);
   host.querySelectorAll('[data-copy-related]').forEach(button=>button.addEventListener('click',async()=>{
     const entry=related[Number(button.dataset.copyRelated)];
     try{await navigator.clipboard.writeText(entry.prompt_text||'');button.textContent=detailText('copiedShort');setTimeout(()=>button.textContent=detailText('copyRelated'),1600);}catch{button.textContent=detailText('selectShort');}
