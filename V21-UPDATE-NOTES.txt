@@ -1,0 +1,8 @@
+FreePromptLibraryAI V21 — One Box Per Content Section
+
+- Main About, Prompt and How to Use each have one visible bordered surface.
+- Story and Instagram About, Prompt and How to Use each have their own matching box.
+- Admin Add Section prompt entries receive separate About, Prompt and How to Use boxes.
+- Existing boxes are not duplicated: inner text/pre elements are transparent and borderless inside the single section box.
+- Existing V19 mobile layout and V20 prompt heading/copy alignment are preserved.
+- CSS-only change; no database migration required.

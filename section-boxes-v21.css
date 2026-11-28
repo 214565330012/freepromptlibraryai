@@ -1,0 +1,161 @@
+
+/* V21 — one clear bordered box for each About, Prompt and How to Use section. */
+#detailContent .info-panel,
+#detailContent .how-to-panel,
+#detailContent .prompt-panel{
+  display:block!important;
+  background:#ffffff!important;
+  border:1px solid #d8dee8!important;
+  border-radius:14px!important;
+  padding:16px!important;
+  box-shadow:none!important;
+}
+#detailContent .info-panel .single-info-box,
+#detailContent .how-to-panel .single-info-box{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#detailContent .info-panel .single-info-box p,
+#detailContent .how-to-panel .single-info-box p{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#202938!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.8!important;
+}
+#detailContent .prompt-panel .prompt-text{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#202938!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.8!important;
+  white-space:pre-wrap!important;
+}
+
+/* Story and Instagram: each of the three content sections gets its own box. */
+#detailContent .format-variant-card.format-variant-fixed-layout{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#detailContent .format-variant-prompt,
+#detailContent .format-variant-about,
+#detailContent .format-variant-how{
+  display:block!important;
+  min-width:0!important;
+  width:100%!important;
+  padding:15px!important;
+  margin:0!important;
+  border:1px solid #d8dee8!important;
+  border-radius:12px!important;
+  background:#ffffff!important;
+  box-shadow:none!important;
+}
+#detailContent .format-variant-prompt-text{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#detailContent .format-variant-about p,
+#detailContent .format-variant-how p{
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+
+/* Admin Add Section prompt blocks: separate About, Prompt and How-to boxes. */
+#detailContent .content-block-card.content-block-prompt{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+#detailContent .content-block-card.content-block-prompt .content-block-body{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+#detailContent .content-block-about-copy,
+#detailContent .content-block-prompt-section,
+#detailContent .content-block-how{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:14px 0 0!important;
+  padding:15px!important;
+  border:1px solid #d8dee8!important;
+  border-radius:12px!important;
+  background:#ffffff!important;
+  box-shadow:none!important;
+}
+#detailContent .content-block-about-copy h3,
+#detailContent .content-block-how h3{
+  margin:0 0 10px!important;
+  color:#111827!important;
+  font-size:18px!important;
+  font-weight:800!important;
+}
+#detailContent .content-block-about-copy p,
+#detailContent .content-block-how p{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#202938!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.8!important;
+}
+#detailContent .content-block-prompt-section .content-block-prompt-heading{
+  margin:0 0 10px!important;
+}
+#detailContent .content-block-prompt-section .content-block-prompt-text{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#202938!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  line-height:1.8!important;
+}
+#detailContent .content-block-kicker,
+#detailContent .content-block-meta{margin-bottom:8px!important}
+@media(max-width:760px){
+  #detailContent .info-panel,
+  #detailContent .how-to-panel,
+  #detailContent .prompt-panel{padding:14px!important}
+  #detailContent .format-variant-prompt,
+  #detailContent .format-variant-about,
+  #detailContent .format-variant-how,
+  #detailContent .content-block-about-copy,
+  #detailContent .content-block-prompt-section,
+  #detailContent .content-block-how{padding:12px!important}
+}
