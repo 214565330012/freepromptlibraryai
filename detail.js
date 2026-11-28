@@ -78,8 +78,8 @@ function renderVariants(item){
     return `<article class="format-variant-card format-variant-fixed-layout" data-format-variant="${escapeHtml(variant.format_key)}">
       <header class="format-variant-heading"><div class="format-variant-kicker">${escapeHtml(label)}</div><h2>${escapeHtml(item.title||'Prompt')} · ${escapeHtml(variant.name)}</h2><div class="format-variant-meta">${variant.aspect_ratio?`<span>${detailText('aspectPrefix')} ${escapeHtml(variant.aspect_ratio)}</span>`:''}${variant.duration?`<span>${escapeHtml(variant.duration)}</span>`:''}</div></header>
       <div class="format-variant-image">${image}</div>
-      <section class="format-variant-prompt"><div class="format-variant-prompt-heading"><h3>Prompt</h3></div><div class="format-variant-copy-bar"><button type="button" class="copy-format-prompt" data-copy-format-prompt="${index}">Copy Prompt</button><span class="format-variant-copy-feedback" aria-live="polite"></span></div><pre class="format-variant-prompt-text">${escapeHtml(variant.prompt_text||'')}</pre></section>
-      ${showHow?`<section class="format-variant-how"><span class="section-eyebrow">HOW TO USE</span><h3>How to use this prompt</h3><p>${escapeHtml(how)}</p></section>`:''}
+      <section class="format-variant-prompt"><div class="format-variant-prompt-heading"><h3>Prompt</h3><div class="format-variant-actions"><button type="button" class="copy-format-prompt" data-copy-format-prompt="${index}">Copy Prompt</button><span class="format-variant-copy-feedback" aria-live="polite"></span></div></div><pre class="format-variant-prompt-text">${escapeHtml(variant.prompt_text||'')}</pre></section>
+      ${showHow?`<section class="format-variant-how"><h3>HOW TO USE</h3><p>${escapeHtml(how)}</p></section>`:''}
       <section class="format-variant-about"><span class="section-eyebrow">ABOUT</span><h3>About this prompt</h3><p class="format-variant-about-copy">${escapeHtml(about)}</p></section>
     </article>`;
   }).join('');
@@ -131,10 +131,12 @@ function renderContentBlocks(blocks,item={}){
         <div class="content-block-kicker">${layout==='portrait'?'PORTRAIT / STORY':layout==='instagram'?'INSTAGRAM POST':'ADDED PROMPT'} · ${escapeHtml(type).toUpperCase()}</div>
         <div class="content-block-meta">${block.category?`<span>${escapeHtml(block.category)}</span>`:''}${block.aspect_ratio?`<span>${escapeHtml(block.aspect_ratio)}</span>`:''}${block.duration?`<span>${escapeHtml(block.duration)}</span>`:''}</div>
         <h2>${escapeHtml(block.title||'')}</h2>
-        ${block.about_text?`<section class="content-block-about-copy"><span class="content-block-subheading">ABOUT</span><p>${escapeHtml(block.about_text)}</p></section>`:''}
-        <div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div>
-        <pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre>
-        ${showHow?`<div class="content-block-how"><strong>How to use</strong><p>${escapeHtml(sharedHow)}</p></div>`:''}
+        ${block.about_text?`<section class="content-block-about-copy"><h3>ABOUT</h3><p>${escapeHtml(block.about_text)}</p></section>`:''}
+        <section class="content-block-prompt-section">
+          <div class="content-block-prompt-heading"><h3>Prompt</h3><div class="content-block-actions"><button type="button" class="copy-content-block" data-copy-content-block="${index}">Copy Prompt</button><span class="content-block-copy-feedback" aria-live="polite"></span></div></div>
+          <pre class="content-block-prompt-text">${escapeHtml(block.prompt_text||'')}</pre>
+        </section>
+        ${showHow?`<section class="content-block-how"><h3>HOW TO USE</h3><p>${escapeHtml(sharedHow)}</p></section>`:''}
       </div>
     </article>`;
   }).join('');

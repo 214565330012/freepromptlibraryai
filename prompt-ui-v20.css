@@ -1,0 +1,122 @@
+
+/* V20: unified Prompt heading and adjacent copy action for every prompt block. */
+#detailContent .prompt-heading-row,
+#detailContent .format-variant-prompt-heading,
+#detailContent .content-block-prompt-heading{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  width:100%!important;
+  margin:0 0 12px!important;
+}
+#detailContent .prompt-heading-row h2,
+#detailContent .format-variant-prompt-heading h3,
+#detailContent .content-block-prompt-heading h3{
+  margin:0!important;
+  color:#111827!important;
+  font-size:19px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+}
+#detailContent .prompt-heading-actions,
+#detailContent .format-variant-actions,
+#detailContent .content-block-actions{
+  display:flex!important;
+  flex:0 0 auto!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  margin:0!important;
+}
+#detailContent .prompt-heading-row .copy-action,
+#detailContent .format-variant-prompt-heading .copy-format-prompt,
+#detailContent .content-block-prompt-heading .copy-content-block{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:36px!important;
+  margin:0!important;
+  padding:8px 15px!important;
+  white-space:nowrap!important;
+  font-size:12px!important;
+  font-weight:800!important;
+}
+#detailContent #promptText,
+#detailContent .format-variant-prompt-text,
+#detailContent .content-block-prompt-text,
+#detailContent .related-prompt-body pre{
+  color:#111827!important;
+  font-size:15px!important;
+  font-weight:600!important;
+  line-height:1.85!important;
+  letter-spacing:0!important;
+}
+#detailContent .content-block-about-copy{
+  display:block!important;
+  margin:16px 0 20px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+#detailContent .content-block-about-copy h3,
+#detailContent .content-block-how h3,
+#detailContent .format-variant-how h3{
+  display:block!important;
+  margin:0 0 9px!important;
+  color:#111827!important;
+  font-size:19px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+}
+#detailContent .content-block-about-copy p,
+#detailContent .content-block-how p,
+#detailContent .format-variant-about p,
+#detailContent .format-variant-how p{
+  margin:0!important;
+  color:#202938!important;
+  font-size:15px!important;
+  font-weight:600!important;
+  line-height:1.85!important;
+}
+#detailContent .content-block-prompt-section{
+  display:block!important;
+  margin:18px 0 0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+#detailContent .content-block-how,
+#detailContent .format-variant-how{
+  display:block!important;
+  margin:22px 0 0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+#detailContent .content-block-how h3,
+#detailContent .format-variant-how h3{
+  text-transform:uppercase!important;
+  letter-spacing:.04em!important;
+}
+#detailContent .format-variant-prompt-heading{margin-bottom:12px!important}
+#detailContent .format-variant-prompt{padding:0!important;border:0!important;background:transparent!important}
+#detailContent .format-variant-copy-bar{display:none!important}
+@media(max-width:760px){
+  #detailContent .prompt-heading-row,
+  #detailContent .format-variant-prompt-heading,
+  #detailContent .content-block-prompt-heading{gap:8px!important}
+  #detailContent .prompt-heading-row h2,
+  #detailContent .format-variant-prompt-heading h3,
+  #detailContent .content-block-prompt-heading h3,
+  #detailContent .content-block-how h3,
+  #detailContent .format-variant-how h3,
+  #detailContent .content-block-about-copy h3{font-size:18px!important}
+  #detailContent #promptText,
+  #detailContent .format-variant-prompt-text,
+  #detailContent .content-block-prompt-text,
+  #detailContent .related-prompt-body pre{font-size:14px!important}
+  #detailContent .prompt-heading-row .copy-action,
+  #detailContent .format-variant-prompt-heading .copy-format-prompt,
+  #detailContent .content-block-prompt-heading .copy-content-block{min-height:34px!important;padding:7px 11px!important;font-size:11px!important}
+}

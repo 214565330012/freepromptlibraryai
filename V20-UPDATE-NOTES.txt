@@ -1,0 +1,7 @@
+FreePromptLibraryAI V20 — Prompt heading and copy alignment
+
+- Main Prompt heading is now dark, larger, and aligned on the same row as Copy Prompt.
+- The same heading/action row is used for Portrait/Story and Instagram prompt variants.
+- Admin Add Section prompt blocks now show a separate ABOUT heading/section, followed by a distinct Prompt heading with Copy Prompt beside it, then the prompt text, then a larger HOW TO USE heading and its content.
+- Prompt text size increased and darkened for readability.
+- Existing See More/See Less behavior and V19 mobile-only layout rules are retained.
