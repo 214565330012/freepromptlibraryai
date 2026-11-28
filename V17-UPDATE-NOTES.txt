@@ -1,0 +1,16 @@
+V17 — targeted fix based on the user's newly uploaded project ZIP
+
+Root cause found:
+- prompt.html loads layout-v12.css and layout-v14.css.
+- detail.css contains a nested `.single-info-box` surface inside the main How-to section:
+  padding, border-radius and background create the visible inner box.
+- The previous uploaded ZIP was the actual source; this update is applied to it.
+
+Changes:
+- Added detail-fix-v17.css and loaded it last from prompt.html.
+- Removed the inner How-to box's padding, border, background, radius and shadow while retaining the outer How-to section.
+- Applied the same flat treatment to related How-to/About content sections.
+- Increased body text weight to 700 and darkened text for readability.
+- Prompt text remains in its intended prompt area and is made darker/bolder.
+- No database migration or Supabase schema changes.
+- All original files retained; project files are at ZIP root for direct GitHub root replacement.

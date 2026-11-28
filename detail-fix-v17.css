@@ -1,0 +1,88 @@
+/* V17 — remove the inner box inside How to Use and strengthen text */
+:root{
+  --detail-strong-text:#202938;
+  --detail-inner-border:#dce1e8;
+}
+
+/* Main How to Use: keep only the outer section surface. */
+#detailContent .preview-column > .preview-how-to-panel > .single-info-box,
+#detailContent .preview-column > .preview-how-to-panel .single-info-box,
+#detailContent .how-to-panel .single-info-box{
+  display:block!important;
+  width:100%!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+#detailContent .preview-column > .preview-how-to-panel .single-info-box p,
+#detailContent .how-to-panel .single-info-box p,
+#detailContent .info-panel .single-info-box p{
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--detail-strong-text)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  line-height:1.85!important;
+  white-space:pre-wrap!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Other How-to/About sections: no secondary inset panel. */
+#detailContent .format-variant-how,
+#detailContent .format-variant-about,
+#detailContent .content-block-how,
+#detailContent .content-block-about-copy{
+  border:0!important;
+  outline:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+#detailContent .format-variant-how p,
+#detailContent .format-variant-about p,
+#detailContent .content-block-how p,
+#detailContent .content-block-about-copy p,
+#detailContent .content-block-body > p,
+#detailContent .extra-section-card > p{
+  margin-top:6px!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:var(--detail-strong-text)!important;
+  font-size:14px!important;
+  font-weight:700!important;
+  line-height:1.85!important;
+}
+
+/* Prompt text should also be darker and heavier, while retaining its useful prompt area. */
+#detailContent #promptText,
+#detailContent .prompt-text,
+#detailContent .format-variant-prompt-text,
+#detailContent .content-block-prompt-text{
+  color:var(--detail-strong-text)!important;
+  font-weight:650!important;
+  line-height:1.85!important;
+}
+
+/* Strong, readable headings without adding decorative inner cards. */
+#detailContent .panel-heading h2,
+#detailContent .format-variant-how h3,
+#detailContent .format-variant-about h3,
+#detailContent .content-block-body h2,
+#detailContent .content-block-subheading{
+  color:#182235!important;
+  font-weight:800!important;
+}
